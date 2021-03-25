@@ -27,8 +27,8 @@ local script = {
   hooks = {},
 
   gui = {
-    i18n_title = "entity_thresholds.syn_attacker_title",
-    i18n_description = "entity_thresholds.syn_attacker_description",
+    i18n_title = "entity_thresholds.syn_flood_title",
+    i18n_description = "entity_thresholds.syn_flood_description",
     i18n_field_unit = user_scripts.field_units.syn_sec,
     input_builder = "threshold_cross",
     field_max = 65535,

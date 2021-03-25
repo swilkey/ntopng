@@ -8,8 +8,6 @@ local user_scripts = require("user_scripts")
 local alert_severities = require "alert_severities"
 
 local script = {
-  packet_interface_only = true,
-  
   -- Script category
   category = user_scripts.script_categories.security,
 
@@ -28,9 +26,9 @@ local script = {
   hooks = {},
 
   gui = {
-    i18n_title = "entity_thresholds.syn_victim_title",
-    i18n_description = "entity_thresholds.syn_victim_description",
-    i18n_field_unit = user_scripts.field_units.syn_sec,
+    i18n_title = "entity_thresholds.flow_flood_title",
+    i18n_description = "entity_thresholds.flow_flood_description",
+    i18n_field_unit = user_scripts.field_units.flow_sec,
     input_builder = "threshold_cross",
     field_max = 65535,
     field_min = 1,
@@ -41,16 +39,16 @@ local script = {
 -- #################################################################
 
 function script.hooks.min(params)
-  local sf = host.getSynFlood()
-  local value = sf["hits.syn_flood_victim"] or 0
-  local victim = nil
+  local ff = host.getFlowFlood()
+  local value = ff["hits.flow_flood_attacker"] or 0
+  local attacker = nil
 
   if value ~= 0 then
-    victim = params.alert_entity.alert_entity_val
+    attacker = params.alert_entity.alert_entity_val
   end
 
   -- Check if the configured threshold is crossed by the value and possibly trigger an alert
-  alerts_api.checkThresholdAlert(params, alert_consts.alert_types.alert_tcp_syn_flood_victim, value, nil, victim)
+  alerts_api.checkThresholdAlert(params, alert_consts.alert_types.alert_flows_flood_attacker, value, attacker)
 end
 
 -- #################################################################

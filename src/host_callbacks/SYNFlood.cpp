@@ -19,25 +19,31 @@
  *
  */
 
-#ifndef _SYN_SCAN_VICTIM_H_
-#define _SYN_SCAN_VICTIM_H_
-
 #include "ntop_includes.h"
+#include "host_callbacks_includes.h"
 
-class SYNScanVictim : public HostCallback {
-private:
-  
-public:
-   SYNScanVictim() : HostCallback(ntopng_edition_community) {};
-  ~SYNScanVictim() {};
+/* ***************************************************** */
 
-  HostAlert *buildAlert(Host *h);
+void SYNFlood::periodicUpdate(Host *h) {
+}
 
-  void periodicUpdate(Host *h);
+/* ***************************************************** */
 
-  bool loadConfiguration(json_object *config);  
+HostAlert *SYNFlood::buildAlert(Host *h) {
+  // TODO: return also SYNFloodVictimAlert
+  return new SYNFloodAttackerAlert(this, h);
+}
 
-  std::string getName()        const { return(std::string("syn_scan_victim")); }
-};
+/* ***************************************************** */
 
-#endif
+bool SYNFlood::loadConfiguration(json_object *config) {
+  HostCallback::loadConfiguration(config); /* Parse parameters in common */
+  /*
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
+  */
+
+  return(true);
+}
+
+/* ***************************************************** */
+

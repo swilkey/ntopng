@@ -19,30 +19,25 @@
  *
  */
 
+#ifndef _SYN_FLOOD_H_
+#define _SYN_FLOOD_H_
+
 #include "ntop_includes.h"
-#include "host_callbacks_includes.h"
 
-/* ***************************************************** */
+class SYNFlood : public HostCallback {
+private:
+  
+public:
+   SYNFlood() : HostCallback(ntopng_edition_community) {};
+  ~SYNFlood() {};
 
-void SYNFloodVictim::periodicUpdate(Host *h) {
-}
+  HostAlert *buildAlert(Host *h);
 
-/* ***************************************************** */
+  void periodicUpdate(Host *h);
 
-HostAlert *SYNFloodVictim::buildAlert(Host *h) {
-  return new SYNFloodVictimAlert(this, h);
-}
+  bool loadConfiguration(json_object *config);  
 
-/* ***************************************************** */
+  std::string getName()        const { return(std::string("syn_flood")); }
+};
 
-bool SYNFloodVictim::loadConfiguration(json_object *config) {
-  HostCallback::loadConfiguration(config); /* Parse parameters in common */
-  /*
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-  */
-
-  return(true);
-}
-
-/* ***************************************************** */
-
+#endif

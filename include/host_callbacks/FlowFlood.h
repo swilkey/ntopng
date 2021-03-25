@@ -19,30 +19,25 @@
  *
  */
 
+#ifndef _FLOW_FLOOD_H_
+#define _FLOW_FLOOD_H_
+
 #include "ntop_includes.h"
-#include "host_callbacks_includes.h"
 
-/* ***************************************************** */
+class FlowFlood : public HostCallback {
+private:
+  
+public:
+   FlowFlood() : HostCallback(ntopng_edition_community) {};
+  ~FlowFlood() {};
 
-void FlowFloodAttacker::periodicUpdate(Host *h) {
-}
+  HostAlert *buildAlert(Host *h);
 
-/* ***************************************************** */
+  void periodicUpdate(Host *h);
 
-HostAlert *FlowFloodAttacker::buildAlert(Host *h) {
-  return new FlowFloodAttackerAlert(this, h);
-}
+  bool loadConfiguration(json_object *config);  
 
-/* ***************************************************** */
+  std::string getName()        const { return(std::string("flow_flood")); }
+};
 
-bool FlowFloodAttacker::loadConfiguration(json_object *config) {
-  HostCallback::loadConfiguration(config); /* Parse parameters in common */
-  /*
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-  */
-
-  return(true);
-}
-
-/* ***************************************************** */
-
+#endif

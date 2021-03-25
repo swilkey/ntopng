@@ -9,7 +9,7 @@ local alert_severities = require "alert_severities"
 
 local script = {
   packet_interface_only = true,
-
+   
   -- Script category
   category = user_scripts.script_categories.security,
 
@@ -22,7 +22,6 @@ local script = {
   -- The default threshold value. The format is specific of the
   -- "threshold_cross" input builder
   default_value = {
-    -- "> 30"
     operator = "gt",
     threshold = 256,
     severity = alert_severities.error,
@@ -34,8 +33,8 @@ local script = {
   -- Allow user script configuration from the GUI
   gui = {
     -- Localization strings, from the "locales" directory of the plugin
-    i18n_title = "entity_thresholds.syn_scan_victim_title",
-    i18n_description = "entity_thresholds.syn_scan_victim_description",
+    i18n_title = "entity_thresholds.syn_scan_title",
+    i18n_description = "entity_thresholds.syn_scan_description",
 
     -- The input builder to use to draw the gui
     input_builder = "threshold_cross",
@@ -56,15 +55,15 @@ local script = {
 -- Defines an hook which is executed every minute
 function script.hooks.min(params)
   local sf = host.getSynScan()
-  local value = sf["hits.syn_scan_victim"] or 0
-  local victim = nil
+  local value = sf["hits.syn_scan_attacker"] or 0
+  local attacker = nil
 
   if value ~= 0 then
-    victim = params.alert_entity.alert_entity_val
+    attacker = params.alert_entity.alert_entity_val
   end
 
   -- Check if the configured threshold is crossed by the value and possibly trigger an alert
-  alerts_api.checkThresholdAlert(params, alert_consts.alert_types.alert_tcp_syn_scan_victim, value, nil, victim)
+  alerts_api.checkThresholdAlert(params, alert_consts.alert_types.alert_tcp_syn_scan_attacker, value, attacker)
 end
 
 -- #################################################################

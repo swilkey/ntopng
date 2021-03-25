@@ -52,12 +52,9 @@ void HostCallbacksLoader::registerHostCallbacks() {
   /* TODO: implement dynamic loading */
   HostCallback *fcb;
 
-  if((fcb = new FlowFloodAttacker()))          cb_all[fcb->getName()] = fcb;
-  if((fcb = new FlowFloodVictim()))            cb_all[fcb->getName()] = fcb;
-  if((fcb = new SYNScanAttacker()))            cb_all[fcb->getName()] = fcb;
-  if((fcb = new SYNScanVictim()))              cb_all[fcb->getName()] = fcb;
-  if((fcb = new SYNFloodAttacker()))           cb_all[fcb->getName()] = fcb;
-  if((fcb = new SYNFloodVictim()))             cb_all[fcb->getName()] = fcb;
+  if((fcb = new FlowFlood()))                  cb_all[fcb->getName()] = fcb;
+  if((fcb = new SYNScan()))                    cb_all[fcb->getName()] = fcb;
+  if((fcb = new SYNFlood()))                   cb_all[fcb->getName()] = fcb;
   if((fcb = new RepliesRequestsRatio()))       cb_all[fcb->getName()] = fcb;
   if((fcb = new DNSServerContacts()))          cb_all[fcb->getName()] = fcb;
   if((fcb = new SMTPServerContacts()))         cb_all[fcb->getName()] = fcb;
