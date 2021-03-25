@@ -478,6 +478,36 @@ typedef struct {
   AlertCategory category;
 } HostAlertType;
 
+/* Host Callbacks statuses */
+
+typedef struct {
+  struct {
+    u_int32_t num_replies_ok, num_replies_error;
+  } sent, rcvd;
+} DNSRequestsErrorsRatioCallbackDelta;
+
+typedef struct {
+  struct {
+    struct { u_int32_t num_requests, num_responses; } http;
+    struct { u_int32_t num_queries,  num_responses; } dns;
+  } sent, rcvd;
+} RepliesRequestsRatioCallbackDelta;
+
+typedef struct { u_int64_t bytes; } DNSTrafficCallbackDelta;
+typedef struct { u_int64_t bytes; } P2PTrafficCallbackDelta;
+
+typedef struct { u_int32_t contacts; } DNSServerContactsCallbackDelta;
+typedef struct { u_int32_t contacts; } SMTPServerContactsCallbackDelta;
+typedef struct { u_int32_t contacts; } NTPServerContactsCallbackDelta;
+
+typedef struct { u_int64_t bytes; } TrafficCallbackDelta;
+typedef struct { u_int64_t flows; } FlowsCallbackDelta;
+
+typedef struct { u_int64_t bps;      } ThroughputCallbackDelta;
+typedef struct { u_int32_t packets;  } PacketsCallbackDelta;
+
+typedef struct { u_int32_t active;  } ActivityTimeCallbackDelta;
+
 typedef enum {
   flow_lua_call_exec_status_ok = 0,                             /* Call executed successfully                                */
   flow_lua_call_exec_status_not_executed_script_failure,        /* Call NOT executed as the script failed to load (syntax?)   */
