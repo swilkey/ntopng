@@ -146,7 +146,6 @@ void Host::initialize(Mac *_mac, u_int16_t _vlanId) {
   os = NULL, os_type = os_unknown;
   prefs_loaded = false;
   host_services_bitmap = 0;
-  mud_pref = mud_recording_default;
   disabled_flow_alerts_tstamp = 0;
 
   // readStats(); - Commented as if put here it's too early and the key is not yet set
@@ -1598,3 +1597,87 @@ bool Host::isFlowAlertDisabled(FlowAlertType alert_type) {
 }
 
 /* *************************************** */
+
+/* Create a JSON in the alerts format */
+void Host::alert2JSON(HostAlert *alert, ndpi_serializer *s) {
+  // TODO
+}
+
+/* *************************************** */
+
+/* Enqueue alert to recipients */
+bool Host::enqueueAlert(HostAlert *alert) {
+  bool rv = false;
+  u_int32_t buflen;
+  AlertFifoItem notification;
+  ndpi_serializer host_json;
+  const char *host_str;
+
+  ndpi_init_serializer(&host_json, ndpi_serialization_format_json);
+
+  /* Prepare the JSON, including a JSON specific of this HostAlertType */
+  alert2JSON(alert, &host_json);
+
+  host_str = ndpi_serializer_get_buffer(&host_json, &buflen);
+
+  /* TODO: read all the recipients responsible for hosts, and enqueue only to them */
+  /* Currenty, we forcefully enqueue only to the builtin sqlite */
+    
+  notification.alert = (char*)host_str;
+  notification.alert_severity = alert->getSeverity();
+  notification.alert_category = alert->getAlertType().category;
+
+  rv = ntop->recipients_enqueue(notification.alert_severity >= alert_level_error ? recipient_notification_priority_high : recipient_notification_priority_low,
+				&notification,
+				true /* Host recipients only */);
+
+  if(!rv)
+    getInterface()->incNumDroppedAlerts(1);
+
+  ndpi_term_serializer(&host_json);
+
+  delete alert;
+
+  return rv;
+}
+
+/* *************************************** */
+
+bool Host::triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t host_severity) {
+#if TODO
+  bool res;
+
+  res = setAlertsBitmap(alert_type, alert_severity, cli_inc, srv_inc, true);
+
+  return res;
+#else
+  return(true);
+#endif
+}
+
+/* *************************************** */
+
+bool Host::triggerAlertSync(HostAlert *alert, AlertLevel alert_severity, u_int8_t host_severity) {
+#if TODO
+  bool res;
+
+  res = setAlertsBitmap(alert->getAlertType(), alert_severity, cli_inc, srv_inc, false);
+
+  /* Synchronous, this alert must be sent straight to the recipients now. Let's put it into the recipient queues. */
+  if(alert) {
+    alert->setSeverity(alert_severity);
+
+    if(ntop->getPrefs()->dontEmitHostAlerts())
+      /* Nothing to enqueue, can dispose the memory */
+      delete alert;
+    else if(res)
+      /* enqueue the alert (memory is disposed automatically upon failing enqueues) */
+      iface->enqueueHostAlert(alert);
+  }
+
+  return res;
+#else
+  return(true);
+#endif
+}
+

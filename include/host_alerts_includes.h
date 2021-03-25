@@ -19,26 +19,11 @@
  *
  */
 
-#ifndef _FLOW_CALLBACKS_EXECUTOR_H_
-#define _FLOW_CALLBACKS_EXECUTOR_H_
+#ifndef _HOST_ALERTS_INCLUDES_H_
+#define _HOST_ALERTS_INCLUDES_H_
 
-#include "ntop_includes.h"
+#include "host_alerts/SMTPServerContactsAlert.h"
 
-class Flow;
+/* Pro Alerts - do NOT use #ifdef as alerts must always be available */
 
-class FlowCallbacksExecutor { /* One instance per ntopng Interface */
- private:
-  NetworkInterface *iface;
-  std::list<FlowCallback*> *protocol_detected, *periodic_update, *flow_end;
-
-  void loadFlowCallbacksAlerts(std::list<FlowCallback*> *cb_list);
-  void loadFlowCallbacks(FlowCallbacksLoader *fcl);
-
- public:
-  FlowCallbacksExecutor(FlowCallbacksLoader *fcl, NetworkInterface *_iface);
-  virtual ~FlowCallbacksExecutor();
-
-  FlowAlert *execCallbacks(Flow *f, FlowCallbacks c);
-};
-
-#endif /* _FLOW_CALLBACKS_EXECUTOR_H_ */
+#endif /* _HOST_ALERTS_INCLUDES_H_ */

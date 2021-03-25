@@ -47,8 +47,11 @@ class Paginator;
 class NetworkInterfaceTsPoint;
 class ViewInterface;
 class FlowAlert;
+class HostAlert;
 class FlowCallbacksLoader;
 class FlowCallbacksExecutor;
+class HostCallbacksLoader;
+class HostCallbacksExecutor;
 
 #ifdef NTOPNG_PRO
 class L7Policer;
@@ -92,6 +95,7 @@ class NetworkInterface : public AlertableEntity {
 
   /* The executor is per-interfaces, and uses the loader to configure itself and execute flow callbacks */
   FlowCallbacksExecutor *flow_callbacks_executor, *prev_flow_callbacks_executor;
+  HostCallbacksExecutor *host_callbacks_executor, *prev_host_callbacks_executor;
 
   /* Variables used by top sites periodic update */
   u_int8_t current_cycle = 0;
@@ -109,7 +113,8 @@ class NetworkInterface : public AlertableEntity {
   /* Queues for the execution of flow user scripts.
      See scripts/plugins/examples/example/user_scripts/flow/example.lua for the callbacks
    */
-  SPSCQueue<FlowAlert *> *flowAlertsQeueue;
+  SPSCQueue<FlowAlert *> *flowAlertsQueue;
+  SPSCQueue<HostAlert *> *hostAlertsQueue;
 
   /*
     Flag to indicate whether a flow JSON should be dumped along with the flow. Flow JSON contain
@@ -199,9 +204,11 @@ class NetworkInterface : public AlertableEntity {
   int pcap_datalink_type; /**< Datalink type of pcap. */
   pthread_t pollLoop,
     flowDumpLoop /* Thread for the database dump of flows */,
-    callbacksLoop /* Thread for the execution of flow user script hooks */;
-  Condvar       flow_callbacks_condvar;   /* Condition variable used to wait when no flows have been enqueued for hooks exec. */
-  bool pollLoopCreated, flowDumpLoopCreated, flowAlertsDequeueLoopCreated;
+    flowCallbacksLoop /* Thread for the execution of flow user script hooks */,
+    hostCallbacksLoop /* Thread for the execution of host user script hooks */
+    ;
+  Condvar flow_callbacks_condvar, host_callbacks_condvar;
+  bool pollLoopCreated, flowDumpLoopCreated, flowAlertsDequeueLoopCreated, hostAlertsDequeueLoopCreated;
   bool has_too_many_hosts, has_too_many_flows, mtuWarningShown;
   bool flow_dump_disabled;
   u_int32_t ifSpeed, numL2Devices, numHosts, numLocalHosts, scalingFactor;
@@ -344,6 +351,8 @@ class NetworkInterface : public AlertableEntity {
    */
   u_int64_t dequeueAlertedFlows(SPSCQueue<FlowAlert *> *q, u_int budget);
 
+  u_int64_t dequeueAlertedHosts(SPSCQueue<HostAlert *> *q, u_int budget); /* Same as above but for hosts */
+
  public:
   /**
   * @brief A Constructor
@@ -356,6 +365,7 @@ class NetworkInterface : public AlertableEntity {
   virtual ~NetworkInterface();
 
   bool initFlowCallbacksLoop(); /* Initialize the loop to dequeue flows for the execution of user script hooks */
+  bool initHostCallbacksLoop(); /* Same as above but for hosts */
   bool initFlowDump(u_int8_t num_dump_interfaces);
   u_int32_t getASesHashSize();
   u_int32_t getOSesHashSize();
@@ -454,8 +464,10 @@ class NetworkInterface : public AlertableEntity {
   inline bool is_purge_idle_interface()        { return(purge_idle_flows_hosts);               };
   int dumpFlow(time_t when, Flow *f);
   bool getHostMinInfo(lua_State* vm, AddressTree *allowed_hosts, char *host_ip, u_int16_t vlan_id);
-  /* Enqueue flow alert to a queue for processing and later delivery to recipients */
+
+  /* Enqueue alert to a queue for processing and later delivery to recipients */
   bool enqueueFlowAlert(FlowAlert *alert);
+  bool enqueueHostAlert(HostAlert *alert);
   /*
     Enqueue flows to be processed by the view interfaces.
     Viewed interface enqueue flows using this method so that the view
@@ -916,6 +928,7 @@ class NetworkInterface : public AlertableEntity {
 
   /* Used to give the interface a new callback loader to be used */
   void reloadFlowCallbacks(FlowCallbacksLoader *fcbl);
+  void reloadHostCallbacks(HostCallbacksLoader *hcbl);
   
   inline bool hasConfiguredDhcpRanges()      { return(dhcp_ranges && !dhcp_ranges->last_ip.isEmpty()); };
   inline bool isFlowDumpDisabled()           { return(flow_dump_disabled); }
@@ -961,6 +974,8 @@ class NetworkInterface : public AlertableEntity {
   void releaseAllEngagedAlerts();
 
   virtual void flowAlertsDequeueLoop(); /* Body of the loop that dequeues flows for the execution of user script hooks */
+  virtual void hostAlertsDequeueLoop(); /* Same as above but for hosts */
+  
   virtual void dumpFlowLoop(); /* Body of the loop that dequeues flows for the database dump */
   void incNumQueueDroppedFlows(u_int32_t num);
   /*
@@ -971,9 +986,12 @@ class NetworkInterface : public AlertableEntity {
   void execProtocolDetectedCallbacks(Flow *f);
   void execPeriodicUpdateCallbacks(Flow *f);
   void execFlowEndCallbacks(Flow *f);
+  void execHostCallbacks(Host *h);
+  
   inline void incHostAnomalies(u_int32_t local, u_int32_t remote) {
     tot_num_anomalies.local_hosts += local, tot_num_anomalies.remote_hosts += remote;
   };
+  
   /*
     Dequeues enqueued flows to execute user script callbacks.
     Budgets indicate how many flows should be dequeued (if available) to perform protocol detected, active,
@@ -981,6 +999,11 @@ class NetworkInterface : public AlertableEntity {
    */
   u_int64_t dequeueFlowAlertsFromCallbacks(u_int budget);
   inline FlowCallbacksExecutor* getFlowCallbackExecutor() { return(flow_callbacks_executor); }
+
+  /*
+    Same as above but for hosts */
+  u_int64_t dequeueHostAlertsFromCallbacks(u_int budget);
+  inline HostCallbacksExecutor* getHostCallbackExecutor() { return(host_callbacks_executor); }
 };
 
 #endif /* _NETWORK_INTERFACE_H_ */

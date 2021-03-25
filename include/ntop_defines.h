@@ -605,6 +605,7 @@
 #define CONST_SUBINTERFACES_PREFS           NTOPNG_PREFS_PREFIX".%u.sub_interfaces"
 #define CONST_PREFS_CLIENT_X509_AUTH        NTOPNG_PREFS_PREFIX".is_client_x509_auth_enabled"
 #define CONST_PREFS_EMIT_FLOW_ALERTS        NTOPNG_PREFS_PREFIX".emit_flow_alerts"
+#define CONST_PREFS_EMIT_HOST_ALERTS        NTOPNG_PREFS_PREFIX".emit_host_alerts"
 
 #define CONST_PREFS_BEHAVIOUR_ANALYSIS                  NTOPNG_PREFS_PREFIX".is_behaviour_analysis_enabled"
 #define CONST_PREFS_BEHAVIOUR_ANALYSIS_LEARNING_PERIOD  NTOPNG_PREFS_PREFIX".behaviour_analysis_learning_period"
@@ -900,6 +901,7 @@
 #define DAILY_SCRIPT_PATH                    "daily.lua"
 
 #define FLOW_CALLBACKS_CONFIG        "ntopng.prefs.user_scripts.configset_v3"  /* Sync with user_scripts.lua CONFIGSET_KEY  */
+#define HOST_CALLBACKS_CONFIG        "ntopng.prefs.host_user_scripts.configset_v3"  /* Sync with user_scripts.lua CONFIGSET_KEY  */
 #define ALERTS_CONFIG                "ntopng.prefs.alerts_config.configset_v3" /* Sync with alerts_config.lua CONFIGSET_KEY */
 #define SYSLOG_SCRIPT_PATH           "callbacks/system/syslog.lua"
 #define SYSLOG_SCRIPT_CALLBACK_EVENT "handleEvent"
@@ -1061,6 +1063,7 @@ extern struct ntopngLuaContext* getUserdata(struct lua_State *vm);
   Queue lengths for user-script queues
  */
 #define MAX_FLOW_CALLBACKS_QUEUE_LEN       131072
+#define MAX_HOST_CALLBACKS_QUEUE_LEN       131072
 
 /*
   user-script lua engine lifetime 

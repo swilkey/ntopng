@@ -318,6 +318,7 @@ class Flow : public GenericHashEntry {
      causes the alert (FlowAlert) to be immediately enqueued to all recipients.
    */
   bool triggerAlertSync(FlowAlert *alert, AlertLevel alert_severity, u_int8_t cli_score_inc, u_int8_t srv_score_inc);
+
   /*
     Enqueues the predominant alert of the flow to all available flow recipients.
    */

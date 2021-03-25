@@ -19,26 +19,16 @@
  *
  */
 
-#ifndef _FLOW_CALLBACKS_EXECUTOR_H_
-#define _FLOW_CALLBACKS_EXECUTOR_H_
+#include "host_alerts_includes.h"
 
-#include "ntop_includes.h"
+ndpi_serializer* SMTPServerContactsAlert::getAlertJSON(ndpi_serializer* serializer) {
+  // Host *h = getHost(); // TODO
 
-class Flow;
+  if(serializer == NULL)
+    return NULL;
 
-class FlowCallbacksExecutor { /* One instance per ntopng Interface */
- private:
-  NetworkInterface *iface;
-  std::list<FlowCallback*> *protocol_detected, *periodic_update, *flow_end;
+  // TODO
+  
+  return serializer;
+}
 
-  void loadFlowCallbacksAlerts(std::list<FlowCallback*> *cb_list);
-  void loadFlowCallbacks(FlowCallbacksLoader *fcl);
-
- public:
-  FlowCallbacksExecutor(FlowCallbacksLoader *fcl, NetworkInterface *_iface);
-  virtual ~FlowCallbacksExecutor();
-
-  FlowAlert *execCallbacks(Flow *f, FlowCallbacks c);
-};
-
-#endif /* _FLOW_CALLBACKS_EXECUTOR_H_ */

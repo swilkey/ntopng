@@ -386,21 +386,6 @@ static int ntop_flow_get_icmp_type(lua_State* vm) {
 
 /* ****************************************** */
 
-static const char* mud_pref_2_str(MudRecording mud_pref) {
-  switch(mud_pref) {
-  case mud_recording_general_purpose:
-    return(MUD_RECORDING_GENERAL_PURPOSE);
-  case mud_recording_special_purpose:
-    return(MUD_RECORDING_SPECIAL_PURPOSE);
-  case mud_recording_disabled:
-    return(MUD_RECORDING_DISABLED);
-  default:
-    return(MUD_RECORDING_DEFAULT);
-  }
-}
-
-/* ****************************************** */
-
 static int ntop_flow_get_alert(lua_State* vm) {
   Flow *f = ntop_flow_get_context_flow(vm);
 

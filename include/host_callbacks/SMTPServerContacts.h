@@ -19,26 +19,24 @@
  *
  */
 
-#ifndef _FLOW_CALLBACKS_EXECUTOR_H_
-#define _FLOW_CALLBACKS_EXECUTOR_H_
+#ifndef _SMTP_CONTACTS_HOST_H_
+#define _SMTP_CONTACTS_HOST_H_
 
 #include "ntop_includes.h"
 
-class Flow;
+class SMTPServerContacts : public HostCallback {
+private:
+  
+public:
+   SMTPServerContacts() : HostCallback(ntopng_edition_community) {};
+  ~SMTPServerContacts() {};
 
-class FlowCallbacksExecutor { /* One instance per ntopng Interface */
- private:
-  NetworkInterface *iface;
-  std::list<FlowCallback*> *protocol_detected, *periodic_update, *flow_end;
+  void protocolDetected(Host *h);
+  HostAlert *buildAlert(Host *h);
 
-  void loadFlowCallbacksAlerts(std::list<FlowCallback*> *cb_list);
-  void loadFlowCallbacks(FlowCallbacksLoader *fcl);
-
- public:
-  FlowCallbacksExecutor(FlowCallbacksLoader *fcl, NetworkInterface *_iface);
-  virtual ~FlowCallbacksExecutor();
-
-  FlowAlert *execCallbacks(Flow *f, FlowCallbacks c);
+  void periodic(Host *h);
+  
+  std::string getName()        const { return(std::string("smtp_server_contacts")); }
 };
 
-#endif /* _FLOW_CALLBACKS_EXECUTOR_H_ */
+#endif

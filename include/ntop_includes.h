@@ -412,8 +412,12 @@ using namespace std;
 #include "Paginator.h"
 #include "FlowAlert.h"
 #include "FlowCallback.h"
+#include "HostAlert.h"
+#include "HostCallback.h"
 #include "FlowCallbacksLoader.h"
 #include "FlowCallbacksExecutor.h"
+#include "HostCallbacksLoader.h"
+#include "HostCallbacksExecutor.h"
 #include "Ntop.h"
 
 #ifdef NTOPNG_PRO

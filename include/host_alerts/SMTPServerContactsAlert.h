@@ -19,26 +19,25 @@
  *
  */
 
-#ifndef _FLOW_CALLBACKS_EXECUTOR_H_
-#define _FLOW_CALLBACKS_EXECUTOR_H_
+#ifndef _SMTP_SERVER_CONTACTS_ALERT_H_
+#define _SMTP_SERVER_CONTACTS_ALERT_H_
+
 
 #include "ntop_includes.h"
 
-class Flow;
 
-class FlowCallbacksExecutor { /* One instance per ntopng Interface */
+class SMTPServerContactsAlert : public HostAlert {
  private:
-  NetworkInterface *iface;
-  std::list<FlowCallback*> *protocol_detected, *periodic_update, *flow_end;
-
-  void loadFlowCallbacksAlerts(std::list<FlowCallback*> *cb_list);
-  void loadFlowCallbacks(FlowCallbacksLoader *fcl);
-
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
+  
  public:
-  FlowCallbacksExecutor(FlowCallbacksLoader *fcl, NetworkInterface *_iface);
-  virtual ~FlowCallbacksExecutor();
+  static HostAlertType getClassType() { return { host_alert_smtp_server_contacts, alert_category_security }; }
 
-  FlowAlert *execCallbacks(Flow *f, FlowCallbacks c);
+  SMTPServerContactsAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  ~SMTPServerContactsAlert() {};
+  
+  HostAlertType getAlertType() const { return getClassType(); }
+  std::string getName() const { return std::string("smtp_server_contacts"); }
 };
 
-#endif /* _FLOW_CALLBACKS_EXECUTOR_H_ */
+#endif /* _SMTP_SERVER_CONTACTS_ALERT_H_ */

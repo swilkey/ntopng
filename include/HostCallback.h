@@ -19,46 +19,41 @@
  *
  */
 
-#ifndef _FLOW_CALLBACK_H_
-#define _FLOW_CALLBACK_H_
+#ifndef _HOST_CALLBACK_H_
+#define _HOST_CALLBACK_H_
 
 #include "ntop_includes.h"
 
-class FlowCallback {
+class HostCallback {
  private:
   NtopngEdition callback_edition;
-  u_int8_t has_protocol_detected:1, has_periodic_update:1, has_flow_end:1, packet_interface_only:1, nedge_exclude:1, nedge_only:1, enabled:1/* , _unused:1 */;
- 
-  bool isCallbackCompatibleWithInterface(NetworkInterface *iface);
+  u_int8_t enabled:1 /*,  _unused:7 */;
 
  protected:
   AlertLevel severity_id;
 
  public:
-  FlowCallback(NtopngEdition _edition, bool _packet_interface_only, bool _nedge_exclude, bool _nedge_only,
-	       bool _has_protocok_detected, bool _has_periodic_update, bool _has_flow_end);
-  virtual ~FlowCallback();
+  HostCallback(NtopngEdition _edition);
+  virtual ~HostCallback();
 
   /* Enable/Disable hooks */
   virtual void scriptEnable()            {};
   virtual void scriptDisable()           {};
   
   /* Callback hooks */
-  virtual void protocolDetected(Flow *f) {};
-  virtual void periodicUpdate(Flow *f)   {};
-  virtual void flowEnd(Flow *f)          {};
+  virtual void periodic(Host *h)         {};
 
   /* Used to build an alert when triggerAlertAsync is used */
-  virtual FlowAlert *buildAlert(Flow *f) { return NULL; };
+  virtual HostAlert *buildAlert(Host *f) { return NULL; };
 
   inline void enable()    { enabled = 1; }
   inline bool isEnabled() { return(enabled ? true : false); }
   virtual AlertLevel getSeverity() { return severity_id; }
 
-  void addCallback(std::list<FlowCallback*> *l, NetworkInterface *iface, FlowCallbacks callback);
+  inline void addCallback(std::list<HostCallback*> *l, NetworkInterface *iface) { l->push_back(this); }
   virtual bool loadConfiguration(json_object *config);
   
   virtual std::string getName()        const = 0;
 };
 
-#endif /* _FLOW_CALLBACK_H_ */
+#endif /* _HOST_CALLBACK_H_ */

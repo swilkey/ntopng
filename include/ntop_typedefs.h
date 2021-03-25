@@ -446,6 +446,17 @@ typedef struct {
 } FlowAlertType;
 
 typedef enum {
+  host_alert_normal                           = 0,
+  host_alert_smtp_server_contacts             = 1,
+  /* TODO */
+} HostAlertTypeEnum;
+
+typedef struct {
+  HostAlertTypeEnum id;
+  AlertCategory category;
+} HostAlertType;
+
+typedef enum {
   flow_lua_call_exec_status_ok = 0,                             /* Call executed successfully                                */
   flow_lua_call_exec_status_not_executed_script_failure,        /* Call NOT executed as the script failed to load (syntax?)   */
   flow_lua_call_exec_status_not_executed_no_time_left,          /* Call NOT executed as the deadline was approaching         */
@@ -888,13 +899,6 @@ typedef enum ts_driver {
   ts_driver_influxdb,
   ts_driver_prometheus
 } TsDriver;
-
-typedef enum mud_recording {
-  mud_recording_default = 0,
-  mud_recording_general_purpose = 1,
-  mud_recording_special_purpose = 2,
-  mud_recording_disabled = 3,
-} MudRecording;
 
 /* Wrapper for pcap_if_t and pfring_if_t */
 typedef struct _ntop_if_t {

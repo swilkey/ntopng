@@ -19,26 +19,31 @@
  *
  */
 
-#ifndef _FLOW_CALLBACKS_EXECUTOR_H_
-#define _FLOW_CALLBACKS_EXECUTOR_H_
+#ifndef _HOST_CALLBACKS_LOADER_H_
+#define _HOST_CALLBACKS_LOADER_H_
 
 #include "ntop_includes.h"
 
-class Flow;
-
-class FlowCallbacksExecutor { /* One instance per ntopng Interface */
+class HostCallbacksLoader { /* A single instance inside Ntop */
  private:
-  NetworkInterface *iface;
-  std::list<FlowCallback*> *protocol_detected, *periodic_update, *flow_end;
+  NtopngEdition callbacks_edition;
+  /* These are callback instances, that is classes instantiated at runtime each one with a given configuration */
+  std::map<std::string, HostCallback*> cb_all; /* All the callbacks instantiated */
 
-  void loadFlowCallbacksAlerts(std::list<FlowCallback*> *cb_list);
-  void loadFlowCallbacks(FlowCallbacksLoader *fcl);
+
+  void registerHostCallbacks(); /* Method called at runtime to register all callbacks */
+  void loadConfiguration();
 
  public:
-  FlowCallbacksExecutor(FlowCallbacksLoader *fcl, NetworkInterface *_iface);
-  virtual ~FlowCallbacksExecutor();
+  HostCallbacksLoader();
+  virtual ~HostCallbacksLoader();
 
-  FlowAlert *execCallbacks(Flow *f, FlowCallbacks c);
+  NtopngEdition getCallbacksEdition() { return callbacks_edition; }
+
+  void reloadHostCallbacks();
+  void printCallbacks();
+
+  std::list<HostCallback*>* getCallbacks(NetworkInterface *iface);
 };
 
-#endif /* _FLOW_CALLBACKS_EXECUTOR_H_ */
+#endif /* _HOST_CALLBACKS_LOADER_H_ */

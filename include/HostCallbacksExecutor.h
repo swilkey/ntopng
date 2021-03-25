@@ -19,26 +19,26 @@
  *
  */
 
-#ifndef _FLOW_CALLBACKS_EXECUTOR_H_
-#define _FLOW_CALLBACKS_EXECUTOR_H_
+#ifndef _HOST_CALLBACKS_EXECUTOR_H_
+#define _HOST_CALLBACKS_EXECUTOR_H_
 
 #include "ntop_includes.h"
 
-class Flow;
+class Host;
 
-class FlowCallbacksExecutor { /* One instance per ntopng Interface */
+class HostCallbacksExecutor { /* One instance per ntopng Interface */
  private:
   NetworkInterface *iface;
-  std::list<FlowCallback*> *protocol_detected, *periodic_update, *flow_end;
+  std::list<HostCallback*> *periodic_host_cb;
 
-  void loadFlowCallbacksAlerts(std::list<FlowCallback*> *cb_list);
-  void loadFlowCallbacks(FlowCallbacksLoader *fcl);
+  void loadHostCallbacksAlerts(std::list<HostCallback*> *cb_list);
+  inline void loadHostCallbacks(HostCallbacksLoader *fcl) {  periodic_host_cb = fcl->getCallbacks(iface); }
 
  public:
-  FlowCallbacksExecutor(FlowCallbacksLoader *fcl, NetworkInterface *_iface);
-  virtual ~FlowCallbacksExecutor();
+  HostCallbacksExecutor(HostCallbacksLoader *fcl, NetworkInterface *_iface);
+  virtual ~HostCallbacksExecutor();
 
-  FlowAlert *execCallbacks(Flow *f, FlowCallbacks c);
+  HostAlert *execCallbacks(Host *f);
 };
 
-#endif /* _FLOW_CALLBACKS_EXECUTOR_H_ */
+#endif /* _HOST_CALLBACKS_EXECUTOR_H_ */

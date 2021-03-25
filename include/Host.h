@@ -53,7 +53,6 @@ class Host : public GenericHashEntry, public AlertableEntity {
 
   char *ssdpLocation;
   bool prefs_loaded;
-  MudRecording mud_pref;
   /* END Host data: */
 
   AlertCounter *syn_flood_attacker_alert, *syn_flood_victim_alert;
@@ -386,8 +385,6 @@ class Host : public GenericHashEntry, public AlertableEntity {
       prefs_loaded = true;
     }
   }
-  inline MudRecording getMUDRecording()    { return(mud_pref);   };
-
   inline u_int32_t getScore()         const { return score ? score->get() : 0; };
   inline u_int32_t getScoreAsClient() const { return score ? score->getClient() : 0; };
   inline u_int32_t getScoreAsServer() const { return score ? score->getServer() : 0; };
@@ -413,6 +410,18 @@ class Host : public GenericHashEntry, public AlertableEntity {
   virtual void incNTPContactCardinality(Host *h)  { ; }
   virtual void incDNSContactCardinality(Host *h)  { ; }
   virtual void incSMTPContactCardinality(Host *h) { ; }    
+  
+  virtual u_int32_t getNTPContactCardinality()    { return(0); }
+  virtual u_int32_t getDNSContactCardinality()    { return(0); }
+  virtual u_int32_t getSMTPContactCardinality()   { return(0); }
+
+  /* Enqueues an alert to all available host recipients. */
+  bool enqueueAlert(HostAlert *alert);
+  void alert2JSON(HostAlert *alert, ndpi_serializer *serializer);
+
+  /* Same as flow alerts */
+  bool triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t host_score_inc);
+  bool triggerAlertSync(HostAlert *alert, AlertLevel alert_severity, u_int8_t host_score_inc);
 };
 
 #endif /* _HOST_H_ */

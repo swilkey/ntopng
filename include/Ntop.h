@@ -44,7 +44,7 @@ class Ntop {
   pthread_t purgeLoop;    /* Loop which iterates on active interfaces to delete idle hash table entries */
   bool purgeLoop_started; /* Flag that indicates whether the purgeLoop has been started */
   bool ndpiReloadInProgress;
-  bool flowCallbacksReloadInProgress, alertExclusionsReloadInProgress;
+  bool flowCallbacksReloadInProgress, hostCallbacksReloadInProgress, alertExclusionsReloadInProgress;
   Bloom *resolvedHostsBloom; /* Used by all redis class instances */
   AddressTree local_interface_addresses;
   char epoch_buf[11];
@@ -97,8 +97,9 @@ class Ntop {
   char *local_network_aliases[CONST_MAX_NUM_NETWORKS];
   AddressTree local_network_tree;
 
-  /* Flow Callbacks Loader */
+  /* Callbacks */
   FlowCallbacksLoader *flow_callbacks_loader;
+  HostCallbacksLoader *host_callbacks_loader;
 
   /* Hosts Control (e.g., disabled alerts) */
   AlertExclusions *alert_exclusions, *alert_exclusions_shadow;
@@ -128,6 +129,7 @@ class Ntop {
   bool startPurgeLoop();
 
   void checkReloadFlowCallbacks();
+  void checkReloadHostCallbacks();
   void checkReloadAlertExclusions();
   
  public:
@@ -531,6 +533,7 @@ class Ntop {
   void setnDPIProtocolCategory(u_int16_t protoId, ndpi_protocol_category_t protoCategory);
   void reloadPeriodicScripts();
   inline void reloadFlowCallbacks()   { flowCallbacksReloadInProgress = true;    };
+  inline void reloadHostCallbacks()   { hostCallbacksReloadInProgress = true;    };
   inline void reloadAlertExclusions() { alertExclusionsReloadInProgress = true;  };
 
   char *getAlertJSON(FlowAlertType fat, Flow *f) const;
@@ -558,6 +561,7 @@ class Ntop {
   //void getLocalAddresses(lua_State* vm) { return(local_network_tree.getAddresses(vm)); };
 
   inline FlowCallbacksLoader* getFlowCallbacksLoader() { return(flow_callbacks_loader); }
+  inline HostCallbacksLoader* getHostCallbacksLoader() { return(host_callbacks_loader); }
 };
 
 extern Ntop *ntop;
