@@ -38,11 +38,8 @@
 #include "host_callbacks/P2PTraffic.h"
 #include "host_callbacks/DNSTraffic.h"
 #include "host_callbacks/TrafficHostCallback.h"
-#include "host_callbacks/IdleTime.h"
-#include "host_callbacks/ActivityTime.h"
 #include "host_callbacks/FlowsHostCallback.h"
 #include "host_callbacks/ThroughputHostCallback.h"
-#include "host_callbacks/PacketsHostCallback.h"
 #include "host_callbacks/UnexpectedHostBehaviour.h"
 
 #ifdef NTOPNG_PRO

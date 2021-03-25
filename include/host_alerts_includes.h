@@ -39,12 +39,9 @@
 #include "host_alerts/P2PTrafficAlert.h"
 #include "host_alerts/DNSTrafficAlert.h"
 #include "host_alerts/TrafficAlert.h"
-#include "host_alerts/IdleTimeAlert.h"
-#include "host_alerts/ActivityTimeAlert.h"
 #include "host_alerts/FlowsAlert.h"
 #include "host_alerts/ThroughputAlert.h"
 #include "host_alerts/ScoreAlert.h"
-#include "host_alerts/PacketsAlert.h"
 
 #include "host_alerts/SNMPAttackMitigationAlert.h"
 

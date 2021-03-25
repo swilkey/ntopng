@@ -65,11 +65,8 @@ void HostCallbacksLoader::registerHostCallbacks() {
   if((fcb = new P2PTraffic()))                 cb_all[fcb->getName()] = fcb;
   if((fcb = new DNSTraffic()))                 cb_all[fcb->getName()] = fcb;
   if((fcb = new TrafficHostCallback()))        cb_all[fcb->getName()] = fcb;
-  if((fcb = new IdleTime()))                   cb_all[fcb->getName()] = fcb;
-  if((fcb = new ActivityTime()))               cb_all[fcb->getName()] = fcb;
   if((fcb = new FlowsHostCallback()))          cb_all[fcb->getName()] = fcb;
   if((fcb = new ThroughputHostCallback()))     cb_all[fcb->getName()] = fcb;
-  if((fcb = new PacketsHostCallback()))        cb_all[fcb->getName()] = fcb;
   if((fcb = new UnexpectedHostBehaviour()))    cb_all[fcb->getName()] = fcb;
 
 #ifdef NTOPNG_PRO
