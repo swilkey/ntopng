@@ -28,7 +28,6 @@
 
 class NTPServerContactsAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_ntp_server_contacts, alert_category_security }; }
@@ -37,7 +36,7 @@ class NTPServerContactsAlert : public HostAlert {
   ~NTPServerContactsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("ntp_contacts"); }
+  std::string getName() const { return std::string("alert_contacts_anomaly"); }
 };
 
 #endif /* _NTP_SERVER_CONTACTS_ALERT_H_ */

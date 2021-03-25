@@ -19,24 +19,30 @@
  *
  */
 
-#ifndef _SYN_FLOOD_VICTIM_ALERT_H_
-#define _SYN_FLOOD_VICTIM_ALERT_H_
-
-
 #include "ntop_includes.h"
+#include "host_callbacks_includes.h"
 
+/* ***************************************************** */
 
-class SYNFloodVictimAlert : public HostAlert {
- private:
-  
- public:
-  static HostAlertType getClassType() { return { host_alert_syn_flood_victim, alert_category_security }; }
+void SYNFloodAttacker::periodicUpdate(Host *h) {
+}
 
-  SYNFloodVictimAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
-  ~SYNFloodVictimAlert() {};
-  
-  HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_tcp_syn_flood_victim"); }
-};
+/* ***************************************************** */
 
-#endif /* _SYN_FLOOD_VICTIM_ALERT_H_ */
+HostAlert *SYNFloodAttacker::buildAlert(Host *h) {
+  return new SYNFloodAttackerAlert(this, h);
+}
+
+/* ***************************************************** */
+
+bool SYNFloodAttacker::loadConfiguration(json_object *config) {
+  HostCallback::loadConfiguration(config); /* Parse parameters in common */
+  /*
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
+  */
+
+  return(true);
+}
+
+/* ***************************************************** */
+

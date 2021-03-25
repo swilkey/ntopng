@@ -24,8 +24,8 @@
 
 #include "host_alerts/FlowFloodAttackerAlert.h"
 #include "host_alerts/FlowFloodVictimAlert.h"
-#include "host_alerts/SYNScanVictimAlert.h"
 #include "host_alerts/SYNScanAttackerAlert.h"
+#include "host_alerts/SYNScanVictimAlert.h"
 #include "host_alerts/SYNFloodAttackerAlert.h"
 #include "host_alerts/SYNFloodVictimAlert.h"
 
@@ -46,9 +46,9 @@
 #include "host_alerts/ScoreAlert.h"
 #include "host_alerts/PacketsAlert.h"
 
-#include "host_alerts/SNMPAttackMitigation.h"
+#include "host_alerts/SNMPAttackMitigationAlert.h"
 
-#include "host_alerts/UnexpectedHostBehaviour.h"
+#include "host_alerts/UnexpectedHostBehaviourAlert.h"
 
 /* Pro Alerts - do NOT use #ifdef as alerts must always be available */
 

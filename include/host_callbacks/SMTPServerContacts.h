@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _SMTP_CONTACTS_HOST_H_
-#define _SMTP_CONTACTS_HOST_H_
+#ifndef _SMTP_SERVER_CONTACTS_H_
+#define _SMTP_SERVER_CONTACTS_H_
 
 #include "ntop_includes.h"
 
@@ -37,7 +37,7 @@ public:
 
   bool loadConfiguration(json_object *config);  
 
-  std::string getName()        const { return(std::string("smtp_server_contacts")); }
+  std::string getName()        const { return(std::string("smtp_contacts")); }
 };
 
 #endif

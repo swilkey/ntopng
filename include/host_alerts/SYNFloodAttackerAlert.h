@@ -28,7 +28,6 @@
 
 class SYNFloodAttackerAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_syn_flood_attacker, alert_category_security }; }
@@ -37,7 +36,7 @@ class SYNFloodAttackerAlert : public HostAlert {
   ~SYNFloodAttackerAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("syn_flood_attacker"); }
+  std::string getName() const { return std::string("alert_tcp_syn_flood_attacker"); }
 };
 
 #endif /* _SYN_FLOOD_ATTACKER_ALERT_H_ */

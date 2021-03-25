@@ -19,25 +19,24 @@
  *
  */
 
-#ifndef _SNMP_ATTACK_MITIGATION_ALERT_H_
-#define _SNMP_ATTACK_MITIGATION_ALERT_H_
+#ifndef _UNEXPECTED_HOST_BEHAVIOR_ALERT_H_
+#define _UNEXPECTED_HOST_BEHAVIOR_ALERT_H_
 
 
 #include "ntop_includes.h"
 
 
-class SNMPAttackMitigation : public HostAlert {
+class UnexpectedHostBehaviourAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
-  static HostAlertType getClassType() { return { host_alert_snmp_attack_mitigation, alert_category_security }; }
+  static HostAlertType getClassType() { return { host_alert_unexpected_host_behavior, alert_category_security }; }
 
-  SNMPAttackMitigation(HostCallback *c, Host *f) : HostAlert(c, f) {};
-  ~SNMPAttackMitigation() {};
+  UnexpectedHostBehaviourAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  ~UnexpectedHostBehaviourAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("attack_mitigation_snmp"); }
+  std::string getName() const { return std::string("alert_contacts_anomaly"); }
 };
 
-#endif /* _SNMP_ATTACK_MITIGATION_ALERT_H_ */
+#endif /* _UNEXPECTED_HOST_BEHAVIOR_ALERT_H_ */

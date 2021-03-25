@@ -23,8 +23,35 @@
 #define _HOST_CALLBACKS_INCLUDES_H_
 
 #include "host_alerts_includes.h"
+#include "host_callbacks_includes.h"
 
+#include "host_callbacks/FlowFloodAttacker.h"
+#include "host_callbacks/FlowFloodVictim.h"
+#include "host_callbacks/SYNScanAttacker.h"
+#include "host_callbacks/SYNScanVictim.h"
+#include "host_callbacks/SYNFloodAttacker.h"
+#include "host_callbacks/SYNFloodVictim.h"
+
+#include "host_callbacks/RepliesRequestsRatio.h"
+#include "host_callbacks/DNSRequestsErrorsRatio.h"
+
+#include "host_callbacks/DNSServerContacts.h"
 #include "host_callbacks/SMTPServerContacts.h"
+#include "host_callbacks/NTPServerContacts.h"
+
+#include "host_callbacks/P2PTraffic.h"
+#include "host_callbacks/DNSTraffic.h"
+#include "host_callbacks/TrafficHostCallback.h"
+#include "host_callbacks/IdleTime.h"
+#include "host_callbacks/ActivityTime.h"
+#include "host_callbacks/FlowsHostCallback.h"
+#include "host_callbacks/ThroughputHostCallback.h"
+#include "host_callbacks/ScoreHostCallback.h"
+#include "host_callbacks/PacketsHostCallback.h"
+
+#include "host_callbacks/SNMPAttackMitigation.h"
+
+#include "host_callbacks/UnexpectedHostBehaviour.h"
 
 #ifdef NTOPNG_PRO
 #endif

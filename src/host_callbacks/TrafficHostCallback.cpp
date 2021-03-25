@@ -19,25 +19,30 @@
  *
  */
 
-#ifndef _UNEXPECTED_HOST_BEHAVIOR_ALERT_H_
-#define _UNEXPECTED_HOST_BEHAVIOR_ALERT_H_
-
-
 #include "ntop_includes.h"
+#include "host_callbacks_includes.h"
 
+/* ***************************************************** */
 
-class UnexpectedHostBehaviour : public HostAlert {
- private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
-  
- public:
-  static HostAlertType getClassType() { return { host_alert_unexpected_host_behavior, alert_category_security }; }
+void Traffic::periodicUpdate(Host *h) {
+}
 
-  UnexpectedHostBehaviour(HostCallback *c, Host *f) : HostAlert(c, f) {};
-  ~UnexpectedHostBehaviour() {};
-  
-  HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("unexpected_host_behaviour"); }
-};
+/* ***************************************************** */
 
-#endif /* _UNEXPECTED_HOST_BEHAVIOR_ALERT_H_ */
+HostAlert *Traffic::buildAlert(Host *h) {
+  return new TrafficAlert(this, h);
+}
+
+/* ***************************************************** */
+
+bool Traffic::loadConfiguration(json_object *config) {
+  HostCallback::loadConfiguration(config); /* Parse parameters in common */
+  /*
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
+  */
+
+  return(true);
+}
+
+/* ***************************************************** */
+

@@ -28,7 +28,6 @@
 
 class ScoreAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_score, alert_category_security }; }
@@ -37,7 +36,7 @@ class ScoreAlert : public HostAlert {
   ~ScoreAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("host_score"); }
+  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _SCORE_ALERT_H_ */

@@ -28,7 +28,6 @@
 
 class PacketsAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_packets, alert_category_network }; }
@@ -37,7 +36,7 @@ class PacketsAlert : public HostAlert {
   ~PacketsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("packets"); }
+  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _PACKETS_ALERT_H_ */

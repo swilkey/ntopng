@@ -19,24 +19,24 @@
  *
  */
 
-#ifndef _SYN_FLOOD_VICTIM_ALERT_H_
-#define _SYN_FLOOD_VICTIM_ALERT_H_
+#ifndef _SNMP_ATTACK_MITIGATION_ALERT_H_
+#define _SNMP_ATTACK_MITIGATION_ALERT_H_
 
 
 #include "ntop_includes.h"
 
 
-class SYNFloodVictimAlert : public HostAlert {
+class SNMPAttackMitigationAlert : public HostAlert {
  private:
   
  public:
-  static HostAlertType getClassType() { return { host_alert_syn_flood_victim, alert_category_security }; }
+  static HostAlertType getClassType() { return { host_alert_snmp_attack_mitigation, alert_category_security }; }
 
-  SYNFloodVictimAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
-  ~SYNFloodVictimAlert() {};
+  SNMPAttackMitigationAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  ~SNMPAttackMitigationAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_tcp_syn_flood_victim"); }
+  std::string getName() const { return std::string("alert_attack_mitigation_via_snmp"); }
 };
 
-#endif /* _SYN_FLOOD_VICTIM_ALERT_H_ */
+#endif /* _SNMP_ATTACK_MITIGATION_ALERT_H_ */

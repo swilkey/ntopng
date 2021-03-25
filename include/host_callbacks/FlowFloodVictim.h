@@ -19,24 +19,25 @@
  *
  */
 
-#ifndef _SYN_FLOOD_VICTIM_ALERT_H_
-#define _SYN_FLOOD_VICTIM_ALERT_H_
-
+#ifndef _FLOW_FLOOD_VICTIM_H_
+#define _FLOW_FLOOD_VICTIM_H_
 
 #include "ntop_includes.h"
 
-
-class SYNFloodVictimAlert : public HostAlert {
- private:
+class FlowFloodVictim : public HostCallback {
+private:
   
- public:
-  static HostAlertType getClassType() { return { host_alert_syn_flood_victim, alert_category_security }; }
+public:
+   FlowFloodVictim() : HostCallback(ntopng_edition_community) {};
+  ~FlowFloodVictim() {};
 
-  SYNFloodVictimAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
-  ~SYNFloodVictimAlert() {};
-  
-  HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_tcp_syn_flood_victim"); }
+  HostAlert *buildAlert(Host *h);
+
+  void periodicUpdate(Host *h);
+
+  bool loadConfiguration(json_object *config);  
+
+  std::string getName()        const { return(std::string("flow_flood_victim")); }
 };
 
-#endif /* _SYN_FLOOD_VICTIM_ALERT_H_ */
+#endif

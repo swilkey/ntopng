@@ -28,7 +28,6 @@
 
 class TrafficAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_traffic, alert_category_network }; }
@@ -37,7 +36,7 @@ class TrafficAlert : public HostAlert {
   ~TrafficAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("bytes"); }
+  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _TRAFFIC_ALERT_H_ */

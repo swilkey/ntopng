@@ -28,7 +28,6 @@
 
 class FlowsAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_flows, alert_category_network }; }
@@ -37,7 +36,7 @@ class FlowsAlert : public HostAlert {
   ~FlowsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("flows"); }
+  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _FLOWS_ALERT_H_ */

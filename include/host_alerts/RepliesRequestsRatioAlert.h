@@ -28,7 +28,6 @@
 
 class RepliesRequestsRatioAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_replies_requests_ratio, alert_category_network }; }
@@ -37,7 +36,7 @@ class RepliesRequestsRatioAlert : public HostAlert {
   ~RepliesRequestsRatioAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("request_reply_ratio"); }
+  std::string getName() const { return std::string("alert_request_reply_ratio"); }
 };
 
 #endif /* _REPLIES_REQUESTS_RATIO_ALERT_H_ */

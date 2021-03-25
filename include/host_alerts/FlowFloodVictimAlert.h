@@ -28,7 +28,6 @@
 
 class FlowFloodVictimAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_flow_flood_victim, alert_category_security }; }
@@ -37,7 +36,7 @@ class FlowFloodVictimAlert : public HostAlert {
   ~FlowFloodVictimAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("flow_flood_victim"); }
+  std::string getName() const { return std::string("alert_flows_flood_victim"); }
 };
 
 #endif /* _FLOW_FLOOD_VICTIM_ALERT_H_ */

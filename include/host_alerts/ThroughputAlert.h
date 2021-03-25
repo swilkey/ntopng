@@ -28,7 +28,6 @@
 
 class ThroughputAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_throughput, alert_category_network }; }
@@ -37,7 +36,7 @@ class ThroughputAlert : public HostAlert {
   ~ThroughputAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("throughput"); }
+  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _THROUGHPUT_ALERT_H_ */

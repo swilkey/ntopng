@@ -28,7 +28,6 @@
 
 class ActivityTimeAlert : public HostAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_activity_time, alert_category_network }; }
@@ -37,7 +36,7 @@ class ActivityTimeAlert : public HostAlert {
   ~ActivityTimeAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("active"); }
+  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _ACTIVITY_TIME_ALERT_H_ */
