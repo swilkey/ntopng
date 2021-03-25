@@ -19,24 +19,25 @@
  *
  */
 
-#ifndef _SMTP_CONTACTS_HOST_H_
-#define _SMTP_CONTACTS_HOST_H_
+#ifndef _DNS_REQUESTS_ERRORS_RATIO_ALERT_H_
+#define _DNS_REQUESTS_ERRORS_RATIO_ALERT_H_
+
 
 #include "ntop_includes.h"
 
-class SMTPServerContacts : public HostCallback {
-private:
-  
-public:
-   SMTPServerContacts() : HostCallback(ntopng_edition_community) {};
-  ~SMTPServerContacts() {};
 
-  void protocolDetected(Host *h) {};
-  HostAlert *buildAlert(Host *h) {};
-
-  void periodic(Host *h) {};
+class DNSRequestsErrorsRatioAlert : public HostAlert {
+ private:
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
-  std::string getName()        const { return(std::string("smtp_server_contacts")); }
+ public:
+  static HostAlertType getClassType() { return { host_alert_dns_requests_errors_ratio, alert_category_network }; }
+
+  DNSRequestsErrorsRatioAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  ~DNSRequestsErrorsRatioAlert() {};
+  
+  HostAlertType getAlertType() const { return getClassType(); }
+  std::string getName() const { return std::string("dns_positive_error_ratio"); }
 };
 
-#endif
+#endif /* _DNS_REQUESTS_ERRORS_RATIO_ALERT_H_ */

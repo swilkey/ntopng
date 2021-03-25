@@ -19,24 +19,25 @@
  *
  */
 
-#ifndef _SMTP_CONTACTS_HOST_H_
-#define _SMTP_CONTACTS_HOST_H_
+#ifndef _SYN_FLOOD_ATTACKER_ALERT_H_
+#define _SYN_FLOOD_ATTACKER_ALERT_H_
+
 
 #include "ntop_includes.h"
 
-class SMTPServerContacts : public HostCallback {
-private:
-  
-public:
-   SMTPServerContacts() : HostCallback(ntopng_edition_community) {};
-  ~SMTPServerContacts() {};
 
-  void protocolDetected(Host *h) {};
-  HostAlert *buildAlert(Host *h) {};
-
-  void periodic(Host *h) {};
+class SYNFloodAttackerAlert : public HostAlert {
+ private:
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
-  std::string getName()        const { return(std::string("smtp_server_contacts")); }
+ public:
+  static HostAlertType getClassType() { return { host_alert_syn_flood_attacker, alert_category_security }; }
+
+  SYNFloodAttackerAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  ~SYNFloodAttackerAlert() {};
+  
+  HostAlertType getAlertType() const { return getClassType(); }
+  std::string getName() const { return std::string("syn_flood_attacker"); }
 };
 
-#endif
+#endif /* _SYN_FLOOD_ATTACKER_ALERT_H_ */

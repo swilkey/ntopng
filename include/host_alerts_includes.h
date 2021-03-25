@@ -22,7 +22,33 @@
 #ifndef _HOST_ALERTS_INCLUDES_H_
 #define _HOST_ALERTS_INCLUDES_H_
 
+#include "host_alerts/FlowFloodAttackerAlert.h"
+#include "host_alerts/FlowFloodVictimAlert.h"
+#include "host_alerts/SYNScanVictimAlert.h"
+#include "host_alerts/SYNScanAttackerAlert.h"
+#include "host_alerts/SYNFloodAttackerAlert.h"
+#include "host_alerts/SYNFloodVictimAlert.h"
+
+#include "host_alerts/RepliesRequestsRatioAlert.h"
+#include "host_alerts/DNSRequestsErrorsRatioAlert.h"
+
+#include "host_alerts/DNSServerContactsAlert.h"
 #include "host_alerts/SMTPServerContactsAlert.h"
+#include "host_alerts/NTPServerContactsAlert.h"
+
+#include "host_alerts/P2PTrafficAlert.h"
+#include "host_alerts/DNSTrafficAlert.h"
+#include "host_alerts/TrafficAlert.h"
+#include "host_alerts/IdleTimeAlert.h"
+#include "host_alerts/ActivityTimeAlert.h"
+#include "host_alerts/FlowsAlert.h"
+#include "host_alerts/ThroughputAlert.h"
+#include "host_alerts/ScoreAlert.h"
+#include "host_alerts/PacketsAlert.h"
+
+#include "host_alerts/SNMPAttackMitigation.h"
+
+#include "host_alerts/UnexpectedHostBehaviour.h"
 
 /* Pro Alerts - do NOT use #ifdef as alerts must always be available */
 

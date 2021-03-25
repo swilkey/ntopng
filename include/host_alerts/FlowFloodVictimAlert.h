@@ -19,24 +19,25 @@
  *
  */
 
-#ifndef _SMTP_CONTACTS_HOST_H_
-#define _SMTP_CONTACTS_HOST_H_
+#ifndef _FLOW_FLOOD_VICTIM_ALERT_H_
+#define _FLOW_FLOOD_VICTIM_ALERT_H_
+
 
 #include "ntop_includes.h"
 
-class SMTPServerContacts : public HostCallback {
-private:
-  
-public:
-   SMTPServerContacts() : HostCallback(ntopng_edition_community) {};
-  ~SMTPServerContacts() {};
 
-  void protocolDetected(Host *h) {};
-  HostAlert *buildAlert(Host *h) {};
-
-  void periodic(Host *h) {};
+class FlowFloodVictimAlert : public HostAlert {
+ private:
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
-  std::string getName()        const { return(std::string("smtp_server_contacts")); }
+ public:
+  static HostAlertType getClassType() { return { host_alert_flow_flood_victim, alert_category_security }; }
+
+  FlowFloodVictimAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  ~FlowFloodVictimAlert() {};
+  
+  HostAlertType getAlertType() const { return getClassType(); }
+  std::string getName() const { return std::string("flow_flood_victim"); }
 };
 
-#endif
+#endif /* _FLOW_FLOOD_VICTIM_ALERT_H_ */

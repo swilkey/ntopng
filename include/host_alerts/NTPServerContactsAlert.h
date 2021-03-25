@@ -19,24 +19,25 @@
  *
  */
 
-#ifndef _SMTP_CONTACTS_HOST_H_
-#define _SMTP_CONTACTS_HOST_H_
+#ifndef _NTP_SERVER_CONTACTS_ALERT_H_
+#define _NTP_SERVER_CONTACTS_ALERT_H_
+
 
 #include "ntop_includes.h"
 
-class SMTPServerContacts : public HostCallback {
-private:
-  
-public:
-   SMTPServerContacts() : HostCallback(ntopng_edition_community) {};
-  ~SMTPServerContacts() {};
 
-  void protocolDetected(Host *h) {};
-  HostAlert *buildAlert(Host *h) {};
-
-  void periodic(Host *h) {};
+class NTPServerContactsAlert : public HostAlert {
+ private:
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
-  std::string getName()        const { return(std::string("smtp_server_contacts")); }
+ public:
+  static HostAlertType getClassType() { return { host_alert_ntp_server_contacts, alert_category_security }; }
+
+  NTPServerContactsAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  ~NTPServerContactsAlert() {};
+  
+  HostAlertType getAlertType() const { return getClassType(); }
+  std::string getName() const { return std::string("ntp_contacts"); }
 };
 
-#endif
+#endif /* _NTP_SERVER_CONTACTS_ALERT_H_ */
