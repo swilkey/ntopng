@@ -24,12 +24,12 @@
 
 #include "ntop_includes.h"
 
-class Throughput : public HostCallback {
+class ThroughputHostCallback : public HostCallback {
 private:
   
 public:
-   Throughput() : HostCallback(ntopng_edition_community) {};
-  ~Throughput() {};
+   ThroughputHostCallback() : HostCallback(ntopng_edition_community) {};
+  ~ThroughputHostCallback() {};
 
   HostAlert *buildAlert(Host *h);
 

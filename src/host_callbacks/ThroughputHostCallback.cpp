@@ -24,18 +24,18 @@
 
 /* ***************************************************** */
 
-void Throughput::periodicUpdate(Host *h) {
+void ThroughputHostCallback::periodicUpdate(Host *h) {
 }
 
 /* ***************************************************** */
 
-HostAlert *Throughput::buildAlert(Host *h) {
+HostAlert *ThroughputHostCallback::buildAlert(Host *h) {
   return new ThroughputAlert(this, h);
 }
 
 /* ***************************************************** */
 
-bool Throughput::loadConfiguration(json_object *config) {
+bool ThroughputHostCallback::loadConfiguration(json_object *config) {
   HostCallback::loadConfiguration(config); /* Parse parameters in common */
   /*
     ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));

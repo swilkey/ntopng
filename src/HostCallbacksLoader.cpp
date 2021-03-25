@@ -52,9 +52,30 @@ void HostCallbacksLoader::registerHostCallbacks() {
   /* TODO: implement dynamic loading */
   HostCallback *fcb;
 
-  if((fcb = new SMTPServerContacts()))                             cb_all[fcb->getName()] = fcb;
+  if((fcb = new FlowFloodAttacker()))          cb_all[fcb->getName()] = fcb;
+  if((fcb = new FlowFloodVictim()))            cb_all[fcb->getName()] = fcb;
+  if((fcb = new SYNScanAttacker()))            cb_all[fcb->getName()] = fcb;
+  if((fcb = new SYNScanVictim()))              cb_all[fcb->getName()] = fcb;
+  if((fcb = new SYNFloodAttacker()))           cb_all[fcb->getName()] = fcb;
+  if((fcb = new SYNFloodVictim()))             cb_all[fcb->getName()] = fcb;
+  if((fcb = new RepliesRequestsRatio()))       cb_all[fcb->getName()] = fcb;
+  if((fcb = new DNSServerContacts()))          cb_all[fcb->getName()] = fcb;
+  if((fcb = new SMTPServerContacts()))         cb_all[fcb->getName()] = fcb;
+  if((fcb = new NTPServerContacts()))          cb_all[fcb->getName()] = fcb;
+  if((fcb = new P2PTraffic()))                 cb_all[fcb->getName()] = fcb;
+  if((fcb = new DNSTraffic()))                 cb_all[fcb->getName()] = fcb;
+  if((fcb = new TrafficHostCallback()))        cb_all[fcb->getName()] = fcb;
+  if((fcb = new IdleTime()))                   cb_all[fcb->getName()] = fcb;
+  if((fcb = new ActivityTime()))               cb_all[fcb->getName()] = fcb;
+  if((fcb = new FlowsHostCallback()))          cb_all[fcb->getName()] = fcb;
+  if((fcb = new ThroughputHostCallback()))     cb_all[fcb->getName()] = fcb;
+  if((fcb = new PacketsHostCallback()))        cb_all[fcb->getName()] = fcb;
+  if((fcb = new UnexpectedHostBehaviour()))    cb_all[fcb->getName()] = fcb;
 
 #ifdef NTOPNG_PRO
+  if((fcb = new DNSRequestsErrorsRatio()))     cb_all[fcb->getName()] = fcb;
+  if((fcb = new ScoreHostCallback()))          cb_all[fcb->getName()] = fcb;
+  if((fcb = new SNMPAttackMitigation()))       cb_all[fcb->getName()] = fcb;
 #endif
 
   // printCallbacks();

@@ -24,12 +24,12 @@
 
 #include "ntop_includes.h"
 
-class Traffic : public HostCallback {
+class TrafficHostCallback : public HostCallback {
 private:
   
 public:
-   Traffic() : HostCallback(ntopng_edition_community) {};
-  ~Traffic() {};
+   TrafficHostCallback() : HostCallback(ntopng_edition_community) {};
+  ~TrafficHostCallback() {};
 
   HostAlert *buildAlert(Host *h);
 

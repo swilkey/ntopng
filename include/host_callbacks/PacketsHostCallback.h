@@ -24,12 +24,12 @@
 
 #include "ntop_includes.h"
 
-class Packets : public HostCallback {
+class PacketsHostCallback : public HostCallback {
 private:
   
 public:
-   Packets() : HostCallback(ntopng_edition_community) {};
-  ~Packets() {};
+   PacketsHostCallback() : HostCallback(ntopng_edition_community) {};
+  ~PacketsHostCallback() {};
 
   HostAlert *buildAlert(Host *h);
 

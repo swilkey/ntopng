@@ -24,18 +24,18 @@
 
 /* ***************************************************** */
 
-void Traffic::periodicUpdate(Host *h) {
+void TrafficHostCallback::periodicUpdate(Host *h) {
 }
 
 /* ***************************************************** */
 
-HostAlert *Traffic::buildAlert(Host *h) {
+HostAlert *TrafficHostCallback::buildAlert(Host *h) {
   return new TrafficAlert(this, h);
 }
 
 /* ***************************************************** */
 
-bool Traffic::loadConfiguration(json_object *config) {
+bool TrafficHostCallback::loadConfiguration(json_object *config) {
   HostCallback::loadConfiguration(config); /* Parse parameters in common */
   /*
     ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
