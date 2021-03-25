@@ -19,25 +19,30 @@
  *
  */
 
-#ifndef _SMTP_CONTACTS_HOST_H_
-#define _SMTP_CONTACTS_HOST_H_
-
 #include "ntop_includes.h"
+#include "host_callbacks_includes.h"
 
-class SMTPServerContacts : public HostCallback {
-private:
-  
-public:
-   SMTPServerContacts() : HostCallback(ntopng_edition_community) {};
-  ~SMTPServerContacts() {};
+/* ***************************************************** */
 
-  HostAlert *buildAlert(Host *h);
+void SMTPServerContacts::periodicUpdate(Host *h) {
+}
 
-  void periodicUpdate(Host *h);
+/* ***************************************************** */
 
-  bool loadConfiguration(json_object *config);  
+HostAlert *SMTPServerContacts::buildAlert(Host *h) {
+  return new SMTPServerContactsAlert(this, h);
+}
 
-  std::string getName()        const { return(std::string("smtp_server_contacts")); }
-};
+/* ***************************************************** */
 
-#endif
+bool SMTPServerContacts::loadConfiguration(json_object *config) {
+  HostCallback::loadConfiguration(config); /* Parse parameters in common */
+  /*
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
+  */
+
+  return(true);
+}
+
+/* ***************************************************** */
+

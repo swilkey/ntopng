@@ -43,7 +43,7 @@ HostAlert *HostCallbacksExecutor::execCallbacks(Host *h) {
   HostAlert *alert = NULL;
 
   for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
-    (*it)->periodic(h);
+    (*it)->periodicUpdate(h);
 
 #if TODO
     /* Check if the callback triggered a predominant alert */

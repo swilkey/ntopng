@@ -41,10 +41,10 @@ class HostCallback {
   virtual void scriptDisable()           {};
   
   /* Callback hooks */
-  virtual void periodic(Host *h)         {};
+  virtual void periodicUpdate(Host *h)   {};
 
   /* Used to build an alert when triggerAlertAsync is used */
-  virtual HostAlert *buildAlert(Host *f) { return NULL; };
+  virtual HostAlert *buildAlert(Host *h) { return NULL; };
 
   inline void enable()    { enabled = 1; }
   inline bool isEnabled() { return(enabled ? true : false); }
