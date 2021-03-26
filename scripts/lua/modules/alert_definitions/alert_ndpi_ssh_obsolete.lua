@@ -18,7 +18,7 @@ local alert_ndpi_ssh_obsolete = classes.class(alert)
 -- ##############################################
 
 alert_ndpi_ssh_obsolete.meta = {
-   alert_key  = alert_keys.ntopng.alert_ndpi_ssh_obsolete,
+   alert_key  = alert_keys.ntopng.flow_alert_ndpi_ssh_obsolete,
    i18n_title = "alerts_dashboard.ndpi_ssh_obsolete_title",
    icon = "fas fa-exclamation",
 }

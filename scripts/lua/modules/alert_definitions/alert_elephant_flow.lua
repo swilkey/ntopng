@@ -20,7 +20,7 @@ local alert_elephant_flow = classes.class(alert)
 -- ##############################################
 
 alert_elephant_flow.meta = {
-   alert_key = alert_keys.ntopng.alert_elephant_flow,
+   alert_key = alert_keys.ntopng.flow_alert_elephant_flow,
    i18n_title = "flow_details.elephant_flow",
    icon = "fas fa-exclamation",
 }

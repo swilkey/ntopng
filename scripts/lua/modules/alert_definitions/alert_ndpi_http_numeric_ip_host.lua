@@ -18,7 +18,7 @@ local alert_ndpi_http_numeric_ip_host = classes.class(alert)
 -- ##############################################
 
 alert_ndpi_http_numeric_ip_host.meta = {
-   alert_key  = alert_keys.ntopng.alert_ndpi_http_numeric_ip_host,
+   alert_key  = alert_keys.ntopng.flow_alert_ndpi_http_numeric_ip_host,
    i18n_title = "alerts_dashboard.ndpi_http_numeric_ip_host_title",
    icon = "fas fa-exclamation",
 }

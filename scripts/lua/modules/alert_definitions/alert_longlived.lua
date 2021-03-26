@@ -17,7 +17,7 @@ local alert_longlived = classes.class(alert)
 -- ##############################################
 
 alert_longlived.meta = {
-   alert_key = alert_keys.ntopng.alert_longlived,
+   alert_key = alert_keys.ntopng.flow_alert_longlived,
    i18n_title = "flow_details.longlived_flow",
    icon = "fas fa-exclamation",
 }

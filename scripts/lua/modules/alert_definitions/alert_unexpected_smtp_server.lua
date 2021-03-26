@@ -17,7 +17,7 @@ local alert_unexpected_smtp_server = classes.class(alert)
 -- ##############################################
 
 alert_unexpected_smtp_server.meta = {
-   alert_key = alert_keys.ntopng.alert_unexpected_smtp_server,
+   alert_key = alert_keys.ntopng.flow_alert_unexpected_smtp_server,
    i18n_title = "unexpected_smtp.alert_unexpected_smtp_title",
    icon = "fas fa-exclamation",
    has_victim = true,

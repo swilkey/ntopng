@@ -17,7 +17,7 @@ local alert_flow_blocked = classes.class(alert)
 -- ##############################################
 
 alert_flow_blocked.meta = {
-   alert_key = alert_keys.ntopng.alert_flow_blocked,
+   alert_key = alert_keys.ntopng.flow_alert_flow_blocked,
    i18n_title = "flow_details.flow_blocked_by_bridge",
    icon = "fas fa-exclamation",
 }

@@ -20,7 +20,7 @@ local alert_iec_invalid_transition = classes.class(alert)
 -- ##############################################
 
 alert_iec_invalid_transition.meta = {
-   alert_key = alert_keys.ntopng.alert_iec_invalid_transition,
+   alert_key = alert_keys.ntopng.flow_alert_iec_invalid_transition,
    i18n_title = "alerts_dashboard.iec_invalid_transition",
    icon = "fas fa-subway",
 }

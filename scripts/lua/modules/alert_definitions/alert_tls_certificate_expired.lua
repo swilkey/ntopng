@@ -17,7 +17,7 @@ local alert_tls_certificate_expired = classes.class(alert)
 -- ##############################################
 
 alert_tls_certificate_expired.meta = {
-   alert_key = alert_keys.ntopng.alert_tls_certificate_expired,
+   alert_key = alert_keys.ntopng.flow_alert_tls_certificate_expired,
    i18n_title = "flow_details.tls_certificate_expired",
    icon = "fas fa-exclamation",
 }

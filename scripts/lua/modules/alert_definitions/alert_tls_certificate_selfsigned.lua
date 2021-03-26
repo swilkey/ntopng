@@ -17,7 +17,7 @@ local alert_tls_certificate_selfsigned = classes.class(alert)
 -- ##############################################
 
 alert_tls_certificate_selfsigned.meta = {
-   alert_key = alert_keys.ntopng.alert_tls_certificate_selfsigned,
+   alert_key = alert_keys.ntopng.flow_alert_tls_certificate_selfsigned,
    i18n_title = "flow_details.tls_certificate_selfsigned",
    icon = "fas fa-exclamation",
 }

@@ -18,7 +18,7 @@ local alert_ndpi_url_possible_xss = classes.class(alert)
 -- ##############################################
 
 alert_ndpi_url_possible_xss.meta = {
-   alert_key  = alert_keys.ntopng.alert_ndpi_url_possible_xss,
+   alert_key  = alert_keys.ntopng.flow_alert_ndpi_url_possible_xss,
    i18n_title = "alerts_dashboard.ndpi_url_possible_xss_title",
    icon = "fas fa-exclamation",
 }

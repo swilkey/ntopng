@@ -17,7 +17,7 @@ local alert_unexpected_dns_server = classes.class(alert)
 -- ##############################################
 
 alert_unexpected_dns_server.meta = {
-   alert_key = alert_keys.ntopng.alert_unexpected_dns_server,
+   alert_key = alert_keys.ntopng.flow_alert_unexpected_dns_server,
    i18n_title = "unexpected_dns.alert_unexpected_dns_title",
    icon = "fas fa-exclamation",
    has_victim = true,

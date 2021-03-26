@@ -18,7 +18,7 @@ local alert_ndpi_tls_missing_sni = classes.class(alert)
 -- ##############################################
 
 alert_ndpi_tls_missing_sni.meta = {
-   alert_key  = alert_keys.ntopng.alert_ndpi_tls_missing_sni,
+   alert_key  = alert_keys.ntopng.flow_alert_ndpi_tls_missing_sni,
    i18n_title = "alerts_dashboard.ndpi_tls_missing_sni_title",
    icon = "fas fa-exclamation",
 }

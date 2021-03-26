@@ -21,7 +21,7 @@ local alert_remote_to_local_insecure_proto = classes.class(alert)
 -- ##############################################
 
 alert_remote_to_local_insecure_proto.meta = {
-   alert_key = alert_keys.ntopng.alert_remote_to_local_insecure_proto,
+   alert_key = alert_keys.ntopng.flow_alert_remote_to_local_insecure_proto,
    i18n_title = "alerts_dashboard.remote_to_local_insecure_proto",
    icon = "fas fa-exclamation",
 }

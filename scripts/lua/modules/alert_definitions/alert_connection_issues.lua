@@ -20,7 +20,7 @@ local alert_connection_issues = classes.class(alert)
 -- ##############################################
 
 alert_connection_issues.meta = {
-   alert_key = alert_keys.ntopng.alert_tcp_connection_issues,
+   alert_key = alert_keys.ntopng.flow_alert_tcp_connection_issues,
    i18n_title = "alerts_dashboard.connection_issues",
    icon = "fas fa-exclamation",
 }

@@ -19,7 +19,7 @@ local alert_suspicious_file_transfer = classes.class(alert)
 -- ##############################################
 
 alert_suspicious_file_transfer.meta = {
-   alert_key = alert_keys.ntopng.alert_suspicious_file_transfer,
+   alert_key = alert_keys.ntopng.flow_alert_suspicious_file_transfer,
    i18n_title = "alerts_dashboard.suspicious_file_transfer",
    icon = "fas fa-file-download",
 }

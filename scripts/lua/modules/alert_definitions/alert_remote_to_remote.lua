@@ -21,7 +21,7 @@ local alert_remote_to_remote = classes.class(alert)
 -- ##############################################
 
 alert_remote_to_remote.meta = {
-   alert_key = alert_keys.ntopng.alert_remote_to_remote,
+   alert_key = alert_keys.ntopng.flow_alert_remote_to_remote,
    i18n_title = "alerts_dashboard.remote_to_remote",
    icon = "fas fa-exclamation",
 }

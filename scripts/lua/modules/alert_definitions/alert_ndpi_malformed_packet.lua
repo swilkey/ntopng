@@ -18,7 +18,7 @@ local alert_ndpi_malformed_packet = classes.class(alert)
 -- ##############################################
 
 alert_ndpi_malformed_packet.meta = {
-   alert_key  = alert_keys.ntopng.alert_ndpi_malformed_packet,
+   alert_key  = alert_keys.ntopng.flow_alert_ndpi_malformed_packet,
    i18n_title = "alerts_dashboard.ndpi_malformed_packet_title",
    icon = "fas fa-exclamation",
 }

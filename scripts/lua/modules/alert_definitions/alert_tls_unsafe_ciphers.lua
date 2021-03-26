@@ -17,7 +17,7 @@ local alert_tls_unsafe_ciphers = classes.class(alert)
 -- ##############################################
 
 alert_tls_unsafe_ciphers.meta = {
-   alert_key = alert_keys.ntopng.alert_tls_unsafe_ciphers,
+   alert_key = alert_keys.ntopng.flow_alert_tls_unsafe_ciphers,
    i18n_title = "flow_details.tls_unsafe_ciphers",
    icon = "fas fa-exclamation",
 }

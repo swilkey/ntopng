@@ -18,7 +18,7 @@ local alert_internals = classes.class(alert)
 -- ##############################################
 
 alert_internals.meta = {
-  alert_key = alert_keys.ntopng.alert_internals,
+  alert_key = alert_keys.ntopng.flow_alert_internals,
   i18n_title = "flow_details.not_purged",
   icon = "fas fa-exclamation",
 }

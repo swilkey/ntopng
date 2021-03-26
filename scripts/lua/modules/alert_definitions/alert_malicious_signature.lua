@@ -17,7 +17,7 @@ local alert_malicious_signature = classes.class(alert)
 -- ##############################################
 
 alert_malicious_signature.meta = {
-   alert_key = alert_keys.ntopng.alert_malicious_signature,
+   alert_key = alert_keys.ntopng.flow_alert_malicious_signature,
    i18n_title = "alerts_dashboard.malicious_signature_detected",
    icon = "fas fa-ban",
 }

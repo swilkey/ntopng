@@ -18,7 +18,7 @@ local alert_ndpi_suspicious_dga_domain = classes.class(alert)
 -- ##############################################
 
 alert_ndpi_suspicious_dga_domain.meta = {
-   alert_key  = alert_keys.ntopng.alert_ndpi_suspicious_dga_domain,
+   alert_key  = alert_keys.ntopng.flow_alert_ndpi_suspicious_dga_domain,
    i18n_title = "alerts_dashboard.ndpi_suspicious_dga_domain_title",
    icon = "fas fa-exclamation",
 }

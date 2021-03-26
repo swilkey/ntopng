@@ -19,7 +19,7 @@ local alert_flow_blacklisted = classes.class(alert)
 -- ##############################################
 
 alert_flow_blacklisted.meta = {
-   alert_key = alert_keys.ntopng.alert_blacklisted,
+   alert_key = alert_keys.ntopng.flow_alert_blacklisted,
    i18n_title = "alerts_dashboard.blacklisted_flow",
    icon = "fas fa-exclamation",
    has_victim = true,

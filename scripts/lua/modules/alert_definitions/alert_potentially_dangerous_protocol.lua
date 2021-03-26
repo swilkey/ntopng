@@ -17,7 +17,7 @@ local alert_potentially_dangerous_protocol = classes.class(alert)
 -- ##############################################
 
 alert_potentially_dangerous_protocol.meta = {
-   alert_key = alert_keys.ntopng.alert_potentially_dangerous,
+   alert_key = alert_keys.ntopng.flow_alert_potentially_dangerous,
    i18n_title = "flow_details.potentially_dangerous_protocol",
    icon = "fas fa-exclamation",
 }

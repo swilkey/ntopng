@@ -17,7 +17,7 @@ local alert_web_mining = classes.class(alert)
 -- ##############################################
 
 alert_web_mining.meta = {
-   alert_key = alert_keys.ntopng.alert_web_mining,
+   alert_key = alert_keys.ntopng.flow_alert_web_mining,
    i18n_title = "alerts_dashboard.web_mining",
    icon = "fab fa-bitcoin",
 }

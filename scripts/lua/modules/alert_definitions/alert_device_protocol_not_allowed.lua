@@ -19,7 +19,7 @@ local alert_device_protocol_not_allowed = classes.class(alert)
 -- ##############################################
 
 alert_device_protocol_not_allowed.meta = {
-   alert_key = alert_keys.ntopng.alert_device_protocol_not_allowed,
+   alert_key = alert_keys.ntopng.flow_alert_device_protocol_not_allowed,
    i18n_title = "alerts_dashboard.suspicious_device_protocol",
    icon = "fas fa-exclamation",
    has_victim = true,

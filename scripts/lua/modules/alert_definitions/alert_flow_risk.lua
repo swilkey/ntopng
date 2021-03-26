@@ -20,7 +20,7 @@ local alert_flow_risk = classes.class(alert)
 -- ##############################################
 
 alert_flow_risk.meta = {
-   alert_key = alert_keys.ntopng.alert_flow_risk,
+   alert_key = alert_keys.ntopng.flow_alert_flow_risk,
    i18n_title = "alerts_dashboard.flow_risk",
    icon = "fas fa-exclamation",
 }

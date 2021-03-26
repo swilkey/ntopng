@@ -18,7 +18,7 @@ local alert_ndpi_url_possible_sql_injection = classes.class(alert)
 -- ##############################################
 
 alert_ndpi_url_possible_sql_injection.meta = {
-   alert_key  = alert_keys.ntopng.alert_ndpi_url_possible_sql_injection,
+   alert_key  = alert_keys.ntopng.flow_alert_ndpi_url_possible_sql_injection,
    i18n_title = "alerts_dashboard.ndpi_url_possible_sql_injection_title",
    icon = "fas fa-exclamation",
 }

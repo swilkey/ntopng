@@ -17,7 +17,7 @@ local alert_suspicious_tcp_probing = classes.class(alert)
 -- ##############################################
 
 alert_suspicious_tcp_probing.meta = {
-   alert_key = alert_keys.ntopng.alert_suspicious_tcp_probing,
+   alert_key = alert_keys.ntopng.flow_alert_suspicious_tcp_probing,
    i18n_title = "flow_details.suspicious_tcp_probing",
    icon = "fas fa-exclamation",
 }
