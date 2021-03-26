@@ -555,7 +555,7 @@ int AlertsManager::storeFlowAlert(lua_State *L, int index, u_int64_t *rowid) {
   time_t tstamp = 0;
   AlertType alert_type = 0;
   AlertLevel alert_severity = alert_level_none;
-  AlertType status = alert_normal;
+  AlertType status = flow_alert_normal;
   const char *alert_json = "";
   u_int16_t vlan_id = 0;
   u_int8_t protocol = 0;

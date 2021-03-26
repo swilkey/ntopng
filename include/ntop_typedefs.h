@@ -370,72 +370,64 @@ typedef enum {
 /* NOTE: Throw modules/alert_keys.lua as it has been merged with modules/alert_keys.lua */
 /* NOTE: keep in sync with modules/alert_keys.lua */
 typedef enum {
-  alert_normal                           = 0,
-  alert_blacklisted                      = 1,
-  alert_blacklisted_country              = 2,
-  alert_flow_blocked                     = 3,
-  alert_data_exfiltration                = 4,
-  alert_device_protocol_not_allowed      = 5,
-  alert_dns_data_exfiltration            = 6,
-  alert_dns_invalid_query                = 7,
-  alert_elephant_flow                    = 8,
-  alert_elephant_remote_to_local         = 9, /* No longer used, can be recycled */
-  alert_external                         = 10,
-  alert_longlived                        = 11,
-  alert_low_goodput                      = 12,
-  alert_malicious_signature              = 13,
-  alert_internals                        = 14,
-  alert_potentially_dangerous            = 15,
-  alert_remote_to_remote                 = 16,
-  alert_suspicious_tcp_probing           = 17,
-  alert_suspicious_tcp_syn_probing       = 18,
-  alert_tcp_connection_issues            = 19,
-  alert_tcp_connection_refused           = 20,
-  alert_tcp_severe_connection_issues     = 21, /* No longer used, merged with alert_tcp_connection_issues */
-  alert_tls_certificate_expired          = 22,
-  alert_tls_certificate_mismatch         = 23,
-  alert_tls_old_protocol_version         = 24,
-  alert_tls_unsafe_ciphers               = 25,
-  alert_udp_unidirectional               = 26,
-  alert_web_mining_detected              = 27,
-  alert_tls_certificate_selfsigned       = 28,
-  alert_suspicious_file_transfer         = 29, /* TODO rename to alert_ndpi_binary_application_transfer */
-  alert_known_proto_on_non_std_port      = 30, /* TODO rename to alert_ndpi_known_protocol_on_non_standard_port */
-  alert_flow_risk                        = 31, /* No longer used, each risk is reported individually */
-  alert_unexpected_dhcp_server           = 32,
-  alert_unexpected_dns_server            = 33,
-  alert_unexpected_smtp_server           = 34,
-  alert_unexpected_ntp_server            = 35,
-  alert_zero_tcp_window                  = 36,
-  alert_iec_invalid_transition           = 37, /* To be implemented */
-  alert_remote_to_local_insecure_proto   = 38,
-  alert_ndpi_url_possible_xss            = 39,
-  alert_ndpi_url_possible_sql_injection  = 40,
-  alert_ndpi_url_possible_rce_injection  = 41,
-  alert_ndpi_http_suspicious_user_agent  = 42,
-  alert_ndpi_http_numeric_ip_host        = 43,
-  alert_ndpi_http_suspicious_url         = 44,
-  alert_ndpi_http_suspicious_header      = 45,
-  alert_ndpi_tls_not_carrying_https      = 46,
-  alert_ndpi_suspicious_dga_domain       = 47,
-  alert_ndpi_malformed_packet            = 48,
-  alert_ndpi_ssh_obsolete                = 49,
-  alert_ndpi_smb_insecure_version        = 50,
-  alert_ndpi_tls_suspicious_esni_usage   = 51,
-  alert_ndpi_unsafe_protocol             = 52,
-  alert_ndpi_dns_suspicious_traffic      = 53,
-  alert_ndpi_tls_missing_sni             = 54,
-  alert_iec_unexpected_type_id           = 55, /* To be implemented */
+  flow_alert_normal                           = 0,
+  flow_alert_blacklisted                      = 1,
+  flow_alert_blacklisted_country              = 2,
+  flow_alert_flow_blocked                     = 3,
+  flow_alert_data_exfiltration                = 4,
+  flow_alert_device_protocol_not_allowed      = 5,
+  flow_alert_dns_data_exfiltration            = 6,
+  flow_alert_dns_invalid_query                = 7,
+  flow_alert_elephant_flow                    = 8,
+  flow_alert_elephant_remote_to_local         = 9, /* No longer used, can be recycled */
+  flow_alert_external                         = 10,
+  flow_alert_longlived                        = 11,
+  flow_alert_low_goodput                      = 12,
+  flow_alert_malicious_signature              = 13,
+  flow_alert_internals                        = 14,
+  flow_alert_potentially_dangerous            = 15,
+  flow_alert_remote_to_remote                 = 16,
+  flow_alert_suspicious_tcp_probing           = 17,
+  flow_alert_suspicious_tcp_syn_probing       = 18,
+  flow_alert_tcp_connection_issues            = 19,
+  flow_alert_tcp_connection_refused           = 20,
+  flow_alert_tcp_severe_connection_issues     = 21, /* No longer used, merged with flow_alert_tcp_connection_issues */
+  flow_alert_tls_certificate_expired          = 22,
+  flow_alert_tls_certificate_mismatch         = 23,
+  flow_alert_tls_old_protocol_version         = 24,
+  flow_alert_tls_unsafe_ciphers               = 25,
+  flow_alert_udp_unidirectional               = 26,
+  flow_alert_web_mining_detected              = 27,
+  flow_alert_tls_certificate_selfsigned       = 28,
+  flow_alert_suspicious_file_transfer         = 29, /* TODO rename to alert_ndpi_binary_application_transfer */
+  flow_alert_known_proto_on_non_std_port      = 30, /* TODO rename to alert_ndpi_known_protocol_on_non_standard_port */
+  flow_alert_flow_risk                        = 31, /* No longer used, each risk is reported individually */
+  flow_alert_unexpected_dhcp_server           = 32,
+  flow_alert_unexpected_dns_server            = 33,
+  flow_alert_unexpected_smtp_server           = 34,
+  flow_alert_unexpected_ntp_server            = 35,
+  flow_alert_zero_tcp_window                  = 36,
+  flow_alert_iec_invalid_transition           = 37, /* To be implemented */
+  flow_alert_remote_to_local_insecure_proto   = 38,
+  flow_alert_ndpi_url_possible_xss            = 39,
+  flow_alert_ndpi_url_possible_sql_injection  = 40,
+  flow_alert_ndpi_url_possible_rce_injection  = 41,
+  flow_alert_ndpi_http_suspicious_user_agent  = 42,
+  flow_alert_ndpi_http_numeric_ip_host        = 43,
+  flow_alert_ndpi_http_suspicious_url         = 44,
+  flow_alert_ndpi_http_suspicious_header      = 45,
+  flow_alert_ndpi_tls_not_carrying_https      = 46,
+  flow_alert_ndpi_suspicious_dga_domain       = 47,
+  flow_alert_ndpi_malformed_packet            = 48,
+  flow_alert_ndpi_ssh_obsolete                = 49,
+  flow_alert_ndpi_smb_insecure_version        = 50,
+  flow_alert_ndpi_tls_suspicious_esni_usage   = 51,
+  flow_alert_ndpi_unsafe_protocol             = 52,
+  flow_alert_ndpi_dns_suspicious_traffic      = 53,
+  flow_alert_ndpi_tls_missing_sni             = 54,
+  flow_alert_iec_unexpected_type_id           = 55, /* To be implemented */
 
   MAX_DEFINED_FLOW_ALERT_TYPE, /* Leave it as last member */
-  
-  /* TODO check and add support for the below flow risks:
-  alert_ndpi_http_suspicious_content
-  alert_ndpi_risky_asn
-  alert_ndpi_risky_domain
-  alert_ndpi_malicious_ja3
-  alert_ndpi_malicious_sha1
-  */
 
   MAX_FLOW_ALERT_TYPE = 127 /* Constrained by `Bitmap alert_map` inside Flow.h */
 } FlowAlertTypeEnum;

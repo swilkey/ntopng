@@ -50,7 +50,7 @@ class Flow : public GenericHashEntry {
   struct ndpi_flow_struct *ndpiFlow;
   ndpi_risk ndpi_flow_risk_bitmap;
   /* The bitmap of all possible flow alerts set by FlowCallback subclasses. When no alert is set, the 
-     flow is in alert_normal.
+     flow is in flow_alert_normal.
 
      A flow can have multiple alerts but at most ONE of its alerts is predominant
      of a flow, which is written into `predominant_alert`.
@@ -327,7 +327,7 @@ class Flow : public GenericHashEntry {
   inline void setPredominantAlert(FlowAlertType alert_type, AlertLevel alert_severity, u_int16_t score);
   inline FlowAlertType getPredominantAlert() const { return predominant_alert; };
   inline u_int16_t getPredominantAlertScore() const { return predominant_alert_score; };
-  inline bool isFlowAlerted()    const { return(predominant_alert.id != alert_normal); };
+  inline bool isFlowAlerted()    const { return(predominant_alert.id != flow_alert_normal); };
   inline AlertLevel getAlertedSeverity()     const { return predominant_alert_level; };
 
   bool isBlacklistedFlow()   const;

@@ -46,7 +46,7 @@ Flow::Flow(NetworkInterface *_iface,
   good_tls_hs = true, flow_dropped_counts_increased = false, vrfId = 0;
   srcAS = dstAS  = prevAdjacentAS = nextAdjacentAS = 0;
   predominant_alert_level = alert_level_none;
-  predominant_alert.id = alert_normal, predominant_alert.category = alert_category_other;
+  predominant_alert.id = flow_alert_normal, predominant_alert.category = alert_category_other;
   predominant_alert_score = 0;
   ndpi_flow_risk_bitmap = 0;
   detection_completed = false;
@@ -5304,7 +5304,7 @@ bool Flow::setAlertsBitmap(FlowAlertType alert_type, AlertLevel alert_severity, 
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "Set alert score: %u (%u/%u)", flow_inc, cli_inc, srv_inc);
 #endif
 
-  if(alert_type.id == alert_normal) {
+  if(alert_type.id == flow_alert_normal) {
 #ifdef DEBUG_SCORE
     ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (normal)");
 #endif
