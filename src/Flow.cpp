@@ -2392,7 +2392,7 @@ void Flow::sumStats(nDPIStats *ndpi_stats, FlowStats *status_stats) {
     ndpi_stats->incFlowsStats(detected_protocol.master_protocol);
   }
 
-  status_stats->incStats(getAlertBitmap(), protocol, predominant_alert_level, getCli2SrvDSCP(), getSrv2CliDSCP(), this);
+  status_stats->incStats(getAlertsBitmap(), protocol, predominant_alert_level, getCli2SrvDSCP(), getSrv2CliDSCP(), this);
 }
 
 /* *************************************** */
@@ -4619,7 +4619,7 @@ void Flow::lua_get_status(lua_State* vm) const {
   lua_push_bool_table_entry(vm, "flow.idle", idle());
   lua_push_uint64_table_entry(vm, "flow.status", getPredominantAlert().id);
 
-  alert_map.lua(vm, "alert_map");
+  alerts_map.lua(vm, "alerts_map");
 
   if(isFlowAlerted()) {
     lua_push_bool_table_entry(vm, "flow.alerted", true);
@@ -5313,7 +5313,7 @@ bool Flow::setAlertsBitmap(FlowAlertType alert_type, AlertLevel alert_severity, 
 
   /* Check if the same alert has been already triggered and
    * accounted in the score, unless this is a "sync" alert */
-  if(async && alert_map.isSetBit(alert_type.id)) {
+  if(async && alerts_map.isSetBit(alert_type.id)) {
 #ifdef DEBUG_SCORE
     ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (already set)");
 #endif
@@ -5333,7 +5333,7 @@ bool Flow::setAlertsBitmap(FlowAlertType alert_type, AlertLevel alert_severity, 
     /* This is the first time an alert is set on this flow. The flow was normal and now becomes alerted. */
     setNormalToAlertedCounters();
 
-  alert_map.setBit(alert_type.id);
+  alerts_map.setBit(alert_type.id);
 
   flow_score += flow_inc;
 

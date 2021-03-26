@@ -2438,7 +2438,7 @@ void NetworkInterface::pollQueuedeCompanionEvents() {
 /* **************************************************** */
 
 /* Dequeue alerted flows from callbacks (and enqueue to recipients) */
-u_int64_t NetworkInterface::dequeueAlertedFlows(SPSCQueue<FlowAlert *> *q, u_int budget) {
+u_int64_t NetworkInterface::dequeueFlowAlerts(SPSCQueue<FlowAlert *> *q, u_int budget) {
   u_int64_t num_done = 0;
 
   while(q->isNotEmpty()) {
@@ -2475,7 +2475,7 @@ u_int64_t NetworkInterface::dequeueAlertedFlows(SPSCQueue<FlowAlert *> *q, u_int
 /* **************************************************** */
 
 /* Same as above but for hosts */
-u_int64_t NetworkInterface::dequeueAlertedHosts(SPSCQueue<HostAlert *> *q, u_int budget) {
+u_int64_t NetworkInterface::dequeueHostAlerts(SPSCQueue<HostAlert *> *q, u_int budget) {
   u_int64_t num_done = 0;
 
   while(q->isNotEmpty()) {
@@ -2512,7 +2512,7 @@ u_int64_t NetworkInterface::dequeueAlertedHosts(SPSCQueue<HostAlert *> *q, u_int
 /* **************************************************** */
 
 u_int64_t NetworkInterface::dequeueFlowAlertsFromCallbacks(u_int budget) {
-  u_int64_t num_done = dequeueAlertedFlows(flowAlertsQueue, budget);
+  u_int64_t num_done = dequeueFlowAlerts(flowAlertsQueue, budget);
 
 #ifndef WIN32
   if(num_done == 0) {
@@ -2548,7 +2548,7 @@ u_int64_t NetworkInterface::dequeueFlowAlertsFromCallbacks(u_int budget) {
 /* **************************************************** */
 
 u_int64_t NetworkInterface::dequeueHostAlertsFromCallbacks(u_int budget) {
-  u_int64_t num_done = dequeueAlertedHosts(hostAlertsQueue, budget);
+  u_int64_t num_done = dequeueHostAlerts(hostAlertsQueue, budget);
 
 #ifndef WIN32
   if(num_done == 0) {
@@ -3982,7 +3982,7 @@ static bool flow_matches(Flow *f, struct flowHostRetriever *retriever) {
     /* Flow Status filter */
     if(retriever->pag
        && retriever->pag->flowStatusFilter(&alert_type_filter)
-       && !f->getAlertBitmap().isSetBit(alert_type_filter))
+       && !f->getAlertsBitmap().isSetBit(alert_type_filter))
       return(false);
 
     /* Flow Status severity filter */
@@ -8937,12 +8937,8 @@ void NetworkInterface::execFlowEndCallbacks(Flow *f) {
 /* *************************************** */
 
 void NetworkInterface::execHostCallbacks(Host *h) {
-  if(host_callbacks_executor) {
-    HostAlert *alert = host_callbacks_executor->execCallbacks(h);
-
-    if(alert)
-      enqueueHostAlert(alert);
-  }
+  if(host_callbacks_executor)
+    host_callbacks_executor->execCallbacks(h);
 }
 
 /* *************************************** */

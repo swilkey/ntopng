@@ -24,6 +24,9 @@
 
 #include "ntop_includes.h"
 
+class HostAlert;
+class HostCallback;
+
 class Host : public GenericHashEntry, public AlertableEntity {
  protected:
   IpAddress ip;
@@ -83,6 +86,11 @@ class Host : public GenericHashEntry, public AlertableEntity {
 
   Bitmap disabled_flow_alerts;
   time_t disabled_flow_alerts_tstamp;
+
+  Bitmap alerts_map, engaged_alerts_map;
+  std::list<HostAlert*> engaged_alerts;
+  HostAlertType pending_alert_type;
+  AlertLevel pending_alert_severity;
 
   void initialize(Mac *_mac, u_int16_t _vlan_id);
   void inlineSetOS(OSType _os);
@@ -419,9 +427,20 @@ class Host : public GenericHashEntry, public AlertableEntity {
   bool enqueueAlert(HostAlert *alert);
   void alert2JSON(HostAlert *alert, ndpi_serializer *serializer);
 
+  /* Engaged alerts */
+  void addEngagedAlert(HostAlert *a);
+  void removeEngagedAlert(HostAlert *a);
+  bool isEngagedAlert(HostAlertType alert_type) { return engaged_alerts_map.isSetBit(alert_type.id); }
+  HostAlert *findEngagedAlert(HostAlertType alert_type);
+  std::list<HostAlert*> *getEngagedAlerts() { return &engaged_alerts; }
+  void setPendingAlert(HostAlertType t, AlertLevel s) { pending_alert_type = t; pending_alert_severity = s; }
+  HostAlertType getPendingAlert() { return pending_alert_type; }
+  AlertLevel getPendingAlertSeverity() { return pending_alert_severity; }
+
   /* Same as flow alerts */
+  inline Bitmap getAlertsBitmap() const { return(alerts_map); }
+  bool setAlertsBitmap(HostAlertType alert_type, u_int8_t host_score_inc);
   bool triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t host_score_inc);
-  bool triggerAlertSync(HostAlert *alert, AlertLevel alert_severity, u_int8_t host_score_inc);
 };
 
 #endif /* _HOST_H_ */

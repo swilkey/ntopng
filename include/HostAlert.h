@@ -30,6 +30,7 @@ class HostAlert {
  private:
   Host *host;
   AlertLevel severity_id;
+  bool released;
   std::string callback_name;
 
   /* 
@@ -50,6 +51,10 @@ class HostAlert {
   inline AlertLevel    getSeverity()  const { return(severity_id); }  
   inline Host *getHost() const { return(host); }
   inline std::string getCallbackName() const { return(callback_name); }
+
+  inline void setEngaged()  { released = false; }
+  inline void setReleased() { released = true; }
+  inline bool isReleased()  { return released; }
 
   /* 
      Generates the JSON alert serializer with base information and per-callback information gathered with `getAlertJSON`.

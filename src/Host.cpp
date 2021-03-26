@@ -1636,48 +1636,76 @@ bool Host::enqueueAlert(HostAlert *alert) {
 
   ndpi_term_serializer(&host_json);
 
-  delete alert;
+  if (alert->isReleased())
+    delete alert;
 
   return rv;
 }
 
 /* *************************************** */
 
-bool Host::triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t host_severity) {
-#if TODO
-  bool res;
+void Host::addEngagedAlert(HostAlert *a) {
+  engaged_alerts.push_back(a); 
+  engaged_alerts_map.setBit(a->getAlertType().id);
+} 
 
-  res = setAlertsBitmap(alert_type, alert_severity, cli_inc, srv_inc, true);
+/* *************************************** */
 
-  return res;
-#else
-  return(true);
-#endif
+void Host::removeEngagedAlert(HostAlert *a) { 
+  engaged_alerts.remove(a);
+  engaged_alerts_map.clearBit(a->getAlertType().id);
 }
 
 /* *************************************** */
 
-bool Host::triggerAlertSync(HostAlert *alert, AlertLevel alert_severity, u_int8_t host_severity) {
-#if TODO
-  bool res;
+HostAlert *Host::findEngagedAlert(HostAlertType alert_type) {
+  if (isEngagedAlert(alert_type))
+    for(list<HostAlert*>::iterator it = engaged_alerts.begin(); it != engaged_alerts.end(); ++it)
+      if ((*it)->getAlertType().id == alert_type.id)
+        return (*it);
 
-  res = setAlertsBitmap(alert->getAlertType(), alert_severity, cli_inc, srv_inc, false);
+  return NULL;
+}
 
-  /* Synchronous, this alert must be sent straight to the recipients now. Let's put it into the recipient queues. */
-  if(alert) {
-    alert->setSeverity(alert_severity);
+/* *************************************** */
 
-    if(ntop->getPrefs()->dontEmitHostAlerts())
-      /* Nothing to enqueue, can dispose the memory */
-      delete alert;
-    else if(res)
-      /* enqueue the alert (memory is disposed automatically upon failing enqueues) */
-      iface->enqueueHostAlert(alert);
+/*
+ * This method is called to update status and score of the flow
+ */
+bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t host_score_inc) {
+
+#ifdef DEBUG_SCORE
+  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Set host score", host_score_inc);
+#endif
+
+  if(alert_type.id == host_alert_normal) {
+#ifdef DEBUG_SCORE
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (normal)");
+#endif
+    return false;
   }
 
-  return res;
-#else
-  return(true);
-#endif
+  // TODO update score += host_score_inc
+
+  alerts_map.setBit(alert_type.id);
+
+  return true;
 }
+
+/* *************************************** */
+
+/*
+ * This is called by the Callback to trigger an alert
+ */
+bool Host::triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t host_score_inc) {
+  bool res;
+
+  res = setAlertsBitmap(alert_type, host_score_inc);
+
+  setPendingAlert(alert_type, alert_severity);
+
+  return res;
+}
+
+/* *************************************** */
 

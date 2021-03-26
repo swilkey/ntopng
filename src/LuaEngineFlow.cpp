@@ -35,7 +35,7 @@ static int ntop_flow_get_status(lua_State* vm) {
   Flow *f = ntop_flow_get_context_flow(vm);
   if(!f) return(CONST_LUA_ERROR);
 
-  f->getAlertBitmap().lua(vm, "alert_map");
+  f->getAlertsBitmap().lua(vm, "alert_map");
 
   return(CONST_LUA_OK);
 }

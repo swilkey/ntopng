@@ -36,37 +36,91 @@ HostCallbacksExecutor::~HostCallbacksExecutor() {
 
 /* **************************************************** */
 
-HostAlert *HostCallbacksExecutor::execCallbacks(Host *h) {
-  // HostAlertakkType predominant_alert = h->getPredominantAlert(); // TODO
-  // HostCallback *predominant_callback = NULL; // TODO
-  // std::list<HostCallback*> *callbacks = NULL; // TODO
-  HostAlert *alert = NULL;
-
+HostCallback *HostCallbacksExecutor::findCallback(HostAlert *alert) {
+  /* TODO optimize this lookup */
   for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
-    (*it)->periodicUpdate(h);
+    if((*it)->getName() == alert->getCallbackName())
+      return (*it);
+  }
+  return NULL;
+}
 
-#if TODO
-    /* Check if the callback triggered a predominant alert */
-    if (h->getPredominantAlert().id != predominant_alert.id) {
-      predominant_alert = h->getPredominantAlert();
-      predominant_callback = (*it);
-    }
-#endif
+/* **************************************************** */
+
+void HostCallbacksExecutor::execCallbacks(Host *h) {
+  std::list<HostAlert*> *engaged_alerts = h->getEngagedAlerts();
+
+  /* Reset engages alerts status - this is used to check which one should be releaed */
+  for(list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
+    HostAlert *alert = (*it);
+    alert->setReleased(); /* initializing the status to released, on trigger this is set to engaged */
   }
 
-  /* Do NOT allocate any alert, there is nothing left to do as host alerts don't have to be emitted */
-  if(ntop->getPrefs()->dontEmitHostAlerts()) return(NULL);
+  // TODO host_alert_normal
 
-#if TODO
-  /* Allocate the alert */
-  alert = predominant_callback ? predominant_callback->buildAlert(f) : NULL;
+  /* Exec all enabled callbacks */
+  for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
+    HostAlertType t = { host_alert_normal, alert_category_other };
+    HostCallback *hc = (*it);
 
-  /* If the alert has been allocated successfully, set its severity */
-  if(alert)
-    alert->setSeverity(predominant_callback->getSeverity());
-#endif
-  
-  return alert;
+    h->setPendingAlert(t, alert_level_none); /* reset */
+
+    /* TODO check if it's time for the callback to process the host,
+     * otherwise set as still engaged all engaged alerts tied this callback.
+     * Or, each plugin can declare it's periodicity (or change it with 'call me
+     * in X minuted), and the engine calls it when (at least) that time is elapsed */
+
+    /* Call Handler */
+    hc->periodicUpdate(h);
+
+    if (!ntop->getPrefs()->dontEmitHostAlerts()
+        && h->getPendingAlert().id != host_alert_normal) {
+      HostAlert *alert = NULL;
+
+      /* Check if it's already engaged */
+      alert = h->findEngagedAlert(h->getPendingAlert());
+
+      if (alert) {
+        /* Alert already engaged, update */
+        hc->updateAlert(alert);
+      } else {
+        /* Build new alert */
+        alert = hc->buildAlert(h->getPendingAlert(), h);
+
+        if (alert) {
+          /* Add to the list of engaged alerts*/
+          h->addEngagedAlert(alert);
+        }
+      }
+
+      if (alert) {
+        alert->setEngaged();
+        alert->setSeverity(h->getPendingAlertSeverity());
+
+        /* Enqueue the alert to be notified */
+        iface->enqueueHostAlert(alert);
+      }
+    }
+  }
+
+  /* Check engaged alerts to be released */
+  for(list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
+    HostAlert *alert = (*it);
+    Host *host = alert->getHost();
+
+    if (alert->isReleased()) {
+      HostCallback *hc = findCallback(alert);
+
+      /* Update alert info */
+      if (hc) hc->releaseAlert(alert);
+
+      /* Remove from the list of engaged alerts */
+      host->removeEngagedAlert(alert);
+
+      /* Enqueue the alert to be notified */
+      iface->enqueueHostAlert(alert);
+    }
+  }
 }
 
 /* **************************************************** */

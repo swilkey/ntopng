@@ -44,7 +44,15 @@ class HostCallback {
   virtual void periodicUpdate(Host *h)   {};
 
   /* Used to build an alert when triggerAlertAsync is used */
-  virtual HostAlert *buildAlert(Host *h) { return NULL; };
+  virtual HostAlert *buildAlert(HostAlertType t, Host *h) { return NULL; };
+
+  /* Used to update an alert when triggerAlertAsync is used
+   * and the alert was already present (engaged)  */
+  virtual void updateAlert(HostAlert *a) { return; };
+
+  /* Used to update an alert changing state from engaged
+   * to released */
+  virtual void releaseAlert(HostAlert *a) { return; };
 
   inline void enable()    { enabled = 1; }
   inline bool isEnabled() { return(enabled ? true : false); }
@@ -53,7 +61,7 @@ class HostCallback {
   inline void addCallback(std::list<HostCallback*> *l, NetworkInterface *iface) { l->push_back(this); }
   virtual bool loadConfiguration(json_object *config);
   
-  virtual std::string getName()        const = 0;
+  virtual std::string getName() const = 0;
 };
 
 #endif /* _HOST_CALLBACK_H_ */

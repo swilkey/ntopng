@@ -26,6 +26,7 @@
 HostAlert::HostAlert(HostCallback *c, Host *f) {
   host = f;
   severity_id = alert_level_notice;
+  released = false;
   if (c) callback_name = c->getName();
 }
 

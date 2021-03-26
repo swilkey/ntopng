@@ -470,6 +470,10 @@ typedef enum {
   host_alert_snmp_attack_mitigation    = 22,
   host_alert_unexpected_host_behavior  = 23,
   /* TODO */
+
+  MAX_DEFINED_HOST_ALERT_TYPE, /* Leave it as last member */ 
+
+  MAX_HOST_ALERT_TYPE = 127 /* Constrained by `Bitmap alert_map` inside Host.h */
 } HostAlertTypeEnum;
 
 typedef struct {
