@@ -381,7 +381,7 @@ end
 -- ##############################################
 
 function alert_consts.alertTypeLabel(v, nohtml)
-   local alert_key = alert_consts.alertTypeRaw(v)
+   local alert_key = alert_consts.getAlertType(v)
 
    if(alert_key) then
       local type_info = alert_consts.alert_types[alert_key]
@@ -506,12 +506,6 @@ function alert_consts.alertSeverityById(severity_id)
       return alert_severities.error
    end
    return(alert_severities[key])
-end
-
--- ################################################################################
- 
-function alert_consts.alertTypeRaw(type_id, alert_entity_id)
-   return alert_consts.getAlertType(type_id, alert_entity_id)
 end
 
  -- ################################################################################

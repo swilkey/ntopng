@@ -45,7 +45,7 @@ end
 -- ##############################################
 
 local function alertTypeDescription(v)
-   local alert_key = alert_consts.alertTypeRaw(v)
+   local alert_key = alert_consts.getAlertType(v)
 
    if(alert_key) then
       if alert_consts.alert_types[alert_key].format then
@@ -514,7 +514,7 @@ function alert_utils.checkDeleteStoredAlerts()
       }
 
       local type_info = {
-         alert_type = (alert_consts.alert_types[alert_consts.alertTypeRaw(_POST["alert_type"])]).meta,
+         alert_type = (alert_consts.alert_types[alert_consts.getAlertType(_POST["alert_type"])]).meta,
          alert_severity = alert_severities[alert_consts.alertSeverityRaw(_POST["alert_severity"])],
          alert_subtype = _POST["alert_subtype"],
          alert_granularity = alert_consts.alerts_granularities[alert_consts.sec2granularity(_POST["alert_granularity"])],

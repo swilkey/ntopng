@@ -64,7 +64,7 @@ local function _check_host_ip_alert_key(host_ip, alert_key)
       return false
    end
 
-   if not alert_consts.alertTypeRaw(tonumber(alert_key)) then
+   if not alert_consts.getAlertType(tonumber(alert_key)) then
       -- Invalid alert key submitted
       return false
    end
