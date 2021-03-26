@@ -4,6 +4,7 @@
 -- This file contains the alert constats
 
 local dirs = ntop.getDirs()
+package.path = dirs.installdir .. "/scripts/lua/modules/alert_keys/?.lua;" .. package.path
 package.path = dirs.installdir .. "/scripts/lua/modules/pools/?.lua;" .. package.path
 
 local alert_severities = require "alert_severities"
@@ -240,7 +241,9 @@ function alert_consts.getDefinititionDirs()
 
    return({
 	 -- Path for ntopng-defined builtin alerts
-	 os_utils.fixPath(dirs.installdir .. "/scripts/lua/modules/alert_definitions"),
+	 os_utils.fixPath(dirs.installdir .. "/scripts/lua/modules/alert_definitions/flow"),
+	 os_utils.fixPath(dirs.installdir .. "/scripts/lua/modules/alert_definitions/host"),
+	 os_utils.fixPath(dirs.installdir .. "/scripts/lua/modules/alert_definitions/other"),
 	 -- Path for user-defined alerts written in plugins
 	 os_utils.fixPath(plugins_utils.getRuntimePath() .. "/alert_definitions"),
 	  }
@@ -299,7 +302,7 @@ local function loadAlertsDefs()
 	       goto next_script
             end
 
-            if not alert_consts.loadDefinition(def_script, mod_fname, defs_dir) then
+            if not loadDefinition(def_script, mod_fname, defs_dir) then
 	       -- Retry reload
 	       package.loaded[mod_fname] = nil
 	    end
@@ -336,7 +339,7 @@ end
 
 -- ##############################################
 
-function alert_consts.loadDefinition(def_script, mod_fname, script_path)
+function loadDefinition(def_script, mod_fname, script_path)
    local required_fields = {"alert_key", "i18n_title", "icon"}
 
    -- Check the required metadata fields
@@ -347,9 +350,17 @@ function alert_consts.loadDefinition(def_script, mod_fname, script_path)
       end
    end
 
-   -- Sanity check: make sure this is a valid alert key
-   local alert_entity = def_script.meta.alert_key.entity
-   local alert_key = def_script.meta.alert_key.key
+   local alert_entity
+   if script_path:ends("/flow") then
+      alert_entity = alert_entities.flow
+   elseif script_path:ends("/host") then
+      alert_entity = alert_entities.host
+   else
+      -- TODO: migrate all. currently assumes other for non-flow non-host
+      alert_entity = alert_entities.other
+   end
+
+   local alert_key = def_script.meta.alert_key
 
    if not alert_entity or not alert_key then
       traceError(TRACE_ERROR, TRACE_CONSOLE, string.format("Invalid alert key specified %s in %s from %s", status, mod_fname, script_path))
@@ -366,7 +377,6 @@ function alert_consts.loadDefinition(def_script, mod_fname, script_path)
 
    -- Add alert metadata to the script
    def_script.meta.alert_entity = alert_entity
-   def_script.meta.alert_key = alert_key
    alert_consts.alert_types[mod_fname] = def_script
 
    if not alerts_by_id[alert_entity_id] then
