@@ -47,59 +47,69 @@ HostCallback *HostCallbacksExecutor::findCallback(HostCallbackType callback_type
 
 /* **************************************************** */
 
+bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, Host *host, time_t now) {
+  if (!callback || !host) return false; /* Safety check */
+  if (!callback->getPeriod()) return true; /* No periodicity configured - always run */
+  if (!callback->getLastCallTime(host)) return true; /* First time - run */
+  if (callback->getLastCallTime(host) + callback->getPeriod() <= now) return true; /* Timeout reached - run */
+  return false; /* Not yet */
+}
+
+/* **************************************************** */
+
 void HostCallbacksExecutor::execCallbacks(Host *h) {
   std::list<HostAlert*> *engaged_alerts = h->getEngagedAlerts();
+  time_t now = time(NULL);
 
   /* Reset engages alerts status - this is used to check which one should be releaed */
   for(list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
     HostAlert *alert = (*it);
-    alert->setReleased(); /* initializing the status to released, on trigger this is set to engaged */
+    if (isTimeToRunCallback(findCallback(alert->getCallbackType()), alert->getHost(), now))
+      alert->setReleased(); /* initializing the status to released, on trigger this is set to engaged */
   }
-
-  // TODO host_alert_normal
 
   /* Exec all enabled callbacks */
   for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
     HostAlertType t = { host_alert_normal, alert_category_other };
     HostCallback *hc = (*it);
 
-    h->setPendingAlert(t, alert_level_none); /* reset */
+    h->setPendingAlert(t, alert_level_none); /* Reset pending alert */
 
-    /* TODO check if it's time for the callback to process the host,
-     * otherwise set as still engaged all engaged alerts tied this callback.
-     * Or, each plugin can declare it's periodicity (or change it with 'call me
-     * in X minuted), and the engine calls it when (at least) that time is elapsed */
+    if (isTimeToRunCallback(hc, h, now)) { /* Time to run the callback on this host */
 
-    /* Call Handler */
-    hc->periodicUpdate(h);
+      /* Call Handler */
+      hc->periodicUpdate(h);
 
-    if (!ntop->getPrefs()->dontEmitHostAlerts()
-        && h->getPendingAlert().id != host_alert_normal) {
-      HostAlert *alert = NULL;
+      if (!ntop->getPrefs()->dontEmitHostAlerts()
+          && h->getPendingAlert().id != host_alert_normal) {
+        HostAlert *alert = NULL;
 
-      /* Check if it's already engaged */
-      alert = h->findEngagedAlert(h->getPendingAlert());
-
-      if (alert) {
-        /* Alert already engaged, update */
-        hc->updateAlert(alert);
-      } else {
-        /* Build new alert */
-        alert = hc->buildAlert(h->getPendingAlert(), h);
+        /* Check if it's already engaged */
+        alert = h->findEngagedAlert(h->getPendingAlert());
 
         if (alert) {
-          /* Add to the list of engaged alerts*/
-          h->addEngagedAlert(alert);
+          /* Alert already engaged, update */
+          hc->updateAlert(alert);
+        } else {
+          /* Build new alert */
+          alert = hc->buildAlert(h->getPendingAlert(), h);
+
+          if (alert) {
+            /* Add to the list of engaged alerts*/
+            h->addEngagedAlert(alert);
+          }
+        }
+
+        if (alert) {
+          alert->setEngaged();
+          alert->setSeverity(h->getPendingAlertSeverity());
+
+          /* Enqueue the alert to be notified */
+          iface->enqueueHostAlert(alert);
         }
       }
 
-      if (alert) {
-        alert->setEngaged();
-        alert->setSeverity(h->getPendingAlertSeverity());
-
-        /* Enqueue the alert to be notified */
-        iface->enqueueHostAlert(alert);
-      }
+      hc->setLastCallTime(h, now);
     }
   }
 
