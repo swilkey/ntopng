@@ -71,15 +71,15 @@ void HostCallbacksLoader::loadConfiguration() {
   struct json_object_iterator itEnd;
   enum json_tokener_error jerr = json_tokener_success;
   char *value = NULL;
-  u_int actual_len = ntop->getRedis()->len(HOST_CALLBACKS_CONFIG); // TODO: check if this is the right place
+  u_int actual_len = ntop->getRedis()->len(CALLBACKS_CONFIG); // TODO: check if this is the right place
 
   if((value = (char *) malloc(actual_len + 1)) == NULL) {
-    ntop->getTrace()->traceEvent(TRACE_ERROR, "Unable to allocate memory to deserialize %s", HOST_CALLBACKS_CONFIG);
+    ntop->getTrace()->traceEvent(TRACE_ERROR, "Unable to allocate memory to deserialize %s", CALLBACKS_CONFIG);
     goto out;
   }
 
-  if(ntop->getRedis()->get((char*)HOST_CALLBACKS_CONFIG, value, actual_len + 1) != 0) {
-    ntop->getTrace()->traceEvent(TRACE_ERROR, "Unable to find configuration %s", HOST_CALLBACKS_CONFIG);
+  if(ntop->getRedis()->get((char*)CALLBACKS_CONFIG, value, actual_len + 1) != 0) {
+    ntop->getTrace()->traceEvent(TRACE_ERROR, "Unable to find configuration %s", CALLBACKS_CONFIG);
     goto out;
   }
 
@@ -112,44 +112,49 @@ void HostCallbacksLoader::loadConfiguration() {
     json_object *callback_config = json_object_iter_peek_value(&it);
     json_object *json_script_conf, *json_hook_all;
 
-    if(json_object_object_get_ex(callback_config, "all", &json_hook_all)) {
-      json_object *json_enabled;
-      bool enabled;
+    /* Periodicities that are currently available for user scripts */
+    static std::map<std::string, u_int32_t> hooks = {{"min", 60}, {"5mins", 300}};
 
-      if(cb_all.find(callback_key) != cb_all.end()) {
-	HostCallback *cb = cb_all[callback_key];
+    for(std::map<std::string, u_int32_t>::const_iterator it = hooks.begin(); it != hooks.end(); ++it) {
+      if(json_object_object_get_ex(callback_config, it->first.c_str() /* This is either "min" or "5mins" */, &json_hook_all)) {
+	json_object *json_enabled;
+	bool enabled;
 
-	if(json_object_object_get_ex(json_hook_all, "enabled", &json_enabled))
-	  enabled = json_object_get_boolean(json_enabled);
-	else
-	  enabled = false;
+	if(cb_all.find(callback_key) != cb_all.end()) {
+	  HostCallback *cb = cb_all[callback_key];
 
-	if(enabled) {
-	  /* Script enabled */
-	  if(json_object_object_get_ex(json_hook_all, "script_conf", &json_script_conf)) {
-	    if(cb_all.find(callback_key) != cb_all.end()) {
-	      HostCallback *cb = cb_all[callback_key];
+	  if(json_object_object_get_ex(json_hook_all, "enabled", &json_enabled))
+	    enabled = json_object_get_boolean(json_enabled);
+	  else
+	    enabled = false;
 
-	      if(cb->loadConfiguration(json_script_conf)) {
-		ntop->getTrace()->traceEvent(TRACE_INFO, "Successfully enabled callback %s", callback_key);
-	      } else {
-		ntop->getTrace()->traceEvent(TRACE_WARNING, "Error while loading callback %s configuration",
-					     callback_key);
+	  if(enabled) {
+	    /* Script enabled */
+	    if(json_object_object_get_ex(json_hook_all, "script_conf", &json_script_conf)) {
+	      if(cb_all.find(callback_key) != cb_all.end()) {
+		HostCallback *cb = cb_all[callback_key];
+
+		if(cb->loadConfiguration(json_script_conf)) {
+		  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Successfully enabled callback %s for %s", callback_key, it->first.c_str());
+		} else {
+		  ntop->getTrace()->traceEvent(TRACE_WARNING, "Error while loading callback %s configuration for %s",
+					       callback_key, it->first.c_str());
+		}
+
+		cb->enable(it->second /* This is the periodicity in seconds */);
+		cb->scriptEnable(); 
 	      }
-
-	      cb->enable();
-	      cb->scriptEnable(); 
 	    }
+	  } else {
+	    /* Script disabled */
+	    cb->scriptDisable(); 
 	  }
 	} else {
-	  /* Script disabled */
-	  cb->scriptDisable(); 
+	  ntop->getTrace()->traceEvent(TRACE_WARNING, "Unable to find host callback  %s", callback_key);
 	}
-      } else {
-	ntop->getTrace()->traceEvent(TRACE_WARNING, "Unable to find host callback  %s", callback_key);
       }
     }
-    
+
     /* Move to the next element */
     json_object_iter_next(&it);
   } /* while */

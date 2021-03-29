@@ -28,6 +28,7 @@ class HostCallback {
  private:
   NtopngEdition callback_edition;
   u_int8_t enabled:1 /*,  _unused:7 */;
+  u_int32_t periodicity_secs;
 
  protected:
   AlertLevel severity_id;
@@ -51,7 +52,7 @@ class HostCallback {
    * an alert is released (a->isReleased()) is set in that case  */
   virtual void updateAlert(HostAlert *a) { return; };
 
-  inline void enable()    { enabled = 1; }
+  inline void enable(u_int32_t _periodicity_secs) { enabled = 1; periodicity_secs = _periodicity_secs; }
   inline bool isEnabled() { return(enabled ? true : false); }
   virtual AlertLevel getSeverity() { return severity_id; }
 
