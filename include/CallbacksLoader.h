@@ -19,26 +19,24 @@
  *
  */
 
-#ifndef _HOST_CALLBACKS_LOADER_H_
-#define _HOST_CALLBACKS_LOADER_H_
+#ifndef _CALLBACKS_LOADER_H_
+#define _CALLBACKS_LOADER_H_
 
 #include "ntop_includes.h"
 
-class HostCallbacksLoader : public CallbacksLoader {
+class CallbacksLoader {
  private:
-  /* These are callback instances, that is classes instantiated at runtime each one with a given configuration */
-  std::map<std::string, HostCallback*> cb_all; /* All the callbacks instantiated */
+  NtopngEdition callbacks_edition;
 
-  void registerCallbacks();
-  void loadConfiguration();
+  virtual void registerCallbacks() = 0; /* Method called at runtime to register callbacks */
+  virtual void loadConfiguration() = 0;
 
  public:
-  HostCallbacksLoader();
-  virtual ~HostCallbacksLoader();
+  CallbacksLoader();
+  virtual ~CallbacksLoader();
 
-  void printCallbacks();
-
-  std::list<HostCallback*>* getCallbacks(NetworkInterface *iface);
+  inline void initialize() { registerCallbacks(); loadConfiguration();   };
+  inline NtopngEdition getCallbacksEdition() { return callbacks_edition; };
 };
 
-#endif /* _HOST_CALLBACKS_LOADER_H_ */
+#endif /* _CALLBACKS_LOADER_H_ */

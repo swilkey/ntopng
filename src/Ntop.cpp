@@ -2619,6 +2619,7 @@ void Ntop::checkReloadFlowCallbacks() {
       return;
     }
 
+    tmp_flow_callbacks_loader->initialize();
     old = flow_callbacks_loader;
 
     /* Pass the newly allocated loader to all interfaces so they will update their callbacks */
@@ -2654,6 +2655,7 @@ void Ntop::checkReloadHostCallbacks() {
       return;
     }
 
+    tmp_host_callbacks_loader->initialize();
     old = host_callbacks_loader;
 
     /* Pass the newly allocated loader to all interfaces so they will update their callbacks */

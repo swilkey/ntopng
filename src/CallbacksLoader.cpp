@@ -19,26 +19,24 @@
  *
  */
 
-#ifndef _HOST_CALLBACKS_LOADER_H_
-#define _HOST_CALLBACKS_LOADER_H_
-
 #include "ntop_includes.h"
+#include "flow_callbacks_includes.h"
 
-class HostCallbacksLoader : public CallbacksLoader {
- private:
-  /* These are callback instances, that is classes instantiated at runtime each one with a given configuration */
-  std::map<std::string, HostCallback*> cb_all; /* All the callbacks instantiated */
+/* **************************************************** */
 
-  void registerCallbacks();
-  void loadConfiguration();
+CallbacksLoader::CallbacksLoader(){
+  /* Set the ntopng version matching the loaded callbacks */
+  if (ntop->getPrefs()->is_enterprise_l_edition())
+    callbacks_edition = ntopng_edition_enterprise_l;
+  else if (ntop->getPrefs()->is_enterprise_m_edition())	  
+    callbacks_edition = ntopng_edition_enterprise_m;
+  else if (ntop->getPrefs()->is_pro_edition())
+    callbacks_edition = ntopng_edition_pro;
+  else
+    callbacks_edition = ntopng_edition_community;
+}
 
- public:
-  HostCallbacksLoader();
-  virtual ~HostCallbacksLoader();
+/* **************************************************** */
 
-  void printCallbacks();
-
-  std::list<HostCallback*>* getCallbacks(NetworkInterface *iface);
-};
-
-#endif /* _HOST_CALLBACKS_LOADER_H_ */
+CallbacksLoader::~CallbacksLoader() {
+}
