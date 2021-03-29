@@ -390,8 +390,8 @@ end
  
 -- ##############################################
 
-function alert_consts.alertTypeLabel(v, nohtml)
-   local alert_key = alert_consts.getAlertType(v)
+function alert_consts.alertTypeLabel(v, nohtml, alert_entity_id)
+   local alert_key = alert_consts.getAlertType(v, alert_entity_id)
 
    if(alert_key) then
       local type_info = alert_consts.alert_types[alert_key]

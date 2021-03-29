@@ -1627,7 +1627,7 @@ void Host::alert2JSON(HostAlert *alert, ndpi_serializer *s) {
 
   /* See AlertableEntity::luaAlert */
   ndpi_serialize_string_int32(s, "alert_type", alert->getAlertType().id);
-  // lua_push_str_table_entry(s,    "alert_subtype", "");
+  ndpi_serialize_string_string(s, "alert_subtype", "" /* No subtype for hosts */);
   ndpi_serialize_string_int32(s, "alert_severity", alert->getSeverity());
   ndpi_serialize_string_int32(s, "alert_entity", alert_entity_host);
   ndpi_serialize_string_string(s, "alert_entity_val", get_hostkey(buf, sizeof(buf), true /* Force vlan */));

@@ -44,8 +44,8 @@ end
 
 -- ##############################################
 
-local function alertTypeDescription(v)
-   local alert_key = alert_consts.getAlertType(v)
+local function alertTypeDescription(v, alert_entity_id)
+   local alert_key = alert_consts.getAlertType(v, alert_entity_id)
 
    if(alert_key) then
       if alert_consts.alert_types[alert_key].format then
@@ -1321,7 +1321,7 @@ function releaseAlert(idx) {
         sev_menu_entries = menuEntriesToDbFormat(res.severities)
         --l7_proto_entries = menuEntriesToDbFormat(res.l7_proto)
 	       end
-       end
+	    end
        
        print(drawDropdown(t["status"], "type", a_type, alert_types, i18n("alerts_dashboard.alert_type"), get_params, type_menu_entries))
        if t["status"] == "historical-flows" then
@@ -2011,7 +2011,7 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   msg = alert_json
-  local description = alertTypeDescription(alert.alert_type)
+  local description = alertTypeDescription(alert.alert_type, alert.alert_entity)
 
   if(type(description) == "string") then
      -- localization string
@@ -2034,7 +2034,7 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   if(msg) then
-     if(alert_consts.getAlertType(alert.alert_type) == "alert_am_threshold_cross") then
+     if(alert_consts.getAlertType(alert.alert_type, alert.alert_entity) == "alert_am_threshold_cross") then
       local plugins_utils = require "plugins_utils"
       local active_monitoring_utils = plugins_utils.loadModule("active_monitoring", "am_utils")
       local host = active_monitoring_utils.key2host(alert.alert_entity_val)

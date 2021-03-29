@@ -36,16 +36,17 @@ void SYNFlood::periodicUpdate(Host *h) {
 
   if((attacker_hits = h->syn_flood_attacker_hits()))
     h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, score_inc); /* Trigger SYN flood attacker alert, with attcker_hits */
-
-  /* Reset counters once done */
-  h->reset_syn_flood_hits();
 }
 
 /* ***************************************************** */
 
 HostAlert *SYNFlood::buildAlert(HostAlertType t, Host *h) {
-  // TODO: return also SYNFloodVictimAlert
-  return new SYNFloodAttackerAlert(this, h);
+  SYNFloodAttackerAlert *res = new SYNFloodAttackerAlert(this, h);
+
+  /* Reset counters once done */
+  h->reset_syn_flood_hits();
+  
+  return res;
 }
 
 /* ***************************************************** */
