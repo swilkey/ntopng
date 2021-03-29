@@ -29,7 +29,7 @@ void ThroughputHostCallback::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *ThroughputHostCallback::buildAlert(Host *h) {
+HostAlert *ThroughputHostCallback::buildAlert(HostAlertType t, Host *h) {
   return new ThroughputAlert(this, h);
 }
 

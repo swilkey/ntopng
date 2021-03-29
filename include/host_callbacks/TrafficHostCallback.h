@@ -31,12 +31,14 @@ public:
    TrafficHostCallback() : HostCallback(ntopng_edition_community) {};
   ~TrafficHostCallback() {};
 
-  HostAlert *buildAlert(Host *h);
+  HostAlert *buildAlert(HostAlertType t, Host *h);
+  void updateAlert(HostAlert *a);
 
   void periodicUpdate(Host *h);
 
   bool loadConfiguration(json_object *config);  
 
+  HostCallbackType getType() const { return host_callback_traffic_host; }
   std::string getName()        const { return(std::string("bytes")); }
 };
 

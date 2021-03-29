@@ -31,12 +31,13 @@ public:
    SYNFlood() : HostCallback(ntopng_edition_community) {};
   ~SYNFlood() {};
 
-  HostAlert *buildAlert(Host *h);
+  HostAlert *buildAlert(HostAlertType t, Host *h);
 
   void periodicUpdate(Host *h);
 
   bool loadConfiguration(json_object *config);  
 
+  HostCallbackType getType() const { return host_callback_syn_flood; }
   std::string getName()        const { return(std::string("syn_flood")); }
 };
 

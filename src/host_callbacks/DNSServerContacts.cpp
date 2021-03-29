@@ -29,7 +29,7 @@ void DNSServerContacts::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *DNSServerContacts::buildAlert(Host *h) {
+HostAlert *DNSServerContacts::buildAlert(HostAlertType t, Host *h) {
   return new DNSServerContactsAlert(this, h);
 }
 

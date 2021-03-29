@@ -29,7 +29,7 @@ void DNSTraffic::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *DNSTraffic::buildAlert(Host *h) {
+HostAlert *DNSTraffic::buildAlert(HostAlertType t, Host *h) {
   return new DNSTrafficAlert(this, h);
 }
 

@@ -29,7 +29,7 @@ void SYNFlood::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *SYNFlood::buildAlert(Host *h) {
+HostAlert *SYNFlood::buildAlert(HostAlertType t, Host *h) {
   // TODO: return also SYNFloodVictimAlert
   return new SYNFloodAttackerAlert(this, h);
 }

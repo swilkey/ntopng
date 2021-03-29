@@ -50,6 +50,7 @@ class FlowAlert;
 class HostAlert;
 class FlowCallbacksLoader;
 class FlowCallbacksExecutor;
+class HostCallback;
 class HostCallbacksLoader;
 class HostCallbacksExecutor;
 
@@ -1004,6 +1005,7 @@ class NetworkInterface : public AlertableEntity {
     Same as above but for hosts */
   u_int64_t dequeueHostAlertsFromCallbacks(u_int budget);
   inline HostCallbacksExecutor* getHostCallbackExecutor() { return(host_callbacks_executor); }
+  HostCallback *findCallback(HostCallbackType t);
 };
 
 #endif /* _NETWORK_INTERFACE_H_ */

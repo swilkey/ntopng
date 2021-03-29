@@ -31,13 +31,14 @@ public:
    DNSServerContacts() : HostCallback(ntopng_edition_community) {};
   ~DNSServerContacts() {};
 
-  HostAlert *buildAlert(Host *h);
+  HostAlert *buildAlert(HostAlertType t, Host *h);
 
   void periodicUpdate(Host *h);
 
   bool loadConfiguration(json_object *config);  
 
-  std::string getName()        const { return(std::string("dns_contacts")); }
+  HostCallbackType getType() const { return host_callback_dns_server_contacts; }
+  std::string getName()      const { return(std::string("dns_contacts")); }
 };
 
 #endif

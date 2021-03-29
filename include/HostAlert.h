@@ -31,7 +31,7 @@ class HostAlert {
   Host *host;
   AlertLevel severity_id;
   bool released;
-  std::string callback_name;
+  HostCallbackType callback_type;
 
   /* 
      Adds to the passed `serializer` (generated with `getAlertSerializer`) information specific to this alert
@@ -50,7 +50,7 @@ class HostAlert {
 
   inline AlertLevel    getSeverity()  const { return(severity_id); }  
   inline Host *getHost() const { return(host); }
-  inline std::string getCallbackName() const { return(callback_name); }
+  inline HostCallbackType getCallbackType() const { return(callback_type); }
 
   inline void setEngaged()  { released = false; }
   inline void setReleased() { released = true; }

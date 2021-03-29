@@ -8906,6 +8906,12 @@ void NetworkInterface::incrOS(char *hostname) {
 
 /* *************************************** */
 
+HostCallback *NetworkInterface::findCallback(HostCallbackType t) {
+  return(host_callbacks_executor->findCallback(t)); 
+}
+
+/* *************************************** */
+
 void NetworkInterface::execProtocolDetectedCallbacks(Flow *f) {
   if(flow_callbacks_executor) {
     FlowAlert *alert = flow_callbacks_executor->execCallbacks(f, flow_callback_protocol_detected);

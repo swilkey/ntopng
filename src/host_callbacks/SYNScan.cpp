@@ -29,7 +29,7 @@ void SYNScan::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *SYNScan::buildAlert(Host *h) {
+HostAlert *SYNScan::buildAlert(HostAlertType t, Host *h) {
   // TODO: return also SYNScanVictimAlert
   return new SYNScanAttackerAlert(this, h);
 }

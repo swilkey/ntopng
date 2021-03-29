@@ -31,13 +31,14 @@ public:
    DNSTraffic() : HostCallback(ntopng_edition_community) {};
   ~DNSTraffic() {};
 
-  HostAlert *buildAlert(Host *h);
+  HostAlert *buildAlert(HostAlertType t, Host *h);
 
   void periodicUpdate(Host *h);
 
   bool loadConfiguration(json_object *config);  
 
-  std::string getName()        const { return(std::string("dns")); }
+  HostCallbackType getType() const { return host_callback_dns_traffic; }
+  std::string getName()      const { return(std::string("dns")); }
 };
 
 #endif

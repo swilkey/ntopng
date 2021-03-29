@@ -31,12 +31,13 @@ public:
    SYNScan() : HostCallback(ntopng_edition_community) {};
   ~SYNScan() {};
 
-  HostAlert *buildAlert(Host *h);
+  HostAlert *buildAlert(HostAlertType t, Host *h);
 
   void periodicUpdate(Host *h);
 
   bool loadConfiguration(json_object *config);  
 
+  HostCallbackType getType() const { return host_callback_syn_scan; }
   std::string getName()        const { return(std::string("syn_scan")); }
 };
 

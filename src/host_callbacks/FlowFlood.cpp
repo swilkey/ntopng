@@ -29,7 +29,7 @@ void FlowFlood::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *FlowFlood::buildAlert(Host *h) {
+HostAlert *FlowFlood::buildAlert(HostAlertType t, Host *h) {
   // TODO: return also FlowFloodVictimAlert
   return new FlowFloodAttackerAlert(this, h);
 }

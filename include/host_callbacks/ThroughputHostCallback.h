@@ -31,12 +31,13 @@ public:
    ThroughputHostCallback() : HostCallback(ntopng_edition_community) {};
   ~ThroughputHostCallback() {};
 
-  HostAlert *buildAlert(Host *h);
+  HostAlert *buildAlert(HostAlertType t, Host *h);
 
   void periodicUpdate(Host *h);
 
   bool loadConfiguration(json_object *config);  
 
+  HostCallbackType getType() const { return host_callback_throughput_host; } 
   std::string getName()        const { return(std::string("throughput")); }
 };
 

@@ -29,7 +29,7 @@ void SMTPServerContacts::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *SMTPServerContacts::buildAlert(Host *h) {
+HostAlert *SMTPServerContacts::buildAlert(HostAlertType t, Host *h) {
   return new SMTPServerContactsAlert(this, h);
 }
 

@@ -29,7 +29,7 @@ void UnexpectedHostBehaviour::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *UnexpectedHostBehaviour::buildAlert(Host *h) {
+HostAlert *UnexpectedHostBehaviour::buildAlert(HostAlertType t, Host *h) {
   return new UnexpectedHostBehaviourAlert(this, h);
 }
 

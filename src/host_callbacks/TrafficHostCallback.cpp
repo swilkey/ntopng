@@ -41,13 +41,7 @@ HostAlert *TrafficHostCallback::buildAlert(HostAlertType alert_type, Host *h) {
 /* ***************************************************** */
 
 void TrafficHostCallback::updateAlert(HostAlert *a) {
-  /* TODO update alert already engaged */
-}
-
-/* ***************************************************** */
-
-void TrafficHostCallback::releaseAlert(HostAlert *a) {
-  /* TODO update alert being released */
+  /* TODO update alert already engaged or released (see a->isReleased()) */
 }
 
 /* ***************************************************** */

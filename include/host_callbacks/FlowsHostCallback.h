@@ -31,12 +31,13 @@ public:
    FlowsHostCallback() : HostCallback(ntopng_edition_community) {};
   ~FlowsHostCallback() {};
 
-  HostAlert *buildAlert(Host *h);
+  HostAlert *buildAlert(HostAlertType t, Host *h);
 
   void periodicUpdate(Host *h);
 
   bool loadConfiguration(json_object *config);  
 
+  HostCallbackType getType() const { return host_callback_flows_host; }
   std::string getName()        const { return(std::string("flows")); }
 };
 

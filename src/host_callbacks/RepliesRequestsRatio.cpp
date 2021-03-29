@@ -29,7 +29,7 @@ void RepliesRequestsRatio::periodicUpdate(Host *h) {
 
 /* ***************************************************** */
 
-HostAlert *RepliesRequestsRatio::buildAlert(Host *h) {
+HostAlert *RepliesRequestsRatio::buildAlert(HostAlertType t, Host *h) {
   return new RepliesRequestsRatioAlert(this, h);
 }
 

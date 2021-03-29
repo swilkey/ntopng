@@ -36,10 +36,10 @@ HostCallbacksExecutor::~HostCallbacksExecutor() {
 
 /* **************************************************** */
 
-HostCallback *HostCallbacksExecutor::findCallback(HostAlert *alert) {
+HostCallback *HostCallbacksExecutor::findCallback(HostCallbackType callback_type) {
   /* TODO optimize this lookup */
   for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
-    if((*it)->getName() == alert->getCallbackName())
+    if((*it)->getType() == callback_type)
       return (*it);
   }
   return NULL;
@@ -109,10 +109,10 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     Host *host = alert->getHost();
 
     if (alert->isReleased()) {
-      HostCallback *hc = findCallback(alert);
+      HostCallback *hc = findCallback(alert->getCallbackType());
 
       /* Update alert info */
-      if (hc) hc->releaseAlert(alert);
+      if (hc) hc->updateAlert(alert);
 
       /* Remove from the list of engaged alerts */
       host->removeEngagedAlert(alert);

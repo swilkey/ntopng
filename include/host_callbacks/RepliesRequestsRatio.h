@@ -31,12 +31,13 @@ public:
    RepliesRequestsRatio() : HostCallback(ntopng_edition_community) {};
   ~RepliesRequestsRatio() {};
 
-  HostAlert *buildAlert(Host *h);
+  HostAlert *buildAlert(HostAlertType t, Host *h);
 
   void periodicUpdate(Host *h);
 
   bool loadConfiguration(json_object *config);  
 
+  HostCallbackType getType() const { return host_callback_replies_requests_ratio; }
   std::string getName()        const { return(std::string("request_reply_ratio")); }
 };
 
