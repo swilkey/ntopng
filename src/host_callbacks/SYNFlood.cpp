@@ -25,6 +25,19 @@
 /* ***************************************************** */
 
 void SYNFlood::periodicUpdate(Host *h) {
+  char buf[64];
+
+  ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
+  u_int16_t victim_hits, attacker_hits;
+
+  if((victim_hits = h->syn_flood_victim_hits()))
+    ; /* Trigger SYN flood victim alert, with victim_hits */
+
+  if((attacker_hits = h->syn_flood_attacker_hits()))
+    ; /* Trigger SYN flood attacker alert, with attcker_hits */
+
+  /* Reset counters once done */
+  h->reset_syn_flood_hits();
 }
 
 /* ***************************************************** */

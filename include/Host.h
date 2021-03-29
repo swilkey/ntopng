@@ -307,6 +307,10 @@ class Host : public GenericHashEntry, public AlertableEntity {
     if(as) as->updateRoundTripTime(rtt_msecs);
   }
 
+  inline u_int16_t syn_flood_victim_hits()   const { return syn_flood_victim_alert ? syn_flood_victim_alert->hits() : 0;     };
+  inline u_int16_t syn_flood_attacker_hits() const { return syn_flood_attacker_alert ? syn_flood_attacker_alert->hits() : 0; };
+  inline void reset_syn_flood_hits() { if(syn_flood_victim_alert) syn_flood_victim_alert->reset_hits(); if(syn_flood_attacker_alert) syn_flood_attacker_alert->reset_hits(); };
+
   void incNumFlows(time_t t, bool as_client);
   void decNumFlows(time_t t, bool as_client);
   inline void incNumAlertedFlows(bool as_client) { active_alerted_flows++; if(stats) stats->incNumAlertedFlows(as_client); }
@@ -373,6 +377,7 @@ class Host : public GenericHashEntry, public AlertableEntity {
   void checkDataReset();
   void checkBroadcastDomain();
   bool hasAnomalies() const;
+  void housekeep(time_t t); /* Virtual method, called in the datapath from GenericHash::purgeIdle */
   void housekeepAlerts(ScriptPeriodicity p);
   virtual void inlineSetOSDetail(const char *detail) { }
   virtual const char* getOSDetail(char * const buf, ssize_t buf_len);

@@ -117,13 +117,27 @@ void Host::updateSynAckAlertsCounter(time_t when, bool synack_sent) {
 
 /* *************************************** */
 
+/*
+  This method is executed in the thread which processes packets/flows
+  so it must be ultra-fast. Do NOT perform any time-consuming operation here.
+ */
+void Host::housekeep(time_t t) {  
+  switch(get_state()) {
+  case hash_entry_state_active:
+    iface->execHostCallbacks(this);
+    break;
+  default:
+    break;
+  }
+}
+
+/* *************************************** */
+
 void Host::housekeepAlerts(ScriptPeriodicity p) {
   switch(p) {
   case minute_script:
     flow_flood_attacker_alert->reset_hits(),
-      flow_flood_victim_alert->reset_hits(),
-      syn_flood_attacker_alert->reset_hits(),
-      syn_flood_victim_alert->reset_hits();
+      flow_flood_victim_alert->reset_hits();
       syn_sent_last_min = synack_recvd_last_min = 0;
       syn_recvd_last_min = synack_sent_last_min = 0;
     break;
