@@ -31,7 +31,7 @@ class HostCallbackStatus {
 
  public:
   HostCallbackStatus(HostCallback *cb) { callback_type = cb->getType(); last_call = 0; }
-  virtual ~HostCallbackStatus();
+  virtual ~HostCallbackStatus() {};
 
   virtual void setLastCallTime(time_t now) { last_call = now; }
   virtual time_t getLastCallTime() { return last_call; }
