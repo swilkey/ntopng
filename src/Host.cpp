@@ -24,7 +24,7 @@
 /* *************************************** */
 
 Host::Host(NetworkInterface *_iface, char *ipAddress, u_int16_t _vlanId) : GenericHashEntry(_iface),
-									   AlertableEntity(_iface, alert_entity_host) {
+									   HostAlertableEntity(_iface, alert_entity_host) {
   ip.set(ipAddress);
   initialize(NULL, _vlanId);
 }
@@ -32,7 +32,7 @@ Host::Host(NetworkInterface *_iface, char *ipAddress, u_int16_t _vlanId) : Gener
 /* *************************************** */
 
 Host::Host(NetworkInterface *_iface, Mac *_mac,
-	   u_int16_t _vlanId, IpAddress *_ip) : GenericHashEntry(_iface), AlertableEntity(_iface, alert_entity_host) {
+	   u_int16_t _vlanId, IpAddress *_ip) : GenericHashEntry(_iface), HostAlertableEntity(_iface, alert_entity_host) {
   ip.set(_ip);
 
 #ifdef BROADCAST_DEBUG
@@ -570,15 +570,6 @@ void Host::lua_get_time(lua_State* vm) const {
 /* ***************************************************** */
 
 void Host::lua_get_num_alerts(lua_State* vm) const {
-  lua_newtable(vm);
-  lua_push_uint64_table_entry(vm, "min", getNumEngagedAlerts(minute_script));
-  lua_push_uint64_table_entry(vm, "5mins", getNumEngagedAlerts(five_minute_script));
-  lua_push_uint64_table_entry(vm, "hour", getNumEngagedAlerts(hour_script));
-  lua_push_uint64_table_entry(vm, "day", getNumEngagedAlerts(day_script));
-  lua_pushstring(vm, "num_triggered_alerts");
-  lua_insert(vm, -2);
-  lua_settable(vm, -3);
-
   lua_push_uint64_table_entry(vm, "num_alerts", getNumEngagedAlerts());
   lua_push_uint64_table_entry(vm, "active_alerted_flows", getNumAlertedFlows());
 

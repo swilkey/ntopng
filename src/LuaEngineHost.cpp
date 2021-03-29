@@ -63,6 +63,7 @@ static int ntop_host_get_all_fields(lua_State* vm) {
 /* ****************************************** */
 
 static int ntop_host_get_cached_alert_value(lua_State* vm) {
+#if 0 /* No longer used */
   struct ntopngLuaContext *c = getLuaVMContext(vm);
   Host *h = c ? c->host : NULL;
   char *key;
@@ -83,11 +84,15 @@ static int ntop_host_get_cached_alert_value(lua_State* vm) {
   lua_pushstring(vm, val.c_str());
 
   return(CONST_LUA_OK);
+#else
+  return(CONST_LUA_ERROR);
+#endif
 }
 
 /* ****************************************** */
 
 static int ntop_host_set_cached_alert_value(lua_State* vm) {
+#if 0 /* No longer used */
   struct ntopngLuaContext *c = getLuaVMContext(vm);
   Host *h = c ? c->host : NULL;
   char *key, *value;
@@ -111,6 +116,7 @@ static int ntop_host_set_cached_alert_value(lua_State* vm) {
 
   h->setAlertCacheValue(std::string(key), std::string(value), periodicity);
   lua_pushnil(vm);
+#endif
 
   return(CONST_LUA_OK);
 }
@@ -426,6 +432,7 @@ static int ntop_host_get_behaviour_info(lua_State* vm) {
 /* ****************************************** */
 
 int ntop_store_triggered_alert(lua_State* vm, AlertableEntity *alertable, int idx) {
+#if 0 /* No longer used */
   struct ntopngLuaContext *c = getLuaVMContext(vm);
   char *key, *alert_subtype, *alert_json;
   ScriptPeriodicity periodicity;
@@ -459,6 +466,7 @@ int ntop_store_triggered_alert(lua_State* vm, AlertableEntity *alertable, int id
 
   if(triggered && (host = dynamic_cast<Host*>(alertable)))
     host->incTotalAlerts();
+#endif
 
   return(CONST_LUA_OK);
 }
@@ -466,6 +474,7 @@ int ntop_store_triggered_alert(lua_State* vm, AlertableEntity *alertable, int id
 /* ****************************************** */
 
 int ntop_release_triggered_alert(lua_State* vm, AlertableEntity *alertable, int idx) {
+#if 0 /* No longer used */
   struct ntopngLuaContext *c = getLuaVMContext(vm);
   char *key;
   ScriptPeriodicity periodicity;
@@ -484,6 +493,7 @@ int ntop_release_triggered_alert(lua_State* vm, AlertableEntity *alertable, int 
 
   /* The released alert will be pushed to LUA */
   alertable->releaseAlert(vm, std::string(key), periodicity, when);
+#endif
 
   return(CONST_LUA_OK);
 }

@@ -19,41 +19,24 @@
  *
  */
 
-#ifndef _ALERTABLE_ENTITY_H_
-#define _ALERTABLE_ENTITY_H_
+#ifndef _HOST_ALERTABLE_ENTITY_H_
+#define _HOST_ALERTABLE_ENTITY_H_
 
 #include "ntop_includes.h"
 
 class NetworkInterface;
 
-class AlertableEntity {
+class HostAlertableEntity : public AlertableEntity {
  private:
-  AlertEntity entity_type;
-  std::string entity_val;
-  NetworkInterface *alert_iface;
 
-  std::atomic<u_int> num_engaged_alerts;
+public:
+  HostAlertableEntity(NetworkInterface *alert_iface, AlertEntity entity);
+  virtual ~HostAlertableEntity();
 
- protected:
-  void incNumAlertsEngaged();
-  void decNumAlertsEngaged();
-
- public:
-  AlertableEntity(NetworkInterface *alert_iface, AlertEntity entity);
-  virtual ~AlertableEntity();
-
-  inline void setEntityValue(const char *ent_val) { entity_val = ent_val; }
-  inline std::string getEntityValue() const { return(entity_val); }
-
-  inline AlertEntity getEntityType()  const { return(entity_type); }
-
-  inline u_int getNumEngagedAlerts()  const { return(num_engaged_alerts); }
-
-  virtual void countAlerts(grouped_alerts_counters *counters) {};
-  virtual void getAlerts(lua_State* vm, ScriptPeriodicity p, 
+  //TODO
+  void countAlerts(grouped_alerts_counters *counters) {};
+  void getAlerts(lua_State* vm, ScriptPeriodicity p,
     AlertType type_filter, AlertLevel severity_filter, u_int *idx) {};
-
-  bool matchesAllowedNetworks(AddressTree *allowed_nets);
 };
 
 #endif

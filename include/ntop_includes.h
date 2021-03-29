@@ -219,6 +219,8 @@ using namespace std;
 #include "FrequentStringItems.h"
 #include "Alert.h"
 #include "AlertableEntity.h"
+#include "HostAlertableEntity.h"
+#include "OtherAlertableEntity.h"
 #include "Trace.h"
 #include "ProtoStats.h"
 #include "Utils.h"

@@ -28,7 +28,7 @@ class HostAlert;
 class HostCallback;
 class HostCallbackStatus;
 
-class Host : public GenericHashEntry, public AlertableEntity {
+class Host : public GenericHashEntry, public HostAlertableEntity {
  protected:
   IpAddress ip;
   Mac *mac;
