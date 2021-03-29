@@ -877,7 +877,6 @@ function user_scripts.runPeriodicScripts()
    if table.len(requested) > 0 then
       interface.checkInterfaceAlerts(requested["min"], requested["5mins"], requested["hour"], requested["day"])
       interface.checkNetworksAlerts(requested["min"], requested["5mins"], requested["hour"], requested["day"])
-      interface.checkHostsAlerts(requested["min"], requested["5mins"], requested["hour"], requested["day"])
    end
 end
 

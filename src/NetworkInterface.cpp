@@ -8155,47 +8155,6 @@ static void handle_entity_alerts(AlertCheckLuaEngine *acle, AlertableEntity *ent
 
 /* *************************************** */
 
-static bool host_alert_check(GenericHashEntry *h, void *user_data, bool *matched) {
-  vector<AlertCheckLuaEngine*> *acles = static_cast<vector<AlertCheckLuaEngine *>*>(user_data);
-  Host *host = (Host*)h;
-
-  for(vector<AlertCheckLuaEngine*>::const_iterator acle = acles->begin(); acle != acles->end(); ++acle) {
-    (*acle)->setHost(host);
-    handle_entity_alerts(*acle, host);
-
-    host->housekeepAlerts((*acle)->getPeriodicity() /* periodicity */);
-  }
-
-  /* Stop as soon as a shutdown is in progress or the process
-     could hang for too long. */
-  return ntop->getGlobals()->isShutdownRequested();
-}
-
-/* *************************************** */
-
-void NetworkInterface::checkHostsAlerts(vector<ScriptPeriodicity> *p, lua_State* vm) {
-  u_int32_t begin_slot = 0;
-  vector<AlertCheckLuaEngine*>acles;
-
-  if(!p || p->size() == 0)
-    return;
-
-  for(vector<ScriptPeriodicity>::const_iterator it = p->begin(); it != p->end(); ++it) {
-    AlertCheckLuaEngine *acle = new (nothrow) AlertCheckLuaEngine(alert_entity_host, *it, this, vm);
-
-    if(acle)
-      acles.push_back(acle);
-  }
-
-  /* ... then iterate all hosts */
-  walker(&begin_slot, true /* walk_all */, walker_hosts, host_alert_check, &acles);
-
-  for(vector<AlertCheckLuaEngine*>::const_iterator it = acles.begin(); it != acles.end(); ++it)
-    delete *it;
-}
-
-/* *************************************** */
-
 void NetworkInterface::checkNetworksAlerts(vector<ScriptPeriodicity> *p, lua_State* vm) {
   u_int8_t num_local_networks = ntop->getNumLocalNetworks();
 
