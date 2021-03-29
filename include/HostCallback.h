@@ -52,9 +52,6 @@ class HostCallback {
    * an alert is released (a->isReleased()) is set in that case  */
   virtual void updateAlert(HostAlert *a) { return; };
 
-  virtual void setLastCallTime(Host *h, time_t now) {}
-  virtual time_t getLastCallTime(Host *h) { return 0; }
-
   virtual u_int32_t getPeriod() { return periodicity_secs; }
 
   inline void enable(u_int32_t _periodicity_secs) { enabled = 1; periodicity_secs = _periodicity_secs; }
@@ -63,6 +60,8 @@ class HostCallback {
 
   inline void addCallback(std::list<HostCallback*> *l, NetworkInterface *iface) { l->push_back(this); }
   virtual bool loadConfiguration(json_object *config);
+
+  virtual HostCallbackStatus *getStatus(Host *h, bool create = false);
 
   virtual HostCallbackType getType() const = 0;  
   virtual std::string getName() const = 0;

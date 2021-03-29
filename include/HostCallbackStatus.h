@@ -19,30 +19,24 @@
  *
  */
 
-#ifndef _HOST_CALLBACKS_EXECUTOR_H_
-#define _HOST_CALLBACKS_EXECUTOR_H_
+#ifndef _HOST_CALLBACK_STATUS_H_
+#define _HOST_CALLBACK_STATUS_H_
 
 #include "ntop_includes.h"
 
-class Host;
-
-class HostCallbacksExecutor { /* One instance per ntopng Interface */
+class HostCallbackStatus {
  private:
-  NetworkInterface *iface;
-  std::list<HostCallback*> *periodic_host_cb;
-  HostCallback *host_cb_arr[NUM_DEFINED_HOST_CALLBACKS];
-
-  void loadHostCallbacksAlerts(std::list<HostCallback*> *cb_list);
-  void loadHostCallbacks(HostCallbacksLoader *fcl);
-
-  bool isTimeToRunCallback(HostCallback *callback, HostCallbackStatus *status, time_t now);
+  HostCallbackType callback_type;
+  time_t last_call;
 
  public:
-  HostCallbacksExecutor(HostCallbacksLoader *fcl, NetworkInterface *_iface);
-  virtual ~HostCallbacksExecutor();
+  HostCallbackStatus(HostCallback *cb) { callback_type = cb->getType(); last_call = 0; }
+  virtual ~HostCallbackStatus();
 
-  HostCallback *getCallback(HostCallbackType t) { return host_cb_arr[t]; }
-  void execCallbacks(Host *h);
+  virtual void setLastCallTime(time_t now) { last_call = now; }
+  virtual time_t getLastCallTime() { return last_call; }
+
+  virtual HostCallbackType getCallbackType() { return callback_type; };
 };
 
-#endif /* _HOST_CALLBACKS_EXECUTOR_H_ */
+#endif /* _HOST_CALLBACK_STATUS_H_ */

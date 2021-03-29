@@ -44,25 +44,18 @@ void HostCallbacksExecutor::loadHostCallbacks(HostCallbacksLoader *fcl) {
 
   /* Initialize callbacks array for quick lookup */
   for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
-    HostCallback *hc = (*it);
-    host_cb_arr[hc->getType()] = hc;
+    HostCallback *cb = (*it);
+    host_cb_arr[cb->getType()] = cb;
   }
 }
 
 /* **************************************************** */
 
-bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, Host *host, time_t now) {
-  if (callback && host) {
-    char buf[64];
-    host->get_ip()->print(buf, sizeof(buf));
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "isTimeToRunCallback(%s) period = %u last = %u now = %u",
-      buf, callback->getPeriod(), callback->getLastCallTime(host), now);
-  }
-
-  if (!callback || !host) return false; /* Safety check */
+bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, HostCallbackStatus *status, time_t now) {
+  if (!callback) return false; /* Callback not available */
   if (!callback->getPeriod()) return true; /* No periodicity configured - always run */
-  if (!callback->getLastCallTime(host)) return true; /* First time - run */
-  if (callback->getLastCallTime(host) + callback->getPeriod() <= now) return true; /* Timeout reached - run */
+  if (!status || !status->getLastCallTime()) return true; /* First time - run */
+  if (status->getLastCallTime() + callback->getPeriod() <= now) return true; /* Timeout reached - run */
   return false; /* Not yet */
 }
 
@@ -77,21 +70,26 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
    * - Alert no longer engaged */
   for(list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
     HostAlert *alert = (*it);
-    if (isTimeToRunCallback(findCallback(alert->getCallbackType()), alert->getHost(), now))
-      alert->setExpiring(); /* initializing the status to expiring, to check if this needs to be released (when not engaged again) */
+    HostCallback *cb = getCallback(alert->getCallbackType());
+    HostCallbackStatus *cbs = cb ? cb->getStatus(h) : NULL;
+    if (isTimeToRunCallback(cb, cbs, now)) {
+      /* Initializing the status to expiring, to check if this needs to be released (when not engaged again) */
+      alert->setExpiring();
+    }
   }
 
   /* Exec all enabled callbacks */
   for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
     HostAlertType t = { host_alert_normal, alert_category_other };
-    HostCallback *hc = (*it);
+    HostCallback *cb = (*it);
+    HostCallbackStatus *cbs = cb->getStatus(h, true /* create */);
 
     h->setPendingAlert(t, alert_level_none); /* Reset pending alert */
 
-    if (isTimeToRunCallback(hc, h, now)) { /* Time to run the callback on this host */
+    if (isTimeToRunCallback(cb, cbs, now)) { /* Time to run the callback on this host */
 
       /* Call Handler */
-      hc->periodicUpdate(h);
+      cb->periodicUpdate(h);
 
       if (!ntop->getPrefs()->dontEmitHostAlerts()
           && h->getPendingAlert().id != host_alert_normal) {
@@ -102,10 +100,10 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
 
         if (alert) {
           /* Alert already engaged, update */
-          hc->updateAlert(alert);
+          cb->updateAlert(alert);
         } else {
           /* Build new alert */
-          alert = hc->buildAlert(h->getPendingAlert(), h);
+          alert = cb->buildAlert(h->getPendingAlert(), h);
 
           if (alert) {
             /* Add to the list of engaged alerts*/
@@ -122,7 +120,8 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
         }
       }
 
-      hc->setLastCallTime(h, now);
+      if (cbs)
+        cbs->setLastCallTime(now);
     }
   }
 
@@ -132,12 +131,12 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     Host *host = alert->getHost();
 
     if (alert->isExpired()) {
-      HostCallback *hc = findCallback(alert->getCallbackType());
+      HostCallback *cb = getCallback(alert->getCallbackType());
 
       alert->setReleased();
 
       /* Update alert info */
-      if (hc) hc->updateAlert(alert);
+      if (cb) cb->updateAlert(alert);
 
       /* Remove from the list of engaged alerts */
       host->removeEngagedAlert(alert);

@@ -1005,7 +1005,7 @@ class NetworkInterface : public AlertableEntity {
     Same as above but for hosts */
   u_int64_t dequeueHostAlertsFromCallbacks(u_int budget);
   inline HostCallbacksExecutor* getHostCallbackExecutor() { return(host_callbacks_executor); }
-  HostCallback *findCallback(HostCallbackType t);
+  HostCallback *getCallback(HostCallbackType t);
 };
 
 #endif /* _NETWORK_INTERFACE_H_ */

@@ -85,6 +85,9 @@ Host::~Host() {
 
   if(score)              delete score;
 
+  clearEngagedAlerts();
+  clearCallbackStatus();
+
   /*
     Pool counters are updated both in and outside the datapath.
     So decPoolNumHosts must stay in the destructor to preserve counters
@@ -1708,6 +1711,38 @@ HostAlert *Host::findEngagedAlert(HostAlertType alert_type) {
         return (*it);
 
   return NULL;
+}
+
+/* *************************************** */
+
+void Host::clearEngagedAlerts() {
+  for(list<HostAlert*>::iterator it = engaged_alerts.begin(); it != engaged_alerts.end(); ++it) {
+    HostAlert *a = (*it);
+    removeEngagedAlert(a);
+    delete a;
+  }
+}
+
+/* *************************************** */
+
+HostCallbackStatus *Host::getCallbackStatus(HostCallbackType t) {
+  for(list<HostCallbackStatus*>::iterator it = cb_status.begin(); it != cb_status.end(); ++it) {
+    HostCallbackStatus *s = (*it);
+    if (s->getCallbackType() == t)
+      return s;
+  }
+
+  return NULL;
+}
+
+/* *************************************** */
+
+void Host::clearCallbackStatus() {
+  for(list<HostCallbackStatus*>::iterator it = cb_status.begin(); it != cb_status.end(); ++it) {
+    HostCallbackStatus *s = (*it);
+    cb_status.remove(s);
+    delete s;
+  }
 }
 
 /* *************************************** */

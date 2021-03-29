@@ -26,6 +26,7 @@
 
 class HostAlert;
 class HostCallback;
+class HostCallbackStatus;
 
 class Host : public GenericHashEntry, public AlertableEntity {
  protected:
@@ -87,9 +88,12 @@ class Host : public GenericHashEntry, public AlertableEntity {
   Bitmap disabled_flow_alerts;
   time_t disabled_flow_alerts_tstamp;
 
-  Bitmap alerts_map, engaged_alerts_map;
-  std::list<HostAlert*> engaged_alerts;
-  HostAlertType pending_alert_type;
+  std::list<HostCallbackStatus*> cb_status; /* Callbacks status */
+
+  Bitmap alerts_map, engaged_alerts_map; /* Alerts Bitmap */
+  std::list<HostAlert*> engaged_alerts; /* List of engaged alerts */
+
+  HostAlertType pending_alert_type; /* Last triggered alert (to be built) */
   AlertLevel pending_alert_severity;
 
   void initialize(Mac *_mac, u_int16_t _vlan_id);
@@ -432,12 +436,19 @@ class Host : public GenericHashEntry, public AlertableEntity {
   bool enqueueAlert(HostAlert *alert);
   void alert2JSON(HostAlert *alert, ndpi_serializer *serializer);
 
+  /* Callbacks status */
+  void addCallbackStatus(HostCallbackStatus *s) { cb_status.push_back(s); }
+  HostCallbackStatus *getCallbackStatus(HostCallbackType t);
+  void clearCallbackStatus();
+
   /* Engaged alerts */
   void addEngagedAlert(HostAlert *a);
   void removeEngagedAlert(HostAlert *a);
   bool isEngagedAlert(HostAlertType alert_type) { return engaged_alerts_map.isSetBit(alert_type.id); }
   HostAlert *findEngagedAlert(HostAlertType alert_type);
   std::list<HostAlert*> *getEngagedAlerts() { return &engaged_alerts; }
+  void clearEngagedAlerts();
+
   void setPendingAlert(HostAlertType t, AlertLevel s) { pending_alert_type = t; pending_alert_severity = s; }
   HostAlertType getPendingAlert() { return pending_alert_type; }
   AlertLevel getPendingAlertSeverity() { return pending_alert_severity; }

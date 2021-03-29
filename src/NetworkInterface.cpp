@@ -8906,8 +8906,8 @@ void NetworkInterface::incrOS(char *hostname) {
 
 /* *************************************** */
 
-HostCallback *NetworkInterface::findCallback(HostCallbackType t) {
-  return(host_callbacks_executor->findCallback(t)); 
+HostCallback *NetworkInterface::getCallback(HostCallbackType t) {
+  return(host_callbacks_executor->getCallback(t)); 
 }
 
 /* *************************************** */

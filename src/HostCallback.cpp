@@ -67,3 +67,22 @@ bool HostCallback::loadConfiguration(json_object *config) {
   
   return(rc);
 }
+
+/* **************************************************** */
+
+HostCallbackStatus *HostCallback::getStatus(Host *h, bool create) {
+  HostCallbackStatus *status = h->getCallbackStatus(getType());
+
+  if (status)
+    return status;
+
+  if (create) {
+    status = new HostCallbackStatus(this);
+    if (status)
+      h->addCallbackStatus(status);
+  }
+
+  return status;
+}
+
+/* **************************************************** */
