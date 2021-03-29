@@ -23,11 +23,12 @@
 
 /* **************************************************** */
 
-HostAlert::HostAlert(HostCallback *c, Host *f) {
-  host = f;
+HostAlert::HostAlert(HostCallback *c, Host *h) {
+  host = h;
   severity_id = alert_level_notice;
   expiring = released = false;
   callback_type = c->getType();
+  callback_name = c->getName();
 }
 
 /* **************************************************** */
@@ -73,24 +74,13 @@ ndpi_serializer* HostAlert::getSerializedAlert() {
   }
 
   /* Add here global callback information, common to any alerted host */
-
-#if TODO
-  /* Guys used to link the alert back to the active host */
-  ndpi_serialize_string_uint64(serializer, "ntopng.key", host->key());
-  ndpi_serialize_string_uint64(serializer, "hash_entry_id", host->get_hash_entry_id());
-
-  /* Host info */
-  char buf[64];
-  char *info = host->getHostInfo(buf, sizeof(buf));
-  ndpi_serialize_string_string(serializer, "info", info ? info : "");
+  ndpi_serialize_string_uint64(serializer, "pool_id", host->get_host_pool());
 
   /* Add information relative to this callback */
   ndpi_serialize_start_of_block(serializer, "alert_generation");
   ndpi_serialize_string_string(serializer, "script_key", getCallbackName().c_str());
   ndpi_serialize_string_string(serializer, "subdir", "host");
   ndpi_serialize_end_of_block(serializer);
-
-#endif
   
   /* This call adds callback-specific information to the serializer */
   getAlertJSON(serializer);

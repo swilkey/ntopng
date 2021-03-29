@@ -33,6 +33,7 @@ class HostAlert {
   bool released; /* to be released */
   bool expiring; /* engaged, under re-evaluation */
   HostCallbackType callback_type;
+  std::string callback_name;
 
   /* 
      Adds to the passed `serializer` (generated with `getAlertSerializer`) information specific to this alert
@@ -52,6 +53,7 @@ class HostAlert {
   inline AlertLevel    getSeverity()  const { return(severity_id); }  
   inline Host *getHost() const { return(host); }
   inline HostCallbackType getCallbackType() const { return(callback_type); }
+  inline std::string getCallbackName() const { return(callback_name); }
 
   inline void setEngaged()  { expiring = released = false; }
 
