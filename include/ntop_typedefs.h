@@ -498,7 +498,7 @@ typedef enum {
   host_callback_traffic_host,
   host_callback_unexpected_host_behaviour,
 
-  MAX_DEFINED_HOST_CALLBACK_TYPE, /* Leave it as last member */ 
+  NUM_DEFINED_HOST_CALLBACKS, /* Leave it as last member */ 
 } HostCallbackType;
 
 /* Host Callbacks statuses */

@@ -25,6 +25,7 @@
 
 HostCallbacksExecutor::HostCallbacksExecutor(HostCallbacksLoader *fcl, NetworkInterface *_iface) {
   iface = _iface;
+  memset(host_cb_arr, 0, sizeof(host_cb_arr));
   loadHostCallbacks(fcl);
 };
 
@@ -35,19 +36,29 @@ HostCallbacksExecutor::~HostCallbacksExecutor() {
 };
 
 /* **************************************************** */
+  
+void HostCallbacksExecutor::loadHostCallbacks(HostCallbacksLoader *fcl) {
 
-HostCallback *HostCallbacksExecutor::findCallback(HostCallbackType callback_type) {
-  /* TODO optimize this lookup */
+  /* Load list of 'periodicUpdate' callbacks */
+  periodic_host_cb = fcl->getCallbacks(iface);
+
+  /* Initialize callbacks array for quick lookup */
   for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
-    if((*it)->getType() == callback_type)
-      return (*it);
+    HostCallback *hc = (*it);
+    host_cb_arr[hc->getType()] = hc;
   }
-  return NULL;
 }
 
 /* **************************************************** */
 
 bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, Host *host, time_t now) {
+  if (callback && host) {
+    char buf[64];
+    host->get_ip()->print(buf, sizeof(buf));
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "isTimeToRunCallback(%s) period = %u last = %u now = %u",
+      buf, callback->getPeriod(), callback->getLastCallTime(host), now);
+  }
+
   if (!callback || !host) return false; /* Safety check */
   if (!callback->getPeriod()) return true; /* No periodicity configured - always run */
   if (!callback->getLastCallTime(host)) return true; /* First time - run */

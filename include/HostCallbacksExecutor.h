@@ -30,9 +30,10 @@ class HostCallbacksExecutor { /* One instance per ntopng Interface */
  private:
   NetworkInterface *iface;
   std::list<HostCallback*> *periodic_host_cb;
+  HostCallback *host_cb_arr[NUM_DEFINED_HOST_CALLBACKS];
 
   void loadHostCallbacksAlerts(std::list<HostCallback*> *cb_list);
-  inline void loadHostCallbacks(HostCallbacksLoader *fcl) {  periodic_host_cb = fcl->getCallbacks(iface); }
+  void loadHostCallbacks(HostCallbacksLoader *fcl);
 
   bool isTimeToRunCallback(HostCallback *callback, Host *host, time_t now);
 
@@ -40,7 +41,7 @@ class HostCallbacksExecutor { /* One instance per ntopng Interface */
   HostCallbacksExecutor(HostCallbacksLoader *fcl, NetworkInterface *_iface);
   virtual ~HostCallbacksExecutor();
 
-  HostCallback *findCallback(HostCallbackType t);
+  HostCallback *findCallback(HostCallbackType t) { return host_cb_arr[t]; }
   void execCallbacks(Host *h);
 };
 

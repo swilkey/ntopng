@@ -26,6 +26,7 @@
 HostCallback::HostCallback(NtopngEdition _edition) {
   callback_edition = _edition;
   enabled = 0, severity_id = alert_level_warning;
+  periodicity_secs = 0;
 };
 
 /* **************************************************** */

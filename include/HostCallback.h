@@ -52,10 +52,10 @@ class HostCallback {
    * an alert is released (a->isReleased()) is set in that case  */
   virtual void updateAlert(HostAlert *a) { return; };
 
-  virtual u_int32_t getPeriod() { return 0; }
-
   virtual void setLastCallTime(Host *h, time_t now) {}
   virtual time_t getLastCallTime(Host *h) { return 0; }
+
+  virtual u_int32_t getPeriod() { return periodicity_secs; }
 
   inline void enable(u_int32_t _periodicity_secs) { enabled = 1; periodicity_secs = _periodicity_secs; }
   inline bool isEnabled() { return(enabled ? true : false); }
