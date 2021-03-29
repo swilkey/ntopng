@@ -61,11 +61,13 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
   std::list<HostAlert*> *engaged_alerts = h->getEngagedAlerts();
   time_t now = time(NULL);
 
-  /* Reset engages alerts status - this is used to check which one should be releaed */
+  /* This is used to check which of the engaged should be released due to: 
+   * - Callback disabled
+   * - Alert no longer engaged */
   for(list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
     HostAlert *alert = (*it);
     if (isTimeToRunCallback(findCallback(alert->getCallbackType()), alert->getHost(), now))
-      alert->setReleased(); /* initializing the status to released, on trigger this is set to engaged */
+      alert->setExpiring(); /* initializing the status to expiring, to check if this needs to be released (when not engaged again) */
   }
 
   /* Exec all enabled callbacks */
@@ -118,8 +120,10 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     HostAlert *alert = (*it);
     Host *host = alert->getHost();
 
-    if (alert->isReleased()) {
+    if (alert->isExpired()) {
       HostCallback *hc = findCallback(alert->getCallbackType());
+
+      alert->setReleased();
 
       /* Update alert info */
       if (hc) hc->updateAlert(alert);

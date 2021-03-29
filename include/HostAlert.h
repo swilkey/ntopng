@@ -30,7 +30,8 @@ class HostAlert {
  private:
   Host *host;
   AlertLevel severity_id;
-  bool released;
+  bool released; /* to be released */
+  bool expiring; /* engaged, under re-evaluation */
   HostCallbackType callback_type;
 
   /* 
@@ -52,7 +53,11 @@ class HostAlert {
   inline Host *getHost() const { return(host); }
   inline HostCallbackType getCallbackType() const { return(callback_type); }
 
-  inline void setEngaged()  { released = false; }
+  inline void setEngaged()  { expiring = released = false; }
+
+  inline void setExpiring() { expiring = true; }
+  inline bool isExpired()  { return expiring; }
+
   inline void setReleased() { released = true; }
   inline bool isReleased()  { return released; }
 
