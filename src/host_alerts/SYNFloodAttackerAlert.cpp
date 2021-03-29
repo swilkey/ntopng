@@ -19,27 +19,25 @@
  *
  */
 
-#ifndef _SYN_FLOOD_ATTACKER_ALERT_H_
-#define _SYN_FLOOD_ATTACKER_ALERT_H_
+#include "host_alerts_includes.h"
 
+/* ***************************************************** */
 
-#include "ntop_includes.h"
-
-
-class SYNFloodAttackerAlert : public HostAlert {
- private:
-  u_int64_t syns, syns_threshold;
-
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
-  
- public:
-  static HostAlertType getClassType() { return { host_alert_syn_flood_attacker, alert_category_security }; }
-
-  SYNFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
-  ~SYNFloodAttackerAlert() {};
-  
-  HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_tcp_syn_flood_attacker"); }
+SYNFloodAttackerAlert::SYNFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold) : HostAlert(c, f) {
+  syns = _syns,
+    syns_threshold = _syns_threshold;
 };
 
-#endif /* _SYN_FLOOD_ATTACKER_ALERT_H_ */
+/* ***************************************************** */
+
+ndpi_serializer* SYNFloodAttackerAlert::getAlertJSON(ndpi_serializer* serializer) {
+  if(serializer == NULL)
+    return NULL;
+
+  ndpi_serialize_string_uint64(serializer, "value", syns);
+  ndpi_serialize_string_uint64(serializer, "threshold", syns_threshold);
+  
+  return serializer;
+}
+
+/* ***************************************************** */

@@ -26,9 +26,10 @@
 
 class SYNFlood : public HostCallback {
 private:
-  
-public:
-   SYNFlood() : HostCallback(ntopng_edition_community) {};
+  u_int64_t syns_threshold;
+
+ public:
+  SYNFlood();
   ~SYNFlood() {};
 
   HostAlert *buildAlert(HostAlertType t, Host *h);

@@ -24,6 +24,12 @@
 
 /* ***************************************************** */
 
+SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
+  syns_threshold = (u_int64_t)-1;
+};
+
+/* ***************************************************** */
+
 void SYNFlood::periodicUpdate(Host *h) {
   char buf[64];
 
@@ -41,7 +47,7 @@ void SYNFlood::periodicUpdate(Host *h) {
 /* ***************************************************** */
 
 HostAlert *SYNFlood::buildAlert(HostAlertType t, Host *h) {
-  SYNFloodAttackerAlert *res = new SYNFloodAttackerAlert(this, h);
+  SYNFloodAttackerAlert *res = new SYNFloodAttackerAlert(this, h, h->syn_flood_attacker_hits() /* Actual attacker hits */, syns_threshold);
 
   /* Reset counters once done */
   h->reset_syn_flood_hits();
@@ -52,10 +58,14 @@ HostAlert *SYNFlood::buildAlert(HostAlertType t, Host *h) {
 /* ***************************************************** */
 
 bool SYNFlood::loadConfiguration(json_object *config) {
+  json_object *json_threshold;
+
   HostCallback::loadConfiguration(config); /* Parse parameters in common */
-  /*
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-  */
+
+  if(json_object_object_get_ex(config, "threshold", &json_threshold))
+    syns_threshold = json_object_get_int64(json_threshold);
+
+  // ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
 
   return(true);
 }
