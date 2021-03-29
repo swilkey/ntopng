@@ -3048,7 +3048,7 @@ bool Flow::enqueueAlert(FlowAlert *alert) {
 
   rv = ntop->recipients_enqueue(notification.alert_severity >= alert_level_error ? recipient_notification_priority_high : recipient_notification_priority_low,
 				&notification,
-				true /* Flow recipients only */);
+				alert_entity_flow /* Flow recipients */);
 
   if(!rv)
     getInterface()->incNumDroppedAlerts(1);

@@ -1614,7 +1614,36 @@ bool Host::isFlowAlertDisabled(FlowAlertType alert_type) {
 
 /* Create a JSON in the alerts format */
 void Host::alert2JSON(HostAlert *alert, ndpi_serializer *s) {
-  // TODO
+  char buf[128];
+  ndpi_serializer *alert_json_serializer = NULL;
+  char *alert_json = NULL;
+  u_int32_t alert_json_len;
+
+  ndpi_serialize_string_int32(s, "ifid", getInterface()->get_id());
+  ndpi_serialize_string_uint64(s, "pool_id", get_host_pool());
+
+  /* See AlertableEntity::luaAlert */
+  ndpi_serialize_string_int32(s, "alert_type", alert->getAlertType().id);
+  // lua_push_str_table_entry(s,    "alert_subtype", "");
+  ndpi_serialize_string_int32(s, "alert_severity", alert->getSeverity());
+  ndpi_serialize_string_int32(s, "alert_entity", alert_entity_host);
+  ndpi_serialize_string_string(s, "alert_entity_val", get_hostkey(buf, sizeof(buf), true /* Force vlan */));
+  ndpi_serialize_string_uint32(s, "alert_tstamp", time(NULL) /* TODO: change with engage timestamp */);
+  ndpi_serialize_string_uint32(s, "alert_tstamp_end", time(NULL) /* TODO: change with release timestamp */);
+  ndpi_serialize_string_int32(s, "alert_granularity", 0 /* TODO: add callback periodicity if still necessary */);
+  // lua_push_str_table_entry(vm,    "alert_json", alert->alert_json.c_str());
+
+  alert_json_serializer = alert->getSerializedAlert();
+
+  if(alert_json_serializer)
+    alert_json = ndpi_serializer_get_buffer(alert_json_serializer, &alert_json_len);
+
+  ndpi_serialize_string_string(s, "alert_json", alert_json ? alert_json : "");
+ 
+  if(alert_json_serializer) {
+    ndpi_term_serializer(alert_json_serializer);
+    free(alert_json_serializer);
+  }
 }
 
 /* *************************************** */
@@ -1643,14 +1672,14 @@ bool Host::enqueueAlert(HostAlert *alert) {
 
   rv = ntop->recipients_enqueue(notification.alert_severity >= alert_level_error ? recipient_notification_priority_high : recipient_notification_priority_low,
 				&notification,
-				true /* Host recipients only */);
+				alert_entity_host /* Host recipients */);
 
   if(!rv)
     getInterface()->incNumDroppedAlerts(1);
 
   ndpi_term_serializer(&host_json);
 
-  if (alert->isReleased())
+  if(alert->isReleased())
     delete alert;
 
   return rv;

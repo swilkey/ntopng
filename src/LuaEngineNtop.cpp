@@ -5709,6 +5709,7 @@ static int ntop_recipient_register(lua_State* vm) {
 
   return(CONST_LUA_OK);
 }
+
 /* ****************************************** */
 
 static int ntop_recipient_set_flow_recipients(lua_State* vm) {
@@ -5718,6 +5719,21 @@ static int ntop_recipient_set_flow_recipients(lua_State* vm) {
   flow_recipients = lua_tointeger(vm, 1);
 
   ntop->recipient_set_flow_recipients(flow_recipients);
+
+  lua_pushnil(vm);
+
+  return(CONST_LUA_OK);
+}
+
+/* ****************************************** */
+
+static int ntop_recipient_set_host_recipients(lua_State* vm) {
+  u_int64_t host_recipients = (u_int64_t)-1; /* MUST be large enough to contain MAX_NUM_RECIPIENTS */
+
+  if(ntop_lua_check(vm, __FUNCTION__, 1, LUA_TNUMBER) != CONST_LUA_OK) return(CONST_LUA_ERROR);
+  host_recipients = lua_tointeger(vm, 1);
+
+  ntop->recipient_set_host_recipients(host_recipients);
 
   lua_pushnil(vm);
 
@@ -6194,6 +6210,7 @@ static luaL_Reg _ntop_reg[] = {
   { "recipient_delete",              ntop_recipient_delete             },
   { "recipient_register",            ntop_recipient_register           },
   { "recipient_set_flow_recipients", ntop_recipient_set_flow_recipients },
+  { "recipient_set_host_recipients", ntop_recipient_set_host_recipients },
 
   /* nDPI */
   { "getnDPIProtoCategory",   ntop_get_ndpi_protocol_category },

@@ -1075,8 +1075,8 @@ void Ntop::lua_alert_queues_stats(lua_State* vm) {
 
 /* ******************************************* */
 
-bool Ntop::recipients_enqueue(RecipientNotificationPriority prio, AlertFifoItem *notification, bool flow_only) {
-  return recipients.enqueue(prio, notification, flow_only);
+bool Ntop::recipients_enqueue(RecipientNotificationPriority prio, AlertFifoItem *notification, AlertEntity alert_entity) {
+  return recipients.enqueue(prio, notification, alert_entity);
 }
 
 /* ******************************************* */
@@ -1123,6 +1123,12 @@ void Ntop::recipient_register(u_int16_t recipient_id, AlertLevel minimum_severit
 
 void Ntop::recipient_set_flow_recipients(u_int64_t flow_recipients) {
   recipients.set_flow_recipients(flow_recipients);
+}
+
+/* ******************************************* */
+
+void Ntop::recipient_set_host_recipients(u_int64_t host_recipients) {
+  recipients.set_host_recipients(host_recipients);
 }
 
 /* ******************************************* */

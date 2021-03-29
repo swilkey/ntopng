@@ -74,7 +74,6 @@ ndpi_serializer* HostAlert::getSerializedAlert() {
   }
 
   /* Add here global callback information, common to any alerted host */
-  ndpi_serialize_string_uint64(serializer, "pool_id", host->get_host_pool());
 
   /* Add information relative to this callback */
   ndpi_serialize_start_of_block(serializer, "alert_generation");
