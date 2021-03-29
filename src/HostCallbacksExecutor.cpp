@@ -43,7 +43,7 @@ void HostCallbacksExecutor::loadHostCallbacks(HostCallbacksLoader *fcl) {
   periodic_host_cb = fcl->getCallbacks(iface);
 
   /* Initialize callbacks array for quick lookup */
-  for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
+  for(std::list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
     HostCallback *cb = (*it);
     host_cb_arr[cb->getType()] = cb;
   }
@@ -68,7 +68,7 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
   /* This is used to check which of the engaged should be released due to: 
    * - Callback disabled
    * - Alert no longer engaged */
-  for(list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
+  for(std::list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
     HostAlert *alert = (*it);
     HostCallback *cb = getCallback(alert->getCallbackType());
     HostCallbackStatus *cbs = cb ? cb->getStatus(h) : NULL;
@@ -79,7 +79,7 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
   }
 
   /* Exec all enabled callbacks */
-  for(list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
+  for(std::list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
     HostAlertType t = { host_alert_normal, alert_category_other };
     HostCallback *cb = (*it);
     HostCallbackStatus *cbs = cb->getStatus(h, true /* create */);
@@ -126,9 +126,12 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
   }
 
   /* Check engaged alerts to be released */
-  for(list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
+  std::list<HostAlert*>::iterator it = engaged_alerts->begin();
+  while (it != engaged_alerts->end()) {
     HostAlert *alert = (*it);
     Host *host = alert->getHost();
+
+    ++it; /* inc the iterator before removing */
 
     if (alert->isExpired()) {
       HostCallback *cb = getCallback(alert->getCallbackType());

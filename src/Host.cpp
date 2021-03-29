@@ -1706,7 +1706,7 @@ void Host::removeEngagedAlert(HostAlert *a) {
 
 HostAlert *Host::findEngagedAlert(HostAlertType alert_type) {
   if (isEngagedAlert(alert_type))
-    for(list<HostAlert*>::iterator it = engaged_alerts.begin(); it != engaged_alerts.end(); ++it)
+    for(std::list<HostAlert*>::iterator it = engaged_alerts.begin(); it != engaged_alerts.end(); ++it)
       if ((*it)->getAlertType().id == alert_type.id)
         return (*it);
 
@@ -1716,8 +1716,11 @@ HostAlert *Host::findEngagedAlert(HostAlertType alert_type) {
 /* *************************************** */
 
 void Host::clearEngagedAlerts() {
-  for(list<HostAlert*>::iterator it = engaged_alerts.begin(); it != engaged_alerts.end(); ++it) {
+  std::list<HostAlert*>::iterator it = engaged_alerts.begin();
+
+  while (it != engaged_alerts.end()) {
     HostAlert *a = (*it);
+    ++it; /* inc the iterator before removing */
     removeEngagedAlert(a);
     delete a;
   }
@@ -1726,7 +1729,7 @@ void Host::clearEngagedAlerts() {
 /* *************************************** */
 
 HostCallbackStatus *Host::getCallbackStatus(HostCallbackType t) {
-  for(list<HostCallbackStatus*>::iterator it = cb_status.begin(); it != cb_status.end(); ++it) {
+  for(std::list<HostCallbackStatus*>::iterator it = cb_status.begin(); it != cb_status.end(); ++it) {
     HostCallbackStatus *s = (*it);
     if (s->getCallbackType() == t)
       return s;
@@ -1738,8 +1741,11 @@ HostCallbackStatus *Host::getCallbackStatus(HostCallbackType t) {
 /* *************************************** */
 
 void Host::clearCallbackStatus() {
-  for(list<HostCallbackStatus*>::iterator it = cb_status.begin(); it != cb_status.end(); ++it) {
+  std::list<HostCallbackStatus*>::iterator it = cb_status.begin();
+
+  while (it != cb_status.end()) {
     HostCallbackStatus *s = (*it);
+    ++it; /* inc the iterator before removing */
     cb_status.remove(s);
     delete s;
   }
