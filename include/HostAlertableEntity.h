@@ -25,18 +25,30 @@
 #include "ntop_includes.h"
 
 class NetworkInterface;
+class HostAlert;
 
 class HostAlertableEntity : public AlertableEntity {
  private:
+  Bitmap engaged_alerts_map; /* Alerts Bitmap */
+  std::list<HostAlert*> engaged_alerts; /* List of engaged alerts */
+  RwLock engaged_alerts_lock; /* Lock to handle concurrent access from the GUI */
 
-public:
+  void luaAlert(lua_State* vm, HostAlert *alert);
+
+ public:
   HostAlertableEntity(NetworkInterface *alert_iface, AlertEntity entity);
   virtual ~HostAlertableEntity();
 
-  //TODO
-  void countAlerts(grouped_alerts_counters *counters) {};
+  void addEngagedAlert(HostAlert *a);
+  void removeEngagedAlert(HostAlert *a);
+  bool isEngagedAlert(HostAlertType alert_type) { return engaged_alerts_map.isSetBit(alert_type.id); }
+  HostAlert *findEngagedAlert(HostAlertType alert_type);
+  std::list<HostAlert*> *getEngagedAlerts() { return &engaged_alerts; }
+  void clearEngagedAlerts();
+
+  void countAlerts(grouped_alerts_counters *counters);
   void getAlerts(lua_State* vm, ScriptPeriodicity p,
-    AlertType type_filter, AlertLevel severity_filter, u_int *idx) {};
+    AlertType type_filter, AlertLevel severity_filter, u_int *idx);
 };
 
 #endif

@@ -90,8 +90,7 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
 
   std::list<HostCallbackStatus*> cb_status; /* Callbacks status */
 
-  Bitmap alerts_map, engaged_alerts_map; /* Alerts Bitmap */
-  std::list<HostAlert*> engaged_alerts; /* List of engaged alerts */
+  Bitmap alerts_map;
 
   HostAlertType pending_alert_type; /* Last triggered alert (to be built) */
   AlertLevel pending_alert_severity;
@@ -440,14 +439,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   void addCallbackStatus(HostCallbackStatus *s) { cb_status.push_back(s); }
   HostCallbackStatus *getCallbackStatus(HostCallbackType t);
   void clearCallbackStatus();
-
-  /* Engaged alerts */
-  void addEngagedAlert(HostAlert *a);
-  void removeEngagedAlert(HostAlert *a);
-  bool isEngagedAlert(HostAlertType alert_type) { return engaged_alerts_map.isSetBit(alert_type.id); }
-  HostAlert *findEngagedAlert(HostAlertType alert_type);
-  std::list<HostAlert*> *getEngagedAlerts() { return &engaged_alerts; }
-  void clearEngagedAlerts();
 
   void setPendingAlert(HostAlertType t, AlertLevel s) { pending_alert_type = t; pending_alert_severity = s; }
   HostAlertType getPendingAlert() { return pending_alert_type; }

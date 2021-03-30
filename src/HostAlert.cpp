@@ -29,6 +29,8 @@ HostAlert::HostAlert(HostCallback *c, Host *h) {
   expiring = released = false;
   callback_type = c->getType();
   callback_name = c->getName();
+  engage_time = time(NULL);
+  release_time = 0;
 }
 
 /* **************************************************** */

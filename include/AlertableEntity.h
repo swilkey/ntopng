@@ -42,6 +42,8 @@ class AlertableEntity {
   AlertableEntity(NetworkInterface *alert_iface, AlertEntity entity);
   virtual ~AlertableEntity();
 
+  inline NetworkInterface *getAlertInterface() { return alert_iface; }
+
   inline void setEntityValue(const char *ent_val) { entity_val = ent_val; }
   inline std::string getEntityValue() const { return(entity_val); }
 

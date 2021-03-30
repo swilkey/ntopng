@@ -34,6 +34,8 @@ class HostAlert {
   bool expiring; /* engaged, under re-evaluation */
   HostCallbackType callback_type;
   std::string callback_name;
+  time_t engage_time;
+  time_t release_time;
 
   /* 
      Adds to the passed `serializer` (generated with `getAlertSerializer`) information specific to this alert
@@ -58,10 +60,13 @@ class HostAlert {
   inline void setEngaged()  { expiring = released = false; }
 
   inline void setExpiring() { expiring = true; }
-  inline bool isExpired()  { return expiring; }
+  inline bool isExpired()   { return expiring; }
 
-  inline void setReleased() { released = true; }
+  inline void setReleased() { released = true; release_time = time(NULL); }
   inline bool isReleased()  { return released; }
+
+  inline time_t getEngageTime()  { return engage_time; }
+  inline time_t getReleaseTime() { return release_time; }
 
   /* 
      Generates the JSON alert serializer with base information and per-callback information gathered with `getAlertJSON`.

@@ -85,7 +85,6 @@ Host::~Host() {
 
   if(score)              delete score;
 
-  clearEngagedAlerts();
   clearCallbackStatus();
 
   /*
@@ -1608,7 +1607,6 @@ bool Host::isFlowAlertDisabled(FlowAlertType alert_type) {
 
 /* Create a JSON in the alerts format */
 void Host::alert2JSON(HostAlert *alert, ndpi_serializer *s) {
-  char buf[128];
   ndpi_serializer *alert_json_serializer = NULL;
   char *alert_json = NULL;
   u_int32_t alert_json_len;
@@ -1622,11 +1620,12 @@ void Host::alert2JSON(HostAlert *alert, ndpi_serializer *s) {
   ndpi_serialize_string_string(s, "alert_subtype", "" /* No subtype for hosts */);
   ndpi_serialize_string_int32(s, "alert_severity", alert->getSeverity());
   ndpi_serialize_string_int32(s, "alert_entity", alert_entity_host);
-  ndpi_serialize_string_string(s, "alert_entity_val", get_hostkey(buf, sizeof(buf), true /* Force vlan */));
-  ndpi_serialize_string_uint32(s, "alert_tstamp", time(NULL) /* TODO: change with engage timestamp */);
-  ndpi_serialize_string_uint32(s, "alert_tstamp_end", time(NULL) /* TODO: change with release timestamp */);
-  ndpi_serialize_string_int32(s, "alert_granularity", 0 /* TODO: add callback periodicity if still necessary */);
-  // lua_push_str_table_entry(vm,    "alert_json", alert->alert_json.c_str());
+  ndpi_serialize_string_string(s, "alert_entity_val", getEntityValue().c_str());
+  ndpi_serialize_string_uint32(s, "alert_tstamp", alert->getEngageTime());
+  ndpi_serialize_string_uint32(s, "alert_tstamp_end", alert->getReleaseTime());
+
+  HostCallback *cb = getInterface()->getCallback(alert->getCallbackType());
+  ndpi_serialize_string_int32(s, "alert_granularity", cb ? cb->getPeriod() : 0);
 
   alert_json_serializer = alert->getSerializedAlert();
 
@@ -1678,44 +1677,6 @@ bool Host::enqueueAlert(HostAlert *alert) {
     delete alert;
 
   return rv;
-}
-
-/* *************************************** */
-
-void Host::addEngagedAlert(HostAlert *a) {
-  engaged_alerts.push_back(a); 
-  engaged_alerts_map.setBit(a->getAlertType().id);
-} 
-
-/* *************************************** */
-
-void Host::removeEngagedAlert(HostAlert *a) { 
-  engaged_alerts.remove(a);
-  engaged_alerts_map.clearBit(a->getAlertType().id);
-}
-
-/* *************************************** */
-
-HostAlert *Host::findEngagedAlert(HostAlertType alert_type) {
-  if (isEngagedAlert(alert_type))
-    for(std::list<HostAlert*>::iterator it = engaged_alerts.begin(); it != engaged_alerts.end(); ++it)
-      if ((*it)->getAlertType().id == alert_type.id)
-        return (*it);
-
-  return NULL;
-}
-
-/* *************************************** */
-
-void Host::clearEngagedAlerts() {
-  std::list<HostAlert*>::iterator it = engaged_alerts.begin();
-
-  while (it != engaged_alerts.end()) {
-    HostAlert *a = (*it);
-    ++it; /* inc the iterator before removing */
-    removeEngagedAlert(a);
-    delete a;
-  }
 }
 
 /* *************************************** */
