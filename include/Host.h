@@ -455,6 +455,7 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   inline Bitmap getAlertsBitmap() const { return(alerts_map); }
   bool setAlertsBitmap(HostAlertType alert_type, u_int8_t host_score_inc);
   bool triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t host_score_inc);
+  void releaseAlert(HostAlertType alert_type);
 };
 
 #endif /* _HOST_H_ */

@@ -1729,3 +1729,11 @@ bool Host::triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity
 
 /* *************************************** */
 
+void Host::releaseAlert(HostAlertType alert_type) {
+  HostAlert *alert = findEngagedAlert(alert_type);
+
+  if (alert)
+    alert->setExpiring();  
+}
+
+/* *************************************** */
