@@ -135,19 +135,6 @@ void Host::housekeep(time_t t) {
 
 /* *************************************** */
 
-void Host::housekeepAlerts(ScriptPeriodicity p) {
-  switch(p) {
-  case minute_script:
-    flow_flood_attacker_alert->reset_hits(),
-      flow_flood_victim_alert->reset_hits();
-    break;
-  default:
-    break;
-  }
-}
-
-/* *************************************** */
-
 void Host::initialize(Mac *_mac, u_int16_t _vlanId) {
   char buf[64];
 

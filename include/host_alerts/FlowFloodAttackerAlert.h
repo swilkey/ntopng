@@ -26,13 +26,13 @@
 #include "ntop_includes.h"
 
 
-class FlowFloodAttackerAlert : public HostAlert {
+class FlowFloodAttackerAlert : public FlowFloodAlert {
  private:
   
  public:
   static HostAlertType getClassType() { return { host_alert_flow_flood_attacker, alert_category_security }; }
 
-  FlowFloodAttackerAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  FlowFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold);
   ~FlowFloodAttackerAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }

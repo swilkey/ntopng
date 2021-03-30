@@ -19,27 +19,25 @@
  *
  */
 
-#ifndef _FLOW_FLOOD_H_
-#define _FLOW_FLOOD_H_
+#include "host_alerts_includes.h"
 
-#include "ntop_includes.h"
+/* ***************************************************** */
 
-class FlowFlood : public HostCallback {
-private:
-  u_int64_t flows_threshold;
-  
-public:
-  FlowFlood();
-  ~FlowFlood() {};
-
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
-
-  bool loadConfiguration(json_object *config);  
-
-  HostCallbackType getType() const { return host_callback_flow_flood; }
-  std::string getName()        const { return(std::string("flow_flood")); }
+FlowFloodAlert::FlowFloodAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold) : HostAlert(c, f) {
+  flows = _flows,
+    flows_threshold = _flows_threshold;
 };
 
-#endif
+/* ***************************************************** */
+
+ndpi_serializer* FlowFloodAlert::getAlertJSON(ndpi_serializer* serializer) {
+  if(serializer == NULL)
+    return NULL;
+
+  ndpi_serialize_string_uint64(serializer, "value", flows);
+  ndpi_serialize_string_uint64(serializer, "threshold", flows_threshold);
+  
+  return serializer;
+}
+
+/* ***************************************************** */

@@ -314,6 +314,10 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   inline u_int16_t syn_flood_attacker_hits() const { return syn_flood_attacker_alert ? syn_flood_attacker_alert->hits() : 0; };
   inline void reset_syn_flood_hits() { if(syn_flood_victim_alert) syn_flood_victim_alert->reset_hits(); if(syn_flood_attacker_alert) syn_flood_attacker_alert->reset_hits(); };
 
+  inline u_int16_t flow_flood_victim_hits()   const { return flow_flood_victim_alert ? flow_flood_victim_alert->hits() : 0;     };
+  inline u_int16_t flow_flood_attacker_hits() const { return flow_flood_attacker_alert ? flow_flood_attacker_alert->hits() : 0; };
+  inline void reset_flow_flood_hits() { if(flow_flood_victim_alert) flow_flood_victim_alert->reset_hits(); if(flow_flood_attacker_alert) flow_flood_attacker_alert->reset_hits(); };
+
   inline u_int32_t syn_scan_victim_hits()   const { return syn_recvd_last_min > synack_sent_last_min ? syn_recvd_last_min - synack_sent_last_min : 0; };
   inline u_int32_t syn_scan_attacker_hits() const { return syn_sent_last_min > synack_recvd_last_min ? syn_sent_last_min - synack_recvd_last_min : 0; };
   inline void reset_syn_scan_hits() { syn_sent_last_min = synack_recvd_last_min = syn_recvd_last_min = synack_sent_last_min = 0; };
@@ -385,7 +389,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   void checkBroadcastDomain();
   bool hasAnomalies() const;
   void housekeep(time_t t); /* Virtual method, called in the datapath from GenericHash::purgeIdle */
-  void housekeepAlerts(ScriptPeriodicity p);
   virtual void inlineSetOSDetail(const char *detail) { }
   virtual const char* getOSDetail(char * const buf, ssize_t buf_len);
   void offlineSetNetbiosName(const char * const n);

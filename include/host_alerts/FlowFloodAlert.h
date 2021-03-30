@@ -19,27 +19,22 @@
  *
  */
 
-#ifndef _FLOW_FLOOD_H_
-#define _FLOW_FLOOD_H_
+#ifndef _FLOW_FLOOD_ALERT_H_
+#define _FLOW_FLOOD_ALERT_H_
+
 
 #include "ntop_includes.h"
 
-class FlowFlood : public HostCallback {
-private:
-  u_int64_t flows_threshold;
+
+class FlowFloodAlert : public HostAlert {
+ private:
+  u_int64_t flows, flows_threshold;
+
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
-public:
-  FlowFlood();
-  ~FlowFlood() {};
-
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
-
-  bool loadConfiguration(json_object *config);  
-
-  HostCallbackType getType() const { return host_callback_flow_flood; }
-  std::string getName()        const { return(std::string("flow_flood")); }
+ public:
+  FlowFloodAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold);
+  ~FlowFloodAlert() {};
 };
 
-#endif
+#endif /* _FLOW_FLOOD_ALERT_H_ */
