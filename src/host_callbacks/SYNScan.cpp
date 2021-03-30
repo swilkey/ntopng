@@ -33,10 +33,7 @@ SYNScan::SYNScan() : HostCallback(ntopng_edition_community) {
 void SYNScan::periodicUpdate(Host *h) {
   static u_int8_t attacker_score = 100, victim_score = 20;
   u_int16_t hits = 0;
-  char buf[64];
   SYNScanHostCallbackStatus *status = static_cast<SYNScanHostCallbackStatus*>(getStatus(h));
-
-  ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
 
   /* Attacker alert has priority over the Victim alert */
   if((hits = h->syn_scan_attacker_hits()) >= syns_threshold)

@@ -33,10 +33,7 @@ FlowFlood::FlowFlood() : HostCallback(ntopng_edition_community) {
 void FlowFlood::periodicUpdate(Host *h) {
   static u_int8_t attacker_score = 100, victim_score = 20;
   u_int16_t flows = 0;
-  char buf[64];
   FlowFloodHostCallbackStatus *status = static_cast<FlowFloodHostCallbackStatus*>(getStatus(h));
-
-  ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
 
   /* Attacker alert has priority over the Victim alert */
   if((flows = h->flow_flood_attacker_hits()) >= flows_threshold)

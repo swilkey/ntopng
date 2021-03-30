@@ -33,10 +33,7 @@ SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
 void SYNFlood::periodicUpdate(Host *h) {
   static u_int8_t attacker_score = 100, victim_score = 20;
   u_int16_t hits = 0;
-  char buf[64];
   SYNFloodHostCallbackStatus *status = static_cast<SYNFloodHostCallbackStatus*>(getStatus(h));
-
-  ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
 
   /* Attacker alert has priority over the Victim alert */
   if((hits = h->syn_flood_attacker_hits()) >= syns_threshold)
