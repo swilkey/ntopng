@@ -28,7 +28,6 @@
 #include "host_callbacks/FlowFlood.h"
 #include "host_callbacks/SYNScan.h"
 #include "host_callbacks/SYNFlood.h"
-#include "host_callbacks/RepliesRequestsRatio.h"
 
 #include "host_callbacks/ServerContacts.h"
 #include "host_callbacks/DNSServerContacts.h"
@@ -44,6 +43,7 @@
 
 #ifdef NTOPNG_PRO
 #include "host_callbacks/DNSRequestsErrorsRatio.h"
+#include "host_callbacks/RepliesRequestsRatio.h"
 #include "host_callbacks/SNMPAttackMitigation.h"
 #include "host_callbacks/ScoreHostCallback.h"
 #endif

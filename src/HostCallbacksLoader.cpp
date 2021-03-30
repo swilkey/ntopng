@@ -43,7 +43,6 @@ void HostCallbacksLoader::registerCallbacks() {
   if((fcb = new FlowFlood()))                  cb_all[fcb->getName()] = fcb;
   if((fcb = new SYNScan()))                    cb_all[fcb->getName()] = fcb;
   if((fcb = new SYNFlood()))                   cb_all[fcb->getName()] = fcb;
-  if((fcb = new RepliesRequestsRatio()))       cb_all[fcb->getName()] = fcb;
   if((fcb = new DNSServerContacts()))          cb_all[fcb->getName()] = fcb;
   if((fcb = new SMTPServerContacts()))         cb_all[fcb->getName()] = fcb;
   if((fcb = new NTPServerContacts()))          cb_all[fcb->getName()] = fcb;
@@ -56,6 +55,7 @@ void HostCallbacksLoader::registerCallbacks() {
 
 #ifdef NTOPNG_PRO
   if((fcb = new DNSRequestsErrorsRatio()))     cb_all[fcb->getName()] = fcb;
+  if((fcb = new RepliesRequestsRatio()))       cb_all[fcb->getName()] = fcb;
   if((fcb = new ScoreHostCallback()))          cb_all[fcb->getName()] = fcb;
   if((fcb = new SNMPAttackMitigation()))       cb_all[fcb->getName()] = fcb;
 #endif
