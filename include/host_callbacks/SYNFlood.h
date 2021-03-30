@@ -24,6 +24,16 @@
 
 #include "ntop_includes.h"
 
+class SYNFloodHostCallbackStatus : public HostCallbackStatus {
+ private:
+  u_int16_t hits; /* Keeps the number of syns that exceeded the threshold and caused the alert to be triggered */
+
+ public:
+ SYNFloodHostCallbackStatus(HostCallback *cb) : HostCallbackStatus(cb) { hits = 0; };
+  inline void updateHits(u_int16_t _hits) { hits = _hits; };
+  inline u_int16_t getHits() const { return hits; };
+};
+
 class SYNFlood : public HostCallback {
 private:
   u_int64_t syns_threshold;
@@ -36,7 +46,7 @@ private:
 
   void periodicUpdate(Host *h);
 
-  HostCallbackStatus *allocStatus() { return new HostCallbackStatus(this); };
+  HostCallbackStatus *allocStatus() { return new SYNFloodHostCallbackStatus(this); };
 
   bool loadConfiguration(json_object *config);  
 

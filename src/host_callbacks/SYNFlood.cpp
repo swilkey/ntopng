@@ -32,35 +32,40 @@ SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
 
 void SYNFlood::periodicUpdate(Host *h) {
   static u_int8_t attacker_score = 100, victim_score = 20;
+  u_int16_t hits = 0;
   char buf[64];
-  HostCallbackStatus *status = getStatus(h);
+  SYNFloodHostCallbackStatus *status = static_cast<SYNFloodHostCallbackStatus*>(getStatus(h));
 
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
 
   /* Attacker alert has priority over the Victim alert */
-  if(h->syn_flood_attacker_hits() >= syns_threshold)
+  if((hits = h->syn_flood_attacker_hits()) >= syns_threshold)
     h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, attacker_score);
-  else if(h->syn_flood_victim_hits() >= syns_threshold)
+  else if((hits = h->syn_flood_victim_hits()) >= syns_threshold)
     h->triggerAlertAsync(SYNFloodVictimAlert::getClassType(), alert_level_error, victim_score);
+
+  /* Updates the status with the hits detected. This will be possibly used later by buildAlert */
+  if(status) status->updateHits(hits);
+
+  /* Reset counters once done */
+  h->reset_syn_flood_hits();  
 }
 
 /* ***************************************************** */
 
 HostAlert *SYNFlood::buildAlert(HostAlertType t, Host *h) {
+  SYNFloodHostCallbackStatus *status = static_cast<SYNFloodHostCallbackStatus*>(getStatus(h));
   SYNFloodAlert *sfa = NULL;
 
   switch(t.id) {
   case host_alert_syn_flood_attacker:
-    sfa = new SYNFloodAttackerAlert(this, h, h->syn_flood_attacker_hits() /* Actual attacker hits */, syns_threshold);
+    sfa = new SYNFloodAttackerAlert(this, h, status ? status->getHits() : 0 /* Actual hits */, syns_threshold);
     break;
   case host_alert_syn_flood_victim:
-    sfa = new SYNFloodVictimAlert(this, h, h->syn_flood_victim_hits() /* Actual victim hits */, syns_threshold);
+    sfa = new SYNFloodVictimAlert(this, h, status ? status->getHits() : 0 /* Actual hits */, syns_threshold);
   default:
     break;
   }
-
-  /* Reset counters once done */
-  h->reset_syn_flood_hits();
   
   return sfa;
 }
