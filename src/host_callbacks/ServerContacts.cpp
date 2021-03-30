@@ -24,13 +24,28 @@
 
 /* ***************************************************** */
 
-DNSServerContacts::DNSServerContacts() : ServerContacts() {
+ServerContacts::ServerContacts() : HostCallback(ntopng_edition_community) {
+  contacts_threshold = (u_int64_t)-1;
+};
+
+/* ***************************************************** */
+
+void ServerContacts::periodicUpdate(Host *h) {
 }
 
 /* ***************************************************** */
 
-HostAlert *DNSServerContacts::buildAlert(HostAlertType t, Host *h) {
-  return NULL; // return new DNSServerContactsAlert(this, h);
+bool ServerContacts::loadConfiguration(json_object *config) {
+  json_object *json_threshold;
+
+  HostCallback::loadConfiguration(config); /* Parse parameters in common */
+
+  if(json_object_object_get_ex(config, "threshold", &json_threshold))
+    contacts_threshold = json_object_get_int64(json_threshold);
+
+  // ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
+
+  return(true);
 }
 
 /* ***************************************************** */

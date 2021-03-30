@@ -24,18 +24,14 @@
 
 #include "ntop_includes.h"
 
-class SMTPServerContacts : public HostCallback {
+class SMTPServerContacts : public ServerContacts {
 private:
   
 public:
-   SMTPServerContacts() : HostCallback(ntopng_edition_community) {};
+  SMTPServerContacts();
   ~SMTPServerContacts() {};
 
   HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
-
-  bool loadConfiguration(json_object *config);  
 
   HostCallbackType getType() const { return host_callback_smtp_server_contacts; }
   std::string getName()        const { return(std::string("smtp_contacts")); }

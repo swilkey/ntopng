@@ -29,9 +29,12 @@
 #include "host_callbacks/SYNScan.h"
 #include "host_callbacks/SYNFlood.h"
 #include "host_callbacks/RepliesRequestsRatio.h"
+
+#include "host_callbacks/ServerContacts.h"
 #include "host_callbacks/DNSServerContacts.h"
 #include "host_callbacks/SMTPServerContacts.h"
 #include "host_callbacks/NTPServerContacts.h"
+
 #include "host_callbacks/P2PTraffic.h"
 #include "host_callbacks/DNSTraffic.h"
 #include "host_callbacks/TrafficHostCallback.h"

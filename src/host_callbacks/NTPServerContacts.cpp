@@ -24,7 +24,7 @@
 
 /* ***************************************************** */
 
-void NTPServerContacts::periodicUpdate(Host *h) {
+NTPServerContacts::NTPServerContacts() : ServerContacts() {
 }
 
 /* ***************************************************** */
@@ -34,15 +34,3 @@ HostAlert *NTPServerContacts::buildAlert(HostAlertType t, Host *h) {
 }
 
 /* ***************************************************** */
-
-bool NTPServerContacts::loadConfiguration(json_object *config) {
-  HostCallback::loadConfiguration(config); /* Parse parameters in common */
-  /*
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-  */
-
-  return(true);
-}
-
-/* ***************************************************** */
-

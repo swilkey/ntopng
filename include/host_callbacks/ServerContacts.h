@@ -19,19 +19,22 @@
  *
  */
 
+#ifndef _SERVER_CONTACTS_H_
+#define _SERVER_CONTACTS_H_
+
 #include "ntop_includes.h"
-#include "host_callbacks_includes.h"
 
-/* ***************************************************** */
+class ServerContacts : public HostCallback {
+private:
+  u_int64_t contacts_threshold;
 
-DNSServerContacts::DNSServerContacts() : ServerContacts() {
-}
+ public:
+  ServerContacts();
+  ~ServerContacts() {};
 
-/* ***************************************************** */
+  void periodicUpdate(Host *h);
 
-HostAlert *DNSServerContacts::buildAlert(HostAlertType t, Host *h) {
-  return NULL; // return new DNSServerContactsAlert(this, h);
-}
+  bool loadConfiguration(json_object *config);  
+};
 
-/* ***************************************************** */
-
+#endif

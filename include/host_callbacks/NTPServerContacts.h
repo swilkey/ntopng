@@ -24,18 +24,14 @@
 
 #include "ntop_includes.h"
 
-class NTPServerContacts : public HostCallback {
+class NTPServerContacts : public ServerContacts {
 private:
   
 public:
-   NTPServerContacts() : HostCallback(ntopng_edition_community) {};
+  NTPServerContacts();
   ~NTPServerContacts() {};
 
   HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
-
-  bool loadConfiguration(json_object *config);  
 
   HostCallbackType getType() const { return host_callback_ntp_server_contacts; }
   std::string getName()        const { return(std::string("ntp_contacts")); }

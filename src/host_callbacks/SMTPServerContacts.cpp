@@ -24,7 +24,7 @@
 
 /* ***************************************************** */
 
-void SMTPServerContacts::periodicUpdate(Host *h) {
+SMTPServerContacts::SMTPServerContacts() : ServerContacts() {
 }
 
 /* ***************************************************** */
@@ -34,15 +34,3 @@ HostAlert *SMTPServerContacts::buildAlert(HostAlertType t, Host *h) {
 }
 
 /* ***************************************************** */
-
-bool SMTPServerContacts::loadConfiguration(json_object *config) {
-  HostCallback::loadConfiguration(config); /* Parse parameters in common */
-  /*
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-  */
-
-  return(true);
-}
-
-/* ***************************************************** */
-
