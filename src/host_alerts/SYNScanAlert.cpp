@@ -19,27 +19,25 @@
  *
  */
 
-#ifndef _SYN_SCAN_H_
-#define _SYN_SCAN_H_
+#include "host_alerts_includes.h"
 
-#include "ntop_includes.h"
+/* ***************************************************** */
 
-class SYNScan : public HostCallback {
-private:
-  u_int64_t syns_threshold;
-  
-public:
-  SYNScan();
-  ~SYNScan() {};
-
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
-
-  bool loadConfiguration(json_object *config);  
-
-  HostCallbackType getType() const { return host_callback_syn_scan; }
-  std::string getName()        const { return(std::string("syn_scan")); }
+SYNScanAlert::SYNScanAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold) : HostAlert(c, f) {
+  syns = _syns,
+    syns_threshold = _syns_threshold;
 };
 
-#endif
+/* ***************************************************** */
+
+ndpi_serializer* SYNScanAlert::getAlertJSON(ndpi_serializer* serializer) {
+  if(serializer == NULL)
+    return NULL;
+
+  ndpi_serialize_string_uint64(serializer, "value", syns);
+  ndpi_serialize_string_uint64(serializer, "threshold", syns_threshold);
+  
+  return serializer;
+}
+
+/* ***************************************************** */

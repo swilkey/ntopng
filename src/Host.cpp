@@ -140,8 +140,6 @@ void Host::housekeepAlerts(ScriptPeriodicity p) {
   case minute_script:
     flow_flood_attacker_alert->reset_hits(),
       flow_flood_victim_alert->reset_hits();
-      syn_sent_last_min = synack_recvd_last_min = 0;
-      syn_recvd_last_min = synack_sent_last_min = 0;
     break;
   default:
     break;
@@ -691,9 +689,7 @@ void Host::lua(lua_State* vm, AddressTree *ptree,
 
     lua_get_geoloc(vm);
 
-    lua_get_syn_flood(vm);
     lua_get_flow_flood(vm);
-    lua_get_syn_scan(vm);
     lua_get_services(vm);
   }
 

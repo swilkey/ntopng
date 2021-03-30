@@ -26,17 +26,17 @@
 #include "ntop_includes.h"
 
 
-class SYNScanVictimAlert : public HostAlert {
+class SYNScanVictimAlert : public SYNScanAlert {
  private:
   
  public:
   static HostAlertType getClassType() { return { host_alert_syn_scan_victim, alert_category_security }; }
 
-  SYNScanVictimAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  SYNScanVictimAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
   ~SYNScanVictimAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_tcp_syn_scan_victim"); }
+  std::string getName() const { return std::string("host_alert_tcp_syn_scan_victim"); }
 };
 
 #endif /* _SYN_SCAN_VICTIM_ALERT_H_ */

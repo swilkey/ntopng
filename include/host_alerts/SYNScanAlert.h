@@ -19,27 +19,22 @@
  *
  */
 
-#ifndef _SYN_SCAN_H_
-#define _SYN_SCAN_H_
+#ifndef _SYN_SCAN_ALERT_H_
+#define _SYN_SCAN_ALERT_H_
+
 
 #include "ntop_includes.h"
 
-class SYNScan : public HostCallback {
-private:
-  u_int64_t syns_threshold;
+
+class SYNScanAlert : public HostAlert {
+ private:
+  u_int64_t syns, syns_threshold;
+
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
-public:
-  SYNScan();
-  ~SYNScan() {};
-
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
-
-  bool loadConfiguration(json_object *config);  
-
-  HostCallbackType getType() const { return host_callback_syn_scan; }
-  std::string getName()        const { return(std::string("syn_scan")); }
+ public:
+  SYNScanAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
+  ~SYNScanAlert() {};
 };
 
-#endif
+#endif /* _SYN_SCAN_ALERT_H_ */

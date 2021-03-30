@@ -314,6 +314,10 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   inline u_int16_t syn_flood_attacker_hits() const { return syn_flood_attacker_alert ? syn_flood_attacker_alert->hits() : 0; };
   inline void reset_syn_flood_hits() { if(syn_flood_victim_alert) syn_flood_victim_alert->reset_hits(); if(syn_flood_attacker_alert) syn_flood_attacker_alert->reset_hits(); };
 
+  inline u_int32_t syn_scan_victim_hits()   const { return syn_recvd_last_min > synack_sent_last_min ? syn_recvd_last_min - synack_sent_last_min : 0; };
+  inline u_int32_t syn_scan_attacker_hits() const { return syn_sent_last_min > synack_recvd_last_min ? syn_sent_last_min - synack_recvd_last_min : 0; };
+  inline void reset_syn_scan_hits() { syn_sent_last_min = synack_recvd_last_min = syn_recvd_last_min = synack_sent_last_min = 0; };
+
   void incNumFlows(time_t t, bool as_client);
   void decNumFlows(time_t t, bool as_client);
   inline void incNumAlertedFlows(bool as_client) { active_alerted_flows++; if(stats) stats->incNumAlertedFlows(as_client); }
