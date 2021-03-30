@@ -24,6 +24,8 @@
 
 #include "ntop_includes.h"
 
+class HostCallback;
+
 class HostCallbackStatus {
  private:
   HostCallbackType callback_type;

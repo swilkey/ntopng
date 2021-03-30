@@ -36,6 +36,8 @@ private:
 
   void periodicUpdate(Host *h);
 
+  HostCallbackStatus *allocStatus() { return new HostCallbackStatus(this); };
+
   bool loadConfiguration(json_object *config);  
 
   HostCallbackType getType() const { return host_callback_syn_flood; }

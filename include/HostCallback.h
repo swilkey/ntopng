@@ -61,7 +61,10 @@ class HostCallback {
   inline void addCallback(std::list<HostCallback*> *l, NetworkInterface *iface) { l->push_back(this); }
   virtual bool loadConfiguration(json_object *config);
 
-  virtual HostCallbackStatus *getStatus(Host *h, bool create = false);
+  /* Allocate the status for the Callback for a specific Host */
+  virtual HostCallbackStatus *allocStatus();
+
+  HostCallbackStatus *getStatus(Host *h, bool create = false);
 
   virtual HostCallbackType getType() const = 0;  
   virtual std::string getName() const = 0;

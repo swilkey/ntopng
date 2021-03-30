@@ -33,6 +33,7 @@ SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
 void SYNFlood::periodicUpdate(Host *h) {
   static u_int8_t attacker_score = 100, victim_score = 20;
   char buf[64];
+  HostCallbackStatus *status = getStatus(h);
 
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
 
