@@ -32,34 +32,41 @@ SYNScan::SYNScan() : HostCallback(ntopng_edition_community) {
 
 void SYNScan::periodicUpdate(Host *h) {
   static u_int8_t attacker_score = 100, victim_score = 20;
+  u_int16_t hits = 0;
   char buf[64];
+  SYNScanHostCallbackStatus *status = static_cast<SYNScanHostCallbackStatus*>(getStatus(h));
 
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
 
   /* Attacker alert has priority over the Victim alert */
-  if(h->syn_scan_attacker_hits() >= syns_threshold)
+  if((hits = h->syn_scan_attacker_hits()) >= syns_threshold)
     h->triggerAlertAsync(SYNScanAttackerAlert::getClassType(), alert_level_error, attacker_score);
-  else if(h->syn_scan_victim_hits() >= syns_threshold)
+  else if((hits = h->syn_scan_victim_hits()) >= syns_threshold)
     h->triggerAlertAsync(SYNScanVictimAlert::getClassType(), alert_level_error, victim_score);
+
+  /* Updates the status with the hits detected. This will be possibly used later by buildAlert */
+  if(status) status->updateHits(hits);
+
+  /* Reset counters once done */
+  h->reset_syn_scan_hits();
+
 }
 
 /* ***************************************************** */
 
 HostAlert *SYNScan::buildAlert(HostAlertType t, Host *h) {
+  SYNScanHostCallbackStatus *status = static_cast<SYNScanHostCallbackStatus*>(getStatus(h));
   SYNScanAlert *ssa = NULL;
 
   switch(t.id) {
   case host_alert_syn_scan_attacker:
-    ssa = new SYNScanAttackerAlert(this, h, h->syn_scan_attacker_hits() /* Actual attacker hits */, syns_threshold);
+    ssa = new SYNScanAttackerAlert(this, h, status ? status->getHits() : 0 /* Actual hits */, syns_threshold);
     break;
   case host_alert_syn_scan_victim:
-    ssa = new SYNScanVictimAlert(this, h, h->syn_scan_victim_hits() /* Actual victim hits */, syns_threshold);
+    ssa = new SYNScanVictimAlert(this, h, status ? status->getHits() : 0 /* Actual hits */, syns_threshold);
   default:
     break;
   }
-
-  /* Reset counters once done */
-  h->reset_syn_scan_hits();
   
   return ssa;
 }
