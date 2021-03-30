@@ -32,34 +32,41 @@ FlowFlood::FlowFlood() : HostCallback(ntopng_edition_community) {
 
 void FlowFlood::periodicUpdate(Host *h) {
   static u_int8_t attacker_score = 100, victim_score = 20;
+  u_int16_t flows = 0;
   char buf[64];
+  FlowFloodHostCallbackStatus *status = static_cast<FlowFloodHostCallbackStatus*>(getStatus(h));
 
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
 
   /* Attacker alert has priority over the Victim alert */
-  if(h->flow_flood_attacker_hits() >= flows_threshold)
+  if((flows = h->flow_flood_attacker_hits()) >= flows_threshold)
     h->triggerAlertAsync(FlowFloodAttackerAlert::getClassType(), alert_level_error, attacker_score);
-  else if(h->flow_flood_victim_hits() >= flows_threshold)
+  else if((flows = h->flow_flood_victim_hits()) >= flows_threshold)
     h->triggerAlertAsync(FlowFloodVictimAlert::getClassType(), alert_level_error, victim_score);
+
+  
+  /* Updates the status with the flows detected. This will be possibly used later by buildAlert */
+  if(status) status->updateFlows(flows);
+
+  /* Reset counters once done */
+  h->reset_flow_flood_hits();
 }
 
 /* ***************************************************** */
 
 HostAlert *FlowFlood::buildAlert(HostAlertType t, Host *h) {
   FlowFloodAlert *ffa = NULL;
+  FlowFloodHostCallbackStatus *status = static_cast<FlowFloodHostCallbackStatus*>(getStatus(h));
 
   switch(t.id) {
   case host_alert_flow_flood_attacker:
-    ffa = new FlowFloodAttackerAlert(this, h, h->flow_flood_attacker_hits() /* Actual attacker hits */, flows_threshold);
+    ffa = new FlowFloodAttackerAlert(this, h, status ? status->getFlows() : 0 /* Actual flows */, flows_threshold);
     break;
   case host_alert_flow_flood_victim:
-    ffa = new FlowFloodVictimAlert(this, h, h->flow_flood_victim_hits() /* Actual victim hits */, flows_threshold);
+    ffa = new FlowFloodVictimAlert(this, h, status ? status->getFlows() : 0 /* Actual flows */, flows_threshold);
   default:
     break;
   }
-
-  /* Reset counters once done */
-  h->reset_flow_flood_hits();
   
   return ffa;
 }
