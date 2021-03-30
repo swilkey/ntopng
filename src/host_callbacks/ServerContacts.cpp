@@ -25,23 +25,36 @@
 /* ***************************************************** */
 
 ServerContacts::ServerContacts() : HostCallback(ntopng_edition_community) {
-  contacts_threshold = (u_int64_t)-1;
 };
 
 /* ***************************************************** */
 
 void ServerContacts::periodicUpdate(Host *h) {
+  static const u_int8_t cli_score = 50;
+  u_int32_t contacted_servers = 0;
+  ServerContactsHostCallbackStatus *status = static_cast<ServerContactsHostCallbackStatus*>(getStatus(h));
+
+  if((contacted_servers = getContactedServers(h)) >= contacts_threshold)
+    h->triggerAlertAsync(getAlertType(), alert_level_error, cli_score /* Attacker */, 0 /* Victim */);
+
+  if(status) status->updateContacts(contacted_servers);
+
+  /* TODO: reset contacted servers cardinality */
+}
+
+/* ***************************************************** */
+
+HostAlert *ServerContacts::buildAlert(HostAlertType t, Host *h) {
+  ServerContactsHostCallbackStatus *status = static_cast<ServerContactsHostCallbackStatus*>(getStatus(h));
+  HostAlert *ha = allocAlert(this, h, status ? status->getContacts() : 0, contacts_threshold);
+
+  return ha;
 }
 
 /* ***************************************************** */
 
 bool ServerContacts::loadConfiguration(json_object *config) {
-  json_object *json_threshold;
-
   HostCallback::loadConfiguration(config); /* Parse parameters in common */
-
-  if(json_object_object_get_ex(config, "threshold", &json_threshold))
-    contacts_threshold = json_object_get_int64(json_threshold);
 
   // ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
 

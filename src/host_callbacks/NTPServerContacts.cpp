@@ -28,9 +28,3 @@ NTPServerContacts::NTPServerContacts() : ServerContacts() {
 }
 
 /* ***************************************************** */
-
-HostAlert *NTPServerContacts::buildAlert(HostAlertType t, Host *h) {
-  return NULL; //  new NTPServerContactsAlert(this, h);
-}
-
-/* ***************************************************** */

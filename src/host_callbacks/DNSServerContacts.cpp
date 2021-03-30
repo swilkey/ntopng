@@ -29,9 +29,3 @@ DNSServerContacts::DNSServerContacts() : ServerContacts() {
 
 /* ***************************************************** */
 
-HostAlert *DNSServerContacts::buildAlert(HostAlertType t, Host *h) {
-  return NULL; // return new DNSServerContactsAlert(this, h);
-}
-
-/* ***************************************************** */
-

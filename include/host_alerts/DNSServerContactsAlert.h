@@ -36,7 +36,7 @@ class DNSServerContactsAlert : public ServerContactsAlert {
   ~DNSServerContactsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_contacts_anomaly"); }
+  std::string getName() const { return std::string("host_alert_dns_server_contacts"); }
 };
 
 #endif /* _DNS_SERVER_CONTACTS_ALERT_H_ */

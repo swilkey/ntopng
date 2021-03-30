@@ -28,9 +28,3 @@ SMTPServerContacts::SMTPServerContacts() : ServerContacts() {
 }
 
 /* ***************************************************** */
-
-HostAlert *SMTPServerContacts::buildAlert(HostAlertType t, Host *h) {
-  return NULL; // return new SMTPServerContactsAlert(this, h);
-}
-
-/* ***************************************************** */

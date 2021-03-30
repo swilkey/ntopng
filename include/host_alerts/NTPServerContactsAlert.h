@@ -36,7 +36,7 @@ class NTPServerContactsAlert : public  ServerContactsAlert {
   ~NTPServerContactsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_contacts_anomaly"); }
+  std::string getName() const { return std::string("host_alert_ntp_server_contacts"); }
 };
 
 #endif /* _NTP_SERVER_CONTACTS_ALERT_H_ */

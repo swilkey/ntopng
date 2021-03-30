@@ -26,12 +26,13 @@
 
 class NTPServerContacts : public ServerContacts {
 private:
-  
-public:
+  u_int32_t getContactedServers(Host *h) const { return h->getNTPContactCardinality(); };
+  HostAlertType getAlertType() const { return NTPServerContactsAlert::getClassType(); };
+  HostAlert *allocAlert(HostCallback *c, Host *f, u_int64_t _contacts, u_int64_t _contacts_threshold) { return new NTPServerContactsAlert(c, f, _contacts, _contacts_threshold); };
+
+ public:
   NTPServerContacts();
   ~NTPServerContacts() {};
-
-  HostAlert *buildAlert(HostAlertType t, Host *h);
 
   HostCallbackType getType() const { return host_callback_ntp_server_contacts; }
   std::string getName()        const { return(std::string("ntp_contacts")); }
