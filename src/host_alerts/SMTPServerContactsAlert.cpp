@@ -21,14 +21,10 @@
 
 #include "host_alerts_includes.h"
 
-ndpi_serializer* SMTPServerContactsAlert::getAlertJSON(ndpi_serializer* serializer) {
-  // Host *h = getHost(); // TODO
+/* ***************************************************** */
 
-  if(serializer == NULL)
-    return NULL;
+SMTPServerContactsAlert::SMTPServerContactsAlert(HostCallback *c, Host *f, u_int64_t _contacts, u_int64_t _contacts_threshold)
+  : ServerContactsAlert(c, f, _contacts, _contacts_threshold) {
+};
 
-  // TODO
-  
-  return serializer;
-}
-
+/* ***************************************************** */

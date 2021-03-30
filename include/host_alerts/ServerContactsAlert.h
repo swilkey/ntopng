@@ -19,30 +19,22 @@
  *
  */
 
+#ifndef _SERVER_CONTACTS_ALERT_H_
+#define _SERVER_CONTACTS_ALERT_H_
+
+
 #include "ntop_includes.h"
-#include "host_callbacks_includes.h"
 
-/* ***************************************************** */
 
-void SMTPServerContacts::periodicUpdate(Host *h) {
-}
+class ServerContactsAlert : public HostAlert {
+ private:
+  u_int64_t contacts, contacts_threshold;
+  
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
 
-/* ***************************************************** */
+ public:
+  ServerContactsAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
+  ~ServerContactsAlert() {};
+};
 
-HostAlert *SMTPServerContacts::buildAlert(HostAlertType t, Host *h) {
-  return NULL; // return new SMTPServerContactsAlert(this, h);
-}
-
-/* ***************************************************** */
-
-bool SMTPServerContacts::loadConfiguration(json_object *config) {
-  HostCallback::loadConfiguration(config); /* Parse parameters in common */
-  /*
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-  */
-
-  return(true);
-}
-
-/* ***************************************************** */
-
+#endif /* _SERVER_CONTACTS_ALERT_H_ */

@@ -37,6 +37,7 @@
 #include "host_alerts/RepliesRequestsRatioAlert.h"
 #include "host_alerts/DNSRequestsErrorsRatioAlert.h"
 
+#include "host_alerts/ServerContactsAlert.h"
 #include "host_alerts/DNSServerContactsAlert.h"
 #include "host_alerts/SMTPServerContactsAlert.h"
 #include "host_alerts/NTPServerContactsAlert.h"

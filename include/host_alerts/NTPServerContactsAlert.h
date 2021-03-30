@@ -26,13 +26,13 @@
 #include "ntop_includes.h"
 
 
-class NTPServerContactsAlert : public HostAlert {
+class NTPServerContactsAlert : public  ServerContactsAlert {
  private:
   
  public:
   static HostAlertType getClassType() { return { host_alert_ntp_server_contacts, alert_category_security }; }
 
-  NTPServerContactsAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  NTPServerContactsAlert(HostCallback *c, Host *f, u_int64_t _contacts, u_int64_t _contacts_threshold);
   ~NTPServerContactsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }

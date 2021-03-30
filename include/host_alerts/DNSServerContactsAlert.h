@@ -26,13 +26,13 @@
 #include "ntop_includes.h"
 
 
-class DNSServerContactsAlert : public HostAlert {
+class DNSServerContactsAlert : public ServerContactsAlert {
  private:
   
  public:
   static HostAlertType getClassType() { return { host_alert_dns_server_contacts, alert_category_security }; }
 
-  DNSServerContactsAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  DNSServerContactsAlert(HostCallback *c, Host *f, u_int64_t _contacts, u_int64_t _contacts_threshold);
   ~DNSServerContactsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }

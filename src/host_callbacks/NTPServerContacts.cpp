@@ -30,7 +30,7 @@ void NTPServerContacts::periodicUpdate(Host *h) {
 /* ***************************************************** */
 
 HostAlert *NTPServerContacts::buildAlert(HostAlertType t, Host *h) {
-  return new NTPServerContactsAlert(this, h);
+  return NULL; //  new NTPServerContactsAlert(this, h);
 }
 
 /* ***************************************************** */

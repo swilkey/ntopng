@@ -26,14 +26,13 @@
 #include "ntop_includes.h"
 
 
-class SMTPServerContactsAlert : public HostAlert {
+class SMTPServerContactsAlert : public ServerContactsAlert {
  private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_smtp_server_contacts, alert_category_security }; }
 
-  SMTPServerContactsAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  SMTPServerContactsAlert(HostCallback *c, Host *f, u_int64_t _contacts, u_int64_t _contacts_threshold);
   ~SMTPServerContactsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
