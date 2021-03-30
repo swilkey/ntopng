@@ -147,7 +147,7 @@ void Host::initialize(Mac *_mac, u_int16_t _vlanId) {
   os = NULL, os_type = os_unknown;
   prefs_loaded = false;
   host_services_bitmap = 0;
-  disabled_flow_alerts_tstamp = 0;
+  disabled_alerts_tstamp = 0;
 
   // readStats(); - Commented as if put here it's too early and the key is not yet set
 
@@ -1567,23 +1567,24 @@ char* Host::get_tskey(char *buf, size_t bufsize) {
 
 /* *************************************** */
 
-bool Host::isFlowAlertDisabled(FlowAlertType alert_type) {
+void Host::refreshDisabledAlerts() {
   AlertExclusions *alert_exclusions = ntop->getAlertExclusions();
-  bool disabled = false;
-  if (alert_exclusions) {
-    if (alert_exclusions->checkChange(&disabled_flow_alerts_tstamp))
-      alert_exclusions->setDisabledFlowAlertsBitmap(get_ip(), &disabled_flow_alerts);
-     disabled = disabled_flow_alerts.isSetBit(alert_type.id);
-  }
+  if (alert_exclusions && alert_exclusions->checkChange(&disabled_alerts_tstamp))
+    alert_exclusions->setDisabledHostAlertsBitmaps(get_ip(), &disabled_host_alerts, &disabled_flow_alerts);
+}
 
-#if 0
-  if(disabled) {
-    char buf[64];
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "Disabled [%s][%u]", get_ip()->print(buf, sizeof(buf)), alert_type);
-  }
-#endif
-  
-  return disabled;
+/* *************************************** */
+
+bool Host::isHostAlertDisabled(HostAlertType alert_type) {
+  refreshDisabledAlerts();
+  return disabled_host_alerts.isSetBit(alert_type.id);
+}
+
+/* *************************************** */
+
+bool Host::isFlowAlertDisabled(FlowAlertType alert_type) {
+  refreshDisabledAlerts();
+  return disabled_flow_alerts.isSetBit(alert_type.id);
 }
 
 /* *************************************** */
@@ -1695,12 +1696,20 @@ void Host::clearCallbackStatus() {
 bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_int8_t score_as_srv) {
 
 #ifdef DEBUG_SCORE
-  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Set host score", host_score_inc);
+  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Set host score %u/%u", score_as_cli/score_as_srv);
 #endif
 
   if(alert_type.id == host_alert_normal) {
 #ifdef DEBUG_SCORE
     ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (normal)");
+#endif
+    return false;
+  }
+
+  /* Check if the same alert has been already triggered and accounted in the score */
+  if(alerts_map.isSetBit(alert_type.id)) {
+#ifdef DEBUG_SCORE
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (already set)");
 #endif
     return false;
   }
@@ -1718,11 +1727,18 @@ bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_in
  * This is called by the Callback to trigger an alert
  */
 bool Host::triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t score_as_cli, u_int8_t score_as_srv) {
-  bool res;
+  bool res = false;
 
-  res = setAlertsBitmap(alert_type, score_as_cli, score_as_srv);
+  /* Check host filter */
+  if(!isHostAlertDisabled(alert_type)) {
+#ifdef DEBUG_SCORE
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (host filter)");
+#endif
 
-  setPendingAlert(alert_type, alert_severity);
+    res = setAlertsBitmap(alert_type, score_as_cli, score_as_srv);
+
+    setPendingAlert(alert_type, alert_severity);
+  }
 
   return res;
 }

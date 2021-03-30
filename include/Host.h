@@ -85,8 +85,9 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   bool is_in_broadcast_domain;
   bool is_dhcp_host;
 
+  Bitmap disabled_host_alerts;
   Bitmap disabled_flow_alerts;
-  time_t disabled_flow_alerts_tstamp;
+  time_t disabled_alerts_tstamp;
 
   std::list<HostCallbackStatus*> cb_status; /* Callbacks status */
 
@@ -413,6 +414,9 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   inline u_int32_t getScoreAsServer() const { return score ? score->getServer() : 0; };
   u_int16_t incScoreValue(u_int16_t score_incr, ScoreCategory score_category, bool as_client);
   u_int16_t decScoreValue(u_int16_t score_decr, ScoreCategory score_category, bool as_client);
+
+  void refreshDisabledAlerts();
+  bool isHostAlertDisabled(HostAlertType alert_type);
   bool isFlowAlertDisabled(FlowAlertType alert_type);
 
   void setOS(OSType _os);

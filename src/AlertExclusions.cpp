@@ -34,10 +34,13 @@ AlertExclusions::AlertExclusions() {
 
 /* *************************************** */
 
-static void free_ptree_bitmap(void *data) {
-  if(data) {
-    Bitmap *host_filter = static_cast<Bitmap*>(data);  
-    delete host_filter;
+static void free_excl_host_tree_data(void *data) {
+  alert_exclusion_host_tree_data *d = (alert_exclusion_host_tree_data *) data;
+
+  if(d) {
+    if (d->host_alert_filter) delete d->host_alert_filter;
+    if (d->flow_alert_filter) delete d->flow_alert_filter;
+    free(d);
   }   
 }
 
@@ -45,54 +48,88 @@ static void free_ptree_bitmap(void *data) {
 
 AlertExclusions::~AlertExclusions() {
   if (host_filters) {
-    host_filters->cleanup(free_ptree_bitmap);
+    host_filters->cleanup(free_excl_host_tree_data);
     delete host_filters;
   }
 }
 
 /* *************************************** */
 
-bool AlertExclusions::addHostDisabledFlowAlert(const char * const host, FlowAlertTypeEnum disabled_flow_alert_type) {
-  Bitmap *host_filter = NULL;
-  void *host_data;
-  bool success = false;
+alert_exclusion_host_tree_data *AlertExclusions::getHostData(const char * const host) {
+  alert_exclusion_host_tree_data *d;
 
   if (host_filters == NULL)
-    return false;
+    return NULL;
 
   /* Check if there is already a bitmap for the host */
-  host_data = host_filters->matchAndGetData(host);
+  d = (alert_exclusion_host_tree_data *) host_filters->matchAndGetData(host);
 
-  if (host_data) {
-    host_filter = static_cast<Bitmap*>(host_data);
-  } else {
-    /* Accolate a bitmap for the host */
-    host_filter = new (std::nothrow) Bitmap();
-    if (host_filter)
-      host_filters->addAddressAndData(host, host_filter);
+  if (!d) {
+    /* Allocate data for the host */
+    d = (alert_exclusion_host_tree_data *) calloc(1, sizeof(*d));
+    if (!d) return NULL; /* allocation failure */
+    host_filters->addAddressAndData(host, d);
   }
 
-  if (host_filter) {
-    /* Add filter to the bitmap */
-    host_filter->setBit(disabled_flow_alert_type);
-    success = true;
-  }
-
-  return success;
+  return d;
 }
 
 /* *************************************** */
 
-void AlertExclusions::setDisabledFlowAlertsBitmap(IpAddress *addr, Bitmap *host_b) const {
-  const Bitmap *b = &default_host_filter;
+bool AlertExclusions::addHostDisabledHostAlert(const char * const host, HostAlertTypeEnum disabled_host_alert_type) {
+  alert_exclusion_host_tree_data *d = getHostData(host);
 
-  if (host_filters != NULL && addr != NULL) {
-    void *host_data = host_filters->matchAndGetData(addr);
-    if (host_data != NULL)
-      b = static_cast<Bitmap*>(host_data);
+  if (!d)
+    return false;
+
+  if (!d->host_alert_filter) {
+    /* Allocate a bitmap for the host */
+    d->host_alert_filter = new (std::nothrow) Bitmap();
+    if (!d->host_alert_filter) return false; /* allocation failure */
   }
 
-  host_b->set(b);
+  /* Add filter to the bitmap */
+  d->host_alert_filter->setBit(disabled_host_alert_type);
+
+  return true;
+}
+
+/* *************************************** */
+
+bool AlertExclusions::addHostDisabledFlowAlert(const char * const host, FlowAlertTypeEnum disabled_flow_alert_type) {
+  alert_exclusion_host_tree_data *d = getHostData(host);
+
+  if (!d)
+    return false;
+
+  if (!d->flow_alert_filter) {
+    /* Allocate a bitmap for the host */
+    d->flow_alert_filter = new (std::nothrow) Bitmap();
+    if (!d->flow_alert_filter) return false; /* allocation failure */
+  }
+
+  /* Add filter to the bitmap */
+  d->flow_alert_filter->setBit(disabled_flow_alert_type);
+
+  return true;
+}
+
+/* *************************************** */
+
+void AlertExclusions::setDisabledHostAlertsBitmaps(IpAddress *addr, Bitmap *host_alerts, Bitmap *flow_alerts) const {
+  const Bitmap *hb = &default_host_host_alert_filter;
+  const Bitmap *fb = &default_host_flow_alert_filter;
+
+  if (host_filters != NULL && addr != NULL) {
+    alert_exclusion_host_tree_data *d = (alert_exclusion_host_tree_data *) host_filters->matchAndGetData(addr);
+    if (d) {
+      if (d->host_alert_filter) hb = d->host_alert_filter;
+      if (d->flow_alert_filter) fb = d->flow_alert_filter;
+    }
+  }
+
+  host_alerts->set(hb);
+  flow_alerts->set(fb);
 }
 
 /* *************************************** */
