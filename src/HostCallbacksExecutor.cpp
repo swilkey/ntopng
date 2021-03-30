@@ -63,7 +63,10 @@ bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, HostCall
 
 void HostCallbacksExecutor::execCallbacks(Host *h) {
   std::list<HostAlert*> *engaged_alerts = h->getEngagedAlerts();
+  HostCallbackStatus *host_cb_status_cache[NUM_DEFINED_HOST_CALLBACKS]; /* optimization */
   time_t now = time(NULL);
+
+  h->getCallbacksStatus(host_cb_status_cache);
 
   /* This is used to check which of the engaged should be released due to: 
    * - Callback disabled
@@ -71,7 +74,14 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
   for(std::list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
     HostAlert *alert = (*it);
     HostCallback *cb = getCallback(alert->getCallbackType());
-    HostCallbackStatus *cbs = cb ? cb->getStatus(h) : NULL;
+    HostCallbackStatus *cbs = NULL;
+
+    /* Get callback status */
+    if (cb) {
+      HostCallbackType ct = cb->getType();
+      cbs = host_cb_status_cache[ct];
+    }
+
     if (alert->isAutoReleaseEnabled() && isTimeToRunCallback(cb, cbs, now)) {
       /* Initializing the status to expiring, to check if this needs to be released (when not engaged again) */
       alert->setExpiring();
@@ -82,7 +92,11 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
   for(std::list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
     HostAlertType t = { host_alert_normal, alert_category_other };
     HostCallback *cb = (*it);
-    HostCallbackStatus *cbs = cb->getStatus(h, true /* create */);
+    HostCallbackType ct = cb->getType();
+    HostCallbackStatus *cbs;
+
+    if (!host_cb_status_cache[ct]) host_cb_status_cache[ct] = cb->getStatus(h, true /* create */);
+    cbs = host_cb_status_cache[ct];
 
     /* Reset pending alert */
     h->setPendingAlert(t, alert_level_none);

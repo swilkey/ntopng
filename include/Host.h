@@ -449,6 +449,7 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   /* Callbacks status */
   void addCallbackStatus(HostCallbackStatus *s) { cb_status.push_back(s); }
   HostCallbackStatus *getCallbackStatus(HostCallbackType t);
+  void getCallbacksStatus(HostCallbackStatus *callbacks_status_arr[]);
   void clearCallbackStatus();
 
   void setPendingAlert(HostAlertType t, AlertLevel s) { pending_alert_type = t; pending_alert_severity = s; }

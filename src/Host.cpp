@@ -1677,6 +1677,16 @@ HostCallbackStatus *Host::getCallbackStatus(HostCallbackType t) {
 
 /* *************************************** */
 
+void Host::getCallbacksStatus(HostCallbackStatus *callbacks_status_arr[]) {
+  memset(callbacks_status_arr, 0, sizeof(HostCallbackStatus *) * NUM_DEFINED_HOST_CALLBACKS);
+  for(std::list<HostCallbackStatus*>::iterator it = cb_status.begin(); it != cb_status.end(); ++it) {
+    HostCallbackStatus *s = (*it);
+    callbacks_status_arr[s->getCallbackType()] = s;
+  }
+}
+
+/* *************************************** */
+
 void Host::clearCallbackStatus() {
   std::list<HostCallbackStatus*>::iterator it = cb_status.begin();
 
