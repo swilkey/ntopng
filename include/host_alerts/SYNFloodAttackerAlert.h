@@ -26,11 +26,8 @@
 #include "ntop_includes.h"
 
 
-class SYNFloodAttackerAlert : public HostAlert {
+class SYNFloodAttackerAlert : public SYNFloodAlert {
  private:
-  u_int64_t syns, syns_threshold;
-
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
   static HostAlertType getClassType() { return { host_alert_syn_flood_attacker, alert_category_security }; }

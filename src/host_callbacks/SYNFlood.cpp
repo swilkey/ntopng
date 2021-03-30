@@ -31,27 +31,37 @@ SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
 /* ***************************************************** */
 
 void SYNFlood::periodicUpdate(Host *h) {
+  static u_int8_t attacker_score = 100, victim_score = 20;
   char buf[64];
 
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s PERIODIC UPDATE %s", getName().c_str(), h->get_ip()->print(buf, sizeof(buf)));
-  u_int8_t score_inc = 20;
 
-  if(h->syn_flood_victim_hits() >= syns_threshold)
-    h->triggerAlertAsync(SYNFloodVictimAlert::getClassType(), alert_level_error, score_inc);
-
+  /* Attacker alert has priority over the Victim alert */
   if(h->syn_flood_attacker_hits() >= syns_threshold)
-    h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, score_inc);
+    h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, attacker_score);
+  else if(h->syn_flood_victim_hits() >= syns_threshold)
+    h->triggerAlertAsync(SYNFloodVictimAlert::getClassType(), alert_level_error, victim_score);
 }
 
 /* ***************************************************** */
 
 HostAlert *SYNFlood::buildAlert(HostAlertType t, Host *h) {
-  SYNFloodAttackerAlert *res = new SYNFloodAttackerAlert(this, h, h->syn_flood_attacker_hits() /* Actual attacker hits */, syns_threshold);
+  SYNFloodAlert *sfa = NULL;
+
+  switch(t.id) {
+  case host_alert_syn_flood_attacker:
+    sfa = new SYNFloodAttackerAlert(this, h, h->syn_flood_attacker_hits() /* Actual attacker hits */, syns_threshold);
+    break;
+  case host_alert_syn_flood_victim:
+    sfa = new SYNFloodVictimAlert(this, h, h->syn_flood_victim_hits() /* Actual victim hits */, syns_threshold);
+  default:
+    break;
+  }
 
   /* Reset counters once done */
   h->reset_syn_flood_hits();
   
-  return res;
+  return sfa;
 }
 
 /* ***************************************************** */

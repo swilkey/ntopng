@@ -19,12 +19,22 @@
  *
  */
 
-#include "host_alerts_includes.h"
+#ifndef _SYN_FLOOD_ALERT_H_
+#define _SYN_FLOOD_ALERT_H_
 
-/* ***************************************************** */
 
-SYNFloodAttackerAlert::SYNFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold)
-  : SYNFloodAlert(c, f, _syns, _syns_threshold) {
+#include "ntop_includes.h"
+
+
+class SYNFloodAlert : public HostAlert {
+ private:
+  u_int64_t syns, syns_threshold;
+
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
+  
+ public:
+  SYNFloodAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
+  ~SYNFloodAlert() {};
 };
 
-/* ***************************************************** */
+#endif /* _SYN_FLOOD_ALERT_H_ */

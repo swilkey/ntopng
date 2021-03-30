@@ -26,6 +26,7 @@
 #include "host_alerts/FlowFloodVictimAlert.h"
 #include "host_alerts/SYNScanAttackerAlert.h"
 #include "host_alerts/SYNScanVictimAlert.h"
+#include "host_alerts/SYNFloodAlert.h"
 #include "host_alerts/SYNFloodAttackerAlert.h"
 #include "host_alerts/SYNFloodVictimAlert.h"
 

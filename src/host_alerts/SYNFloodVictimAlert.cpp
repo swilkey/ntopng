@@ -23,7 +23,7 @@
 
 /* ***************************************************** */
 
-SYNFloodAttackerAlert::SYNFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold)
+SYNFloodVictimAlert::SYNFloodVictimAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold)
   : SYNFloodAlert(c, f, _syns, _syns_threshold) {
 };
 

@@ -23,8 +23,21 @@
 
 /* ***************************************************** */
 
-SYNFloodAttackerAlert::SYNFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold)
-  : SYNFloodAlert(c, f, _syns, _syns_threshold) {
+SYNFloodAlert::SYNFloodAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold) : HostAlert(c, f) {
+  syns = _syns,
+    syns_threshold = _syns_threshold;
 };
+
+/* ***************************************************** */
+
+ndpi_serializer* SYNFloodAlert::getAlertJSON(ndpi_serializer* serializer) {
+  if(serializer == NULL)
+    return NULL;
+
+  ndpi_serialize_string_uint64(serializer, "value", syns);
+  ndpi_serialize_string_uint64(serializer, "threshold", syns_threshold);
+  
+  return serializer;
+}
 
 /* ***************************************************** */
