@@ -23,9 +23,7 @@
 
 /* ***************************************************** */
 
-SYNFloodAlert::SYNFloodAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold) : HostAlert(c, f) {
-  syns = _syns,
-    syns_threshold = _syns_threshold;
+SYNFloodAlert::SYNFloodAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
 };
 
 /* ***************************************************** */

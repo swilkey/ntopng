@@ -33,8 +33,11 @@ class SYNFloodAlert : public HostAlert {
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
-  SYNFloodAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
+  SYNFloodAlert(HostCallback *c, Host *f);
   ~SYNFloodAlert() {};
+
+  void setHits(u_int64_t _syns) { syns = _syns;}
+  void setThreshold(u_int64_t _syns_threshold) { syns_threshold = _syns_threshold; }
 };
 
 #endif /* _SYN_FLOOD_ALERT_H_ */

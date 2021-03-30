@@ -93,9 +93,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
 
   Bitmap alerts_map;
 
-  HostAlertType pending_alert_type; /* Last triggered alert (to be built) */
-  AlertLevel pending_alert_severity;
-
   void initialize(Mac *_mac, u_int16_t _vlan_id);
   void inlineSetOS(OSType _os);
   bool statsResetRequested();
@@ -452,14 +449,10 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   void getCallbacksStatus(HostCallbackStatus *callbacks_status_arr[]);
   void clearCallbackStatus();
 
-  void setPendingAlert(HostAlertType t, AlertLevel s) { pending_alert_type = t; pending_alert_severity = s; }
-  HostAlertType getPendingAlert() { return pending_alert_type; }
-  AlertLevel getPendingAlertSeverity() { return pending_alert_severity; }
-
   /* Same as flow alerts */
   inline Bitmap getAlertsBitmap() const { return(alerts_map); }
   bool setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_int8_t score_as_srv);
-  bool triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t score_as_cli, u_int8_t score_as_srv);
+  HostAlert *triggerAlertAsync(HostCallback *callback, HostAlertType alert_type, AlertLevel alert_severity, u_int8_t score_as_cli, u_int8_t score_as_srv);
   void releaseAlert(HostAlertType alert_type);
 };
 

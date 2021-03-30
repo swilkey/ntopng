@@ -1736,21 +1736,46 @@ bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_in
 /*
  * This is called by the Callback to trigger an alert
  */
-bool Host::triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t score_as_cli, u_int8_t score_as_srv) {
-  bool res = false;
+HostAlert *Host::triggerAlertAsync(HostCallback *callback, HostAlertType alert_type, AlertLevel alert_severity, u_int8_t score_as_cli, u_int8_t score_as_srv) {
+  HostAlert *alert = NULL;
 
   /* Check host filter */
-  if(!isHostAlertDisabled(alert_type)) {
+  if(isHostAlertDisabled(alert_type)) {
 #ifdef DEBUG_SCORE
     ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (host filter)");
 #endif
-
-    res = setAlertsBitmap(alert_type, score_as_cli, score_as_srv);
-
-    setPendingAlert(alert_type, alert_severity);
+    return NULL;
   }
 
-  return res;
+  setAlertsBitmap(alert_type, score_as_cli, score_as_srv);
+
+  if (ntop->getPrefs()->dontEmitHostAlerts())
+    return NULL;
+
+  /* Check if it's already engaged */
+  alert = findEngagedAlert(alert_type);
+
+  if (alert) {
+    /* Alert already engaged */
+  } else {
+    /* Build new alert */
+    alert = callback->buildAlert(alert_type, this);
+
+    if (alert) {
+      /* Add to the list of engaged alerts*/
+      addEngagedAlert(alert);
+    }
+  }
+
+  if (alert) {
+    alert->setEngaged();
+    alert->setSeverity(alert_severity);
+
+    /* Enqueue the alert to be notified */
+    iface->enqueueHostAlert(alert);
+  }
+
+  return alert;
 }
 
 /* *************************************** */

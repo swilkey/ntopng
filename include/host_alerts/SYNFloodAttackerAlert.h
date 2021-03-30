@@ -32,7 +32,7 @@ class SYNFloodAttackerAlert : public SYNFloodAlert {
  public:
   static HostAlertType getClassType() { return { host_alert_syn_flood_attacker, alert_category_security }; }
 
-  SYNFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
+  SYNFloodAttackerAlert(HostCallback *c, Host *f);
   ~SYNFloodAttackerAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }

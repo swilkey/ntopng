@@ -32,39 +32,30 @@ SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
 
 void SYNFlood::periodicUpdate(Host *h) {
   static u_int8_t attacker_score = 100, victim_score = 20;
+  HostAlert *alert = NULL;
   u_int16_t hits = 0;
-  SYNFloodHostCallbackStatus *status = static_cast<SYNFloodHostCallbackStatus*>(getStatus(h));
 
   /* Attacker alert has priority over the Victim alert */
-  if((hits = h->syn_flood_attacker_hits()) >= syns_threshold)
-    h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, attacker_score, 0);
-  else if((hits = h->syn_flood_victim_hits()) >= syns_threshold)
-    h->triggerAlertAsync(SYNFloodVictimAlert::getClassType(), alert_level_error, 0, victim_score);
+  if((hits = h->syn_flood_attacker_hits()) >= syns_threshold) {
+    alert = h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, attacker_score, 0);
+    if (alert) {
+      SYNFloodAttackerAlert *attacker_alert = static_cast<SYNFloodAttackerAlert*>(alert);
+      attacker_alert->setHits(hits);
+      attacker_alert->setThreshold(syns_threshold);
+    }
+  }
 
-  /* Updates the status with the hits detected. This will be possibly used later by buildAlert */
-  if(status) status->updateHits(hits);
+  if((hits = h->syn_flood_victim_hits()) >= syns_threshold) {
+    alert = h->triggerAlertAsync(this, SYNFloodVictimAlert::getClassType(), alert_level_error, 0, victim_score);
+    if (alert) {
+      SYNFloodVictimAlert *victim_alert = static_cast<SYNFloodVictimAlert*>(alert);
+      victim_alert->setHits(hits);
+      victim_alert->setThreshold(syns_threshold);
+    }
+  }
 
   /* Reset counters once done */
   h->reset_syn_flood_hits();  
-}
-
-/* ***************************************************** */
-
-HostAlert *SYNFlood::buildAlert(HostAlertType t, Host *h) {
-  SYNFloodHostCallbackStatus *status = static_cast<SYNFloodHostCallbackStatus*>(getStatus(h));
-  SYNFloodAlert *sfa = NULL;
-
-  switch(t.id) {
-  case host_alert_syn_flood_attacker:
-    sfa = new SYNFloodAttackerAlert(this, h, status ? status->getHits() : 0 /* Actual hits */, syns_threshold);
-    break;
-  case host_alert_syn_flood_victim:
-    sfa = new SYNFloodVictimAlert(this, h, status ? status->getHits() : 0 /* Actual hits */, syns_threshold);
-  default:
-    break;
-  }
-  
-  return sfa;
 }
 
 /* ***************************************************** */

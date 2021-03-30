@@ -90,7 +90,6 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
 
   /* Exec all enabled callbacks */
   for(std::list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
-    HostAlertType t = { host_alert_normal, alert_category_other };
     HostCallback *cb = (*it);
     HostCallbackType ct = cb->getType();
     HostCallbackStatus *cbs;
@@ -98,43 +97,11 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     if (!host_cb_status_cache[ct]) host_cb_status_cache[ct] = cb->getStatus(h, true /* create */);
     cbs = host_cb_status_cache[ct];
 
-    /* Reset pending alert */
-    h->setPendingAlert(t, alert_level_none);
-
-   /* Check if it's time to run the callback on this host */
+    /* Check if it's time to run the callback on this host */
     if (isTimeToRunCallback(cb, cbs, now)) {
 
       /* Call Handler */
       cb->periodicUpdate(h);
-
-      if (!ntop->getPrefs()->dontEmitHostAlerts()
-          && h->getPendingAlert().id != host_alert_normal) {
-        HostAlert *alert = NULL;
-
-        /* Check if it's already engaged */
-        alert = h->findEngagedAlert(h->getPendingAlert());
-
-        if (alert) {
-          /* Alert already engaged, update */
-          cb->updateAlert(alert);
-        } else {
-          /* Build new alert */
-          alert = cb->buildAlert(h->getPendingAlert(), h);
-
-          if (alert) {
-            /* Add to the list of engaged alerts*/
-            h->addEngagedAlert(alert);
-          }
-        }
-
-        if (alert) {
-          alert->setEngaged();
-          alert->setSeverity(h->getPendingAlertSeverity());
-
-          /* Enqueue the alert to be notified */
-          iface->enqueueHostAlert(alert);
-        }
-      }
 
       if (cbs)
         cbs->setLastCallTime(now);
@@ -150,17 +117,12 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     ++it; /* inc the iterator before removing */
 
     if (alert->isExpired()) {
-      HostCallback *cb = getCallback(alert->getCallbackType());
-
       alert->setReleased();
-
-      /* Update alert info */
-      if (cb) cb->updateAlert(alert);
 
       /* Remove from the list of engaged alerts */
       host->removeEngagedAlert(alert);
 
-      /* Enqueue the alert to be notified */
+      /* Enqueue the released alert to be notified */
       iface->enqueueHostAlert(alert);
     }
   }

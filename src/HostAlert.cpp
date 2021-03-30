@@ -110,3 +110,6 @@ ndpi_serializer* HostAlert::getSerializedAlert() {
 
   return serializer;
 }
+
+/* ***************************************************** */
+
