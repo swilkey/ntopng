@@ -40,16 +40,15 @@ void SYNScan::periodicUpdate(Host *h) {
 
   /* Attacker alert has priority over the Victim alert */
   if((hits = h->syn_scan_attacker_hits()) >= syns_threshold)
-    h->triggerAlertAsync(SYNScanAttackerAlert::getClassType(), alert_level_error, attacker_score);
+    h->triggerAlertAsync(SYNScanAttackerAlert::getClassType(), alert_level_error, attacker_score, 0);
   else if((hits = h->syn_scan_victim_hits()) >= syns_threshold)
-    h->triggerAlertAsync(SYNScanVictimAlert::getClassType(), alert_level_error, victim_score);
+    h->triggerAlertAsync(SYNScanVictimAlert::getClassType(), alert_level_error, 0, victim_score);
 
   /* Updates the status with the hits detected. This will be possibly used later by buildAlert */
   if(status) status->updateHits(hits);
 
   /* Reset counters once done */
   h->reset_syn_scan_hits();
-
 }
 
 /* ***************************************************** */

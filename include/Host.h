@@ -453,8 +453,8 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
 
   /* Same as flow alerts */
   inline Bitmap getAlertsBitmap() const { return(alerts_map); }
-  bool setAlertsBitmap(HostAlertType alert_type, u_int8_t host_score_inc);
-  bool triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t host_score_inc);
+  bool setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_int8_t score_as_srv);
+  bool triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t score_as_cli, u_int8_t score_as_srv);
   void releaseAlert(HostAlertType alert_type);
 };
 

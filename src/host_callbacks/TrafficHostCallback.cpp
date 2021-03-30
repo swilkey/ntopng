@@ -27,7 +27,7 @@
 void TrafficHostCallback::periodicUpdate(Host *h) {
   /* Example
   u_int8_t score = 100;
-  h->triggerAlertAsync(TrafficAlert::getClassType(), getSeverity, score);
+  h->triggerAlertAsync(TrafficAlert::getClassType(), getSeverity, score, score);
   */
 }
 

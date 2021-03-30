@@ -40,9 +40,9 @@ void SYNFlood::periodicUpdate(Host *h) {
 
   /* Attacker alert has priority over the Victim alert */
   if((hits = h->syn_flood_attacker_hits()) >= syns_threshold)
-    h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, attacker_score);
+    h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, attacker_score, 0);
   else if((hits = h->syn_flood_victim_hits()) >= syns_threshold)
-    h->triggerAlertAsync(SYNFloodVictimAlert::getClassType(), alert_level_error, victim_score);
+    h->triggerAlertAsync(SYNFloodVictimAlert::getClassType(), alert_level_error, 0, victim_score);
 
   /* Updates the status with the hits detected. This will be possibly used later by buildAlert */
   if(status) status->updateHits(hits);

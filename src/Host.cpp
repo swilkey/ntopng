@@ -1692,7 +1692,7 @@ void Host::clearCallbackStatus() {
 /*
  * This method is called to update status and score of the flow
  */
-bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t host_score_inc) {
+bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_int8_t score_as_srv) {
 
 #ifdef DEBUG_SCORE
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "Set host score", host_score_inc);
@@ -1705,7 +1705,7 @@ bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t host_score_inc) {
     return false;
   }
 
-  // TODO update score += host_score_inc
+  // TODO update score for host, network, AS, ..
 
   alerts_map.setBit(alert_type.id);
 
@@ -1717,10 +1717,10 @@ bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t host_score_inc) {
 /*
  * This is called by the Callback to trigger an alert
  */
-bool Host::triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t host_score_inc) {
+bool Host::triggerAlertAsync(HostAlertType alert_type, AlertLevel alert_severity, u_int8_t score_as_cli, u_int8_t score_as_srv) {
   bool res;
 
-  res = setAlertsBitmap(alert_type, host_score_inc);
+  res = setAlertsBitmap(alert_type, score_as_cli, score_as_srv);
 
   setPendingAlert(alert_type, alert_severity);
 

@@ -84,9 +84,11 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     HostCallback *cb = (*it);
     HostCallbackStatus *cbs = cb->getStatus(h, true /* create */);
 
-    h->setPendingAlert(t, alert_level_none); /* Reset pending alert */
+    /* Reset pending alert */
+    h->setPendingAlert(t, alert_level_none);
 
-    if (isTimeToRunCallback(cb, cbs, now)) { /* Time to run the callback on this host */
+   /* Check if it's time to run the callback on this host */
+    if (isTimeToRunCallback(cb, cbs, now)) {
 
       /* Call Handler */
       cb->periodicUpdate(h);

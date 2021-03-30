@@ -40,9 +40,9 @@ void FlowFlood::periodicUpdate(Host *h) {
 
   /* Attacker alert has priority over the Victim alert */
   if((flows = h->flow_flood_attacker_hits()) >= flows_threshold)
-    h->triggerAlertAsync(FlowFloodAttackerAlert::getClassType(), alert_level_error, attacker_score);
+    h->triggerAlertAsync(FlowFloodAttackerAlert::getClassType(), alert_level_error, attacker_score, 0);
   else if((flows = h->flow_flood_victim_hits()) >= flows_threshold)
-    h->triggerAlertAsync(FlowFloodVictimAlert::getClassType(), alert_level_error, victim_score);
+    h->triggerAlertAsync(FlowFloodVictimAlert::getClassType(), alert_level_error, 0, victim_score);
 
   
   /* Updates the status with the flows detected. This will be possibly used later by buildAlert */
