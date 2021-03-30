@@ -31,6 +31,7 @@ HostAlert::HostAlert(HostCallback *c, Host *h) {
   callback_name = c->getName();
   engage_time = time(NULL);
   release_time = 0;
+  auto_release = true;
 }
 
 /* **************************************************** */

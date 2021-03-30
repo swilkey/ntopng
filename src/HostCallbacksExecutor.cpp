@@ -72,7 +72,7 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     HostAlert *alert = (*it);
     HostCallback *cb = getCallback(alert->getCallbackType());
     HostCallbackStatus *cbs = cb ? cb->getStatus(h) : NULL;
-    if (isTimeToRunCallback(cb, cbs, now)) {
+    if (alert->isAutoReleaseEnabled() && isTimeToRunCallback(cb, cbs, now)) {
       /* Initializing the status to expiring, to check if this needs to be released (when not engaged again) */
       alert->setExpiring();
     }

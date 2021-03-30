@@ -32,6 +32,7 @@ class HostAlert {
   AlertLevel severity_id;
   bool released; /* to be released */
   bool expiring; /* engaged, under re-evaluation */
+  bool auto_release;
   HostCallbackType callback_type;
   std::string callback_name;
   time_t engage_time;
@@ -64,6 +65,9 @@ class HostAlert {
 
   inline void setReleased() { released = true; release_time = time(NULL); }
   inline bool isReleased()  { return released; }
+
+  inline void disableAutoRelease() { auto_release = false; }
+  inline bool isAutoReleaseEnabled() { return auto_release; }
 
   inline time_t getEngageTime()  { return engage_time; }
   inline time_t getReleaseTime() { return release_time; }
