@@ -23,9 +23,9 @@
 
 /* ***************************************************** */
 
-SYNScanAlert::SYNScanAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold) : SYNScanAlert(c, f) {
-  syns = _syns;
-  syns_threshold = _syns_threshold;
+SYNScanAlert::SYNScanAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+  syns = 0;
+  syns_threshold = 0;
 };
 
 /* ***************************************************** */

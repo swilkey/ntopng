@@ -33,8 +33,7 @@ class FlowFloodAlert : public HostAlert {
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
-  FlowFloodAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold);
-  FlowFloodAlert(HostCallback *c, Host *f) : HostAlert(c, f) { flows = 0; flows_threshold = 0; };
+  FlowFloodAlert(HostCallback *c, Host *f);
   ~FlowFloodAlert() {};
 
   void setFlows(u_int64_t _flows) { flows = _flows;}

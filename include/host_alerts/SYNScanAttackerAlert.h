@@ -32,8 +32,7 @@ class SYNScanAttackerAlert : public SYNScanAlert {
  public:
   static HostAlertType getClassType() { return { host_alert_syn_scan_attacker, alert_category_security }; }
 
-  SYNScanAttackerAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold) : SYNScanAlert(c, f, _syns, _syns_threshold) {};
-  SYNScanAttackerAlert(HostCallback *c, Host *f) : SYNScanAlert(c, f) {};
+ SYNScanAttackerAlert(HostCallback *c, Host *f) : SYNScanAlert(c, f) {};
   ~SYNScanAttackerAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }

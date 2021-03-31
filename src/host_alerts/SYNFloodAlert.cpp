@@ -24,6 +24,8 @@
 /* ***************************************************** */
 
 SYNFloodAlert::SYNFloodAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+  syns = 0;
+  syns_threshold = 0;
 };
 
 /* ***************************************************** */

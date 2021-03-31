@@ -32,7 +32,6 @@ class SYNScanVictimAlert : public SYNScanAlert {
  public:
   static HostAlertType getClassType() { return { host_alert_syn_scan_victim, alert_category_security }; }
 
-  SYNScanVictimAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold) : SYNScanAlert(c, f, _syns, _syns_threshold) {};;
   SYNScanVictimAlert(HostCallback *c, Host *f) : SYNScanAlert(c, f) {};
   ~SYNScanVictimAlert() {};
   

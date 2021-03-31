@@ -19,23 +19,11 @@
  *
  */
 
-#ifndef _FLOW_FLOOD_VICTIM_ALERT_H_
-#define _FLOW_FLOOD_VICTIM_ALERT_H_
+#include "host_alerts_includes.h"
 
+/* ***************************************************** */
 
-#include "ntop_includes.h"
-
-
-class FlowFloodVictimAlert : public FlowFloodAlert {
- private:
-  
- public:
-  static HostAlertType getClassType() { return { host_alert_flow_flood_victim, alert_category_security }; }
-
-  FlowFloodVictimAlert(HostCallback *c, Host *f);
-  ~FlowFloodVictimAlert() {};
-  
-  HostAlertType getAlertType() const { return getClassType(); }
+FlowFloodVictimAlert::FlowFloodVictimAlert(HostCallback *c, Host *f) : FlowFloodAlert(c, f) {
 };
 
-#endif /* _FLOW_FLOOD_VICTIM_ALERT_H_ */
+/* ***************************************************** */

@@ -33,8 +33,7 @@ class SYNScanAlert : public HostAlert {
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
-  SYNScanAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
-  SYNScanAlert(HostCallback *c, Host *f) : HostAlert(c, f) { syns = 0; syns_threshold = 0; }
+  SYNScanAlert(HostCallback *c, Host *f);
   ~SYNScanAlert() {};
 
   void setHits(u_int64_t _syns) { syns = _syns;}
