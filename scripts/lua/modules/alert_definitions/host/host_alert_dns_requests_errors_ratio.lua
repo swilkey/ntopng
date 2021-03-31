@@ -4,7 +4,7 @@
 
 -- ##############################################
 
-local other_alert_keys = require "other_alert_keys"
+local host_alert_keys = require "host_alert_keys"
 -- Import the classes library.
 local classes = require "classes"
 -- Make sure to import the Superclass!
@@ -12,12 +12,12 @@ local alert = require "alert"
 
 -- ##############################################
 
-local alert_dns_positive_error_ratio = classes.class(alert)
+local host_alert_dns_requests_errors_ratio = classes.class(alert)
 
 -- ##############################################
 
-alert_dns_positive_error_ratio.meta = {
-   alert_key = other_alert_keys.alert_dns_positive_error_ratio,
+host_alert_dns_requests_errors_ratio.meta = {
+   alert_key = host_alert_keys.host_alert_dns_requests_errors_ratio,
    i18n_title = "dns_positive_error_ratio.title",
    icon = "fas fa-exclamation",
 }
@@ -28,7 +28,7 @@ alert_dns_positive_error_ratio.meta = {
 -- @param requests The number of requests
 -- @param replies The number of replies
 -- @return A table with the alert built
-function alert_dns_positive_error_ratio:init(type, positives, errors)
+function host_alert_dns_requests_errors_ratio:init(type, positives, errors)
    -- Call the parent constructor
    self.super:init()
 
@@ -46,7 +46,7 @@ end
 -- @param alert The alert description table, including alert data such as the generating entity, timestamp, granularity, type
 -- @param alert_type_params Table `alert_type_params` as built in the `:init` method
 -- @return A human-readable string
-function alert_dns_positive_error_ratio.format(ifid, alert, alert_type_params)
+function host_alert_dns_requests_errors_ratio.format(ifid, alert, alert_type_params)
    local type = ""
 
    if alert_type_params.type == "dns_rcvd" then
@@ -64,4 +64,4 @@ end
 
 -- #######################################################
 
-return alert_dns_positive_error_ratio
+return host_alert_dns_requests_errors_ratio

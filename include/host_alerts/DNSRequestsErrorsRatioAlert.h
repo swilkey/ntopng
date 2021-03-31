@@ -28,11 +28,12 @@
 
 class DNSRequestsErrorsRatioAlert : public HostAlert {
  private:
-  
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
+
  public:
   static HostAlertType getClassType() { return { host_alert_dns_requests_errors_ratio, alert_category_network }; }
 
-  DNSRequestsErrorsRatioAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  DNSRequestsErrorsRatioAlert(HostCallback *c, Host *f);
   ~DNSRequestsErrorsRatioAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
