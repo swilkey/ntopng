@@ -33,7 +33,7 @@ class ScoreAlert : public HostAlert {
  public:
   static HostAlertType getClassType() { return { host_alert_score, alert_category_security }; }
 
-  ScoreAlert(HostCallback *c, Host *f) : HostAlert(c, f) {};
+  ScoreAlert(HostCallback *c, Host *f);
   ~ScoreAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }

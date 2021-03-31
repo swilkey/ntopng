@@ -19,24 +19,23 @@
  *
  */
 
-#ifndef _THROUGHPUT_ALERT_H_
-#define _THROUGHPUT_ALERT_H_
+#include "host_alerts_includes.h"
 
+/* ***************************************************** */
 
-#include "ntop_includes.h"
-
-
-class ThroughputAlert : public HostAlert {
- private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
-  
- public:
-  static HostAlertType getClassType() { return { host_alert_throughput, alert_category_network }; }
-
-  ThroughputAlert(HostCallback *c, Host *f);
-  ~ThroughputAlert() {};
-  
-  HostAlertType getAlertType() const { return getClassType(); }
+ThroughputAlert::ThroughputAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
 };
 
-#endif /* _THROUGHPUT_ALERT_H_ */
+/* ***************************************************** */
+
+ndpi_serializer* ThroughputAlert::getAlertJSON(ndpi_serializer* serializer) {
+  if(serializer == NULL)
+    return NULL;
+
+  ndpi_serialize_string_uint64(serializer, "value", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "threshold", 0 /* TODO */);
+  
+  return serializer;
+}
+
+/* ***************************************************** */
