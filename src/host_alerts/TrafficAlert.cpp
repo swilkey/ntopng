@@ -19,24 +19,23 @@
  *
  */
 
-#ifndef _TRAFFIC_ALERT_H_
-#define _TRAFFIC_ALERT_H_
+#include "host_alerts_includes.h"
 
+/* ***************************************************** */
 
-#include "ntop_includes.h"
-
-
-class TrafficAlert : public HostAlert {
- private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
-  
- public:
-  static HostAlertType getClassType() { return { host_alert_traffic, alert_category_network }; }
-
-  TrafficAlert(HostCallback *c, Host *f);
-  ~TrafficAlert() {};
-  
-  HostAlertType getAlertType() const { return getClassType(); }
+TrafficAlert::TrafficAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
 };
 
-#endif /* _TRAFFIC_ALERT_H_ */
+/* ***************************************************** */
+
+ndpi_serializer* TrafficAlert::getAlertJSON(ndpi_serializer* serializer) {
+  if(serializer == NULL)
+    return NULL;
+
+  ndpi_serialize_string_uint64(serializer, "value", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "threshold", 0 /* TODO */);
+  
+  return serializer;
+}
+
+/* ***************************************************** */
