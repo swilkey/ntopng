@@ -23,9 +23,9 @@
 
 /* ***************************************************** */
 
-FlowFloodAlert::FlowFloodAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold) : HostAlert(c, f) {
-  flows = _flows,
-    flows_threshold = _flows_threshold;
+FlowFloodAlert::FlowFloodAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold) : FlowFloodAlert(c, f) {
+  flows = _flows;
+  flows_threshold = _flows_threshold;
 };
 
 /* ***************************************************** */

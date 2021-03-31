@@ -34,7 +34,11 @@ class FlowFloodAlert : public HostAlert {
   
  public:
   FlowFloodAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold);
+  FlowFloodAlert(HostCallback *c, Host *f) : HostAlert(c, f) { flows = 0; flows_threshold = 0; };
   ~FlowFloodAlert() {};
+
+  void setFlows(u_int64_t _flows) { flows = _flows;}
+  void setThreshold(u_int64_t _flows_threshold) { flows_threshold = _flows_threshold; }
 };
 
 #endif /* _FLOW_FLOOD_ALERT_H_ */

@@ -32,7 +32,8 @@ class FlowFloodAttackerAlert : public FlowFloodAlert {
  public:
   static HostAlertType getClassType() { return { host_alert_flow_flood_attacker, alert_category_security }; }
 
-  FlowFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold);
+  FlowFloodAttackerAlert(HostCallback *c, Host *f, u_int64_t _flows, u_int64_t _flows_threshold) : FlowFloodAlert(c, f, _flows, _flows_threshold) {};
+  FlowFloodAttackerAlert(HostCallback *c, Host *f) : FlowFloodAlert(c, f) {};
   ~FlowFloodAttackerAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }

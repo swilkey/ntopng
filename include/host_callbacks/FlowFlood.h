@@ -28,6 +28,9 @@ class FlowFlood : public HostCallback {
 private:
   u_int64_t flows_threshold;
   
+  template<class T> void triggerFlowFloodAlert(Host *h, std::list<HostAlert*> *engaged_alerts,
+    u_int16_t flows, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score);
+
 public:
   FlowFlood();
   ~FlowFlood() {};
@@ -37,7 +40,7 @@ public:
   bool loadConfiguration(json_object *config);  
 
   HostCallbackType getType() const { return host_callback_flow_flood; }
-  std::string getName()        const { return(std::string("flow_flood")); }
+  std::string getName()      const { return(std::string("flow_flood")); }
 };
 
 #endif
