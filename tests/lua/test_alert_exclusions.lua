@@ -68,7 +68,7 @@ assert(alert_exclusions.has_disabled_host_alert("192.168.2.225", yet_another_dis
 
 -- ##############################################
 
-if false then
+if true then
    -- Cleanup
    alert_exclusions.cleanup()
 

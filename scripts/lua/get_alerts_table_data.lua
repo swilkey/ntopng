@@ -215,6 +215,8 @@ for k,v in ipairs(alerts) do
       if record["column_subdir"] == "flow" then
 	 -- Enabled, show the bell to disable
 	 record["column_filter"] = v["cli_addr"].."|"..v["srv_addr"]
+      elseif record["column_subdir"] == "host" then
+	 record["column_filter"] = hostkey2hostinfo(alert_entity_val)["host"]
       else
 	 record["column_filter"] = user_scripts.getFilterPreset(alert, alert_info)
       end
