@@ -49,9 +49,6 @@
 #include "host_alerts/ThroughputAlert.h"
 #include "host_alerts/ScoreAlert.h"
 
-#include "host_alerts/SNMPAttackMitigationAlert.h"
-
-#include "host_alerts/UnexpectedHostBehaviourAlert.h"
 
 /* Pro Alerts - do NOT use #ifdef as alerts must always be available */
 

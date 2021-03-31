@@ -39,12 +39,10 @@
 #include "host_callbacks/TrafficHostCallback.h"
 #include "host_callbacks/FlowsHostCallback.h"
 #include "host_callbacks/ThroughputHostCallback.h"
-#include "host_callbacks/UnexpectedHostBehaviour.h"
 
 #ifdef NTOPNG_PRO
 #include "host_callbacks/DNSRequestsErrorsRatio.h"
 #include "host_callbacks/RepliesRequestsRatio.h"
-#include "host_callbacks/SNMPAttackMitigation.h"
 #include "host_callbacks/ScoreHostCallback.h"
 #endif
 
