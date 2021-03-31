@@ -24,6 +24,12 @@
 
 /* ***************************************************** */
 
+TrafficHostCallback::TrafficHostCallback() : HostCallback(ntopng_edition_community) {
+  bytes_threshold = (u_int64_t)-1;
+};
+
+/* ***************************************************** */
+
 void TrafficHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   /* Example
   u_int8_t score = 100;
@@ -34,10 +40,14 @@ void TrafficHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged
 /* ***************************************************** */
 
 bool TrafficHostCallback::loadConfiguration(json_object *config) {
+  json_object *json_threshold;
+
   HostCallback::loadConfiguration(config); /* Parse parameters in common */
-  /*
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-  */
+
+  if(json_object_object_get_ex(config, "threshold", &json_threshold))
+    bytes_threshold = json_object_get_int64(json_threshold);
+
+  // ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s %u", json_object_to_json_string(config), bytes_threshold);
 
   return(true);
 }

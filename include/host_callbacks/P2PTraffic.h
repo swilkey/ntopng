@@ -26,9 +26,10 @@
 
 class P2PTraffic : public HostCallback {
 private:
-  
-public:
-   P2PTraffic() : HostCallback(ntopng_edition_community) {};
+  u_int64_t p2p_bytes_threshold;  
+
+ public:
+  P2PTraffic();
   ~P2PTraffic() {};
 
   void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);

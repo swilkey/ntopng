@@ -26,9 +26,10 @@
 
 class FlowsHostCallback : public HostCallback {
 private:
-  
-public:
-   FlowsHostCallback() : HostCallback(ntopng_edition_community) {};
+  u_int64_t flows_threshold;  
+
+ public:
+  FlowsHostCallback();
   ~FlowsHostCallback() {};
 
   void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);

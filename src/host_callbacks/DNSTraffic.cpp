@@ -24,6 +24,12 @@
 
 /* ***************************************************** */
 
+DNSTraffic::DNSTraffic() : HostCallback(ntopng_edition_community) {
+  dns_bytes_threshold = (u_int64_t)-1;
+};
+
+/* ***************************************************** */
+
 void DNSTraffic::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   //return new DNSTrafficAlert(this, h);
 }
@@ -31,10 +37,14 @@ void DNSTraffic::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) 
 /* ***************************************************** */
 
 bool DNSTraffic::loadConfiguration(json_object *config) {
+  json_object *json_threshold;
+
   HostCallback::loadConfiguration(config); /* Parse parameters in common */
-  /*
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-  */
+
+  if(json_object_object_get_ex(config, "threshold", &json_threshold))
+    dns_bytes_threshold = json_object_get_int64(json_threshold);
+
+  // ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s %u", json_object_to_json_string(config), dns_bytes_threshold);
 
   return(true);
 }

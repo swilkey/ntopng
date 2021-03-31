@@ -26,9 +26,10 @@
 
 class TrafficHostCallback : public HostCallback {
 private:
+  u_int64_t bytes_threshold;
   
 public:
-   TrafficHostCallback() : HostCallback(ntopng_edition_community) {};
+  TrafficHostCallback();
   ~TrafficHostCallback() {};
 
   void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);

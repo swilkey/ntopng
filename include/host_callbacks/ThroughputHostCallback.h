@@ -26,9 +26,10 @@
 
 class ThroughputHostCallback : public HostCallback {
 private:
-  
-public:
-   ThroughputHostCallback() : HostCallback(ntopng_edition_community) {};
+  u_int64_t throughput_threshold;    
+
+ public:
+  ThroughputHostCallback();
   ~ThroughputHostCallback() {};
 
   void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);

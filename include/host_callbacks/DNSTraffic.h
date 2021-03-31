@@ -26,9 +26,10 @@
 
 class DNSTraffic : public HostCallback {
 private:
-  
-public:
-   DNSTraffic() : HostCallback(ntopng_edition_community) {};
+  u_int64_t dns_bytes_threshold;  
+
+ public:
+  DNSTraffic();
   ~DNSTraffic() {};
 
   void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
