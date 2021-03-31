@@ -29,15 +29,31 @@ ServerContacts::ServerContacts() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
-void ServerContacts::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
-  static const u_int8_t cli_score = 50;
-  u_int32_t contacted_servers = 0;
+void ServerContacts::periodicUpdate(Host *h, std::list<HostAlert*> *engaged) {
   ServerContactsHostCallbackStatus *status = static_cast<ServerContactsHostCallbackStatus*>(getStatus(h));
+  std::list<HostAlert*>::iterator it;
+  bool already_engaged = false;
+  HostAlert *alert = NULL;
+  u_int32_t contacted_servers = 0;
 
   if((contacted_servers = getContactedServers(h)) >= contacts_threshold) {
-    HostAlert *ha = allocAlert(this, h, status ? status->getContacts() : 0, contacts_threshold);
-    //TODO alert_level_error, cli_score /* Attacker */, 0 /* Victim */
-    h->triggerAlert(ha);
+    /* Check alerts already engaged */
+    for (it = engaged->begin(); it != engaged->end(); ++it)
+      if ((*it)->equals(getAlertType()))
+        alert = (*it), already_engaged = true;
+
+    /* New alert */
+    if (!already_engaged)
+       alert = allocAlert(this, h, status ? status->getContacts() : 0, contacts_threshold);
+
+    if (alert) {
+      /* Set alert info */
+      alert->setSeverity(alert_level_error);
+      alert->setCliScore(50);
+
+      /* Trigger if new */
+      if (!already_engaged) h->triggerAlert(alert);
+    }
   }
 
   if(status) status->updateContacts(contacted_servers);
