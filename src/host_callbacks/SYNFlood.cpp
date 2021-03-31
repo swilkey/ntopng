@@ -34,11 +34,12 @@ void SYNFlood::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   static u_int8_t attacker_score = 100, victim_score = 20;
   std::list<HostAlert*>::iterator it;
   u_int16_t hits = 0;
-  bool already_engaged = false;
+  bool already_engaged;
 
   if((hits = h->syn_flood_attacker_hits()) >= syns_threshold) {
     SYNFloodAttackerAlert *attacker_alert = NULL;
 
+    already_engaged = false;
     for (it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it)
       if ((*it)->equals(SYNFloodAttackerAlert::getClassType()))
         attacker_alert = static_cast<SYNFloodAttackerAlert*>(*it), already_engaged = true;
@@ -58,6 +59,7 @@ void SYNFlood::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   if((hits = h->syn_flood_victim_hits()) >= syns_threshold) {
     SYNFloodVictimAlert *victim_alert = NULL;
 
+    already_engaged = false;
     for (it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it)
       if ((*it)->equals(SYNFloodVictimAlert::getClassType()))
         victim_alert = static_cast<SYNFloodVictimAlert*>(*it), already_engaged = true;

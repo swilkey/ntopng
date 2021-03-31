@@ -1725,11 +1725,6 @@ bool Host::triggerAlert(HostAlert *alert) {
   HostAlertType alert_type = alert->getAlertType();
   bool res = false;
 
-  //TODO Move to the alert:
-  AlertLevel alert_severity = alert_level_none;
-  u_int8_t score_as_cli = 0;
-  u_int8_t score_as_srv = 0;
-  
   /* Check host filter */
   if(isHostAlertDisabled(alert_type)) {
 #ifdef DEBUG_SCORE
@@ -1738,19 +1733,15 @@ bool Host::triggerAlert(HostAlert *alert) {
     return res;
   }
 
-  res = setAlertsBitmap(alert_type, score_as_cli, score_as_srv);
+  res = setAlertsBitmap(alert_type, alert->getCliScoreInc(), alert->getSrvScoreInc());
 
   if (ntop->getPrefs()->dontEmitHostAlerts())
     return res;
 
-  //TODO check if alert already exists (safety check)
-  //a = findEngagedAlert(alert_type, alert->getCallbackType());
+  alert->setEngaged();
 
   /* Add to the list of engaged alerts*/
   addEngagedAlert(alert);
-
-  alert->setEngaged();
-  //alert->setSeverity(alert_severity);
 
   /* Enqueue the alert to be notified */
   iface->enqueueHostAlert(alert);
