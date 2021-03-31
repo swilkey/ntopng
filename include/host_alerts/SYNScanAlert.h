@@ -34,7 +34,11 @@ class SYNScanAlert : public HostAlert {
   
  public:
   SYNScanAlert(HostCallback *c, Host *f, u_int64_t _syns, u_int64_t _syns_threshold);
+  SYNScanAlert(HostCallback *c, Host *f) : HostAlert(c, f) { syns = 0; syns_threshold = 0; }
   ~SYNScanAlert() {};
+
+  void setHits(u_int64_t _syns) { syns = _syns;}
+  void setThreshold(u_int64_t _syns_threshold) { syns_threshold = _syns_threshold; }
 };
 
 #endif /* _SYN_SCAN_ALERT_H_ */

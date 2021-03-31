@@ -30,21 +30,45 @@ SYNScan::SYNScan() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
+template<class T> void SYNScan::triggerSYNScanAlert(Host *h, std::list<HostAlert*> *engaged,
+    u_int16_t hits, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score) {
+  std::list<HostAlert*>::iterator it;
+  bool already_engaged = false;
+  T *alert = NULL;
+
+  /* Check alerts already engaged */
+  for (it = engaged->begin(); it != engaged->end(); ++it)
+    if ((*it)->equals(T::getClassType()))
+      alert = static_cast<T*>(*it), already_engaged = true;
+
+  /* New alert */
+  if (!already_engaged)
+     alert = new T(this, h); 
+
+  if (alert) {
+    /* Set alert info */
+    alert->setSeverity(alert_level_error);
+    alert->setCliScore(cli_score);
+    alert->setSrvScore(srv_score);
+    alert->setHits(hits);
+    alert->setThreshold(threshold);
+
+    /* Trigger if new */
+    if (!already_engaged) h->triggerAlert(alert);
+  }
+}
+
+/* ***************************************************** */
+
 void SYNScan::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
-  static u_int8_t attacker_score = 100, victim_score = 20;
   u_int16_t hits = 0;
-  HostAlert *alert;
 
   /* Attacker alert has priority over the Victim alert */
-  if((hits = h->syn_scan_attacker_hits()) >= syns_threshold) {
-    alert = new SYNScanAttackerAlert(this, h, hits, syns_threshold);
-    //TODO alert_level_error, attacker_score, 0
-    h->triggerAlert(alert);
-  } else if((hits = h->syn_scan_victim_hits()) >= syns_threshold) {
-    alert = new SYNScanVictimAlert(this, h, hits, syns_threshold);
-    //TODO alert_level_error, 0, victim_score);
-    h->triggerAlert(alert);
-  }
+  if((hits = h->syn_scan_attacker_hits()) >= syns_threshold)
+    triggerSYNScanAlert<SYNScanAttackerAlert>(h, engaged_alerts, hits, syns_threshold, 100, 0);
+
+  if((hits = h->syn_scan_victim_hits()) >= syns_threshold)
+    triggerSYNScanAlert<SYNScanVictimAlert>(h, engaged_alerts, hits, syns_threshold, 0, 20);
 
   /* Reset counters once done */
   h->reset_syn_scan_hits();
