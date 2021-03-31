@@ -36,19 +36,24 @@ template<class T> void SYNFlood::triggerSYNFloodAlert(Host *h, std::list<HostAle
   bool already_engaged = false;
   T *alert = NULL;
 
+  /* Check alerts already engaged */
   for (it = engaged->begin(); it != engaged->end(); ++it)
     if ((*it)->equals(T::getClassType()))
       alert = static_cast<T*>(*it), already_engaged = true;
 
+  /* New alert */
   if (!already_engaged)
      alert = new T(this, h); 
 
   if (alert) {
+    /* Set alert info */
     alert->setSeverity(alert_level_error);
     alert->setCliScore(cli_score);
     alert->setSrvScore(srv_score);
     alert->setHits(hits);
     alert->setThreshold(threshold);
+
+    /* Trigger if new */
     if (!already_engaged) h->triggerAlert(alert);
   }
 }
