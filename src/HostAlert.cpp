@@ -40,30 +40,6 @@ HostAlert::HostAlert(HostCallback *c, Host *h) {
 HostAlert::~HostAlert() {
 }
 
-/* **************************************************** */
-
-/* This will parse the configuration specific to this alert, including it's default severity */
-bool HostAlert::loadConfiguration(json_object *config) {
-  bool rc = true;
-
-  // ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s() %s", __FUNCTION__, json_object_to_json_string(config));
-
-  /* Read and parse the default severity */
-
-  /* TODO
-  json_object *json_severity, *json_severity_id;
-
-
-  if(json_object_object_get_ex(config, "severity", &json_severity)
-     && json_object_object_get_ex(json_severity, "severity_id", &json_severity_id)) {
-    if((severity_id = (AlertLevel)json_object_get_int(json_severity_id)) >= ALERT_LEVEL_MAX_LEVEL)
-      severity_id = alert_level_emergency;
-  }
-  */
-  
-  return(rc);
-}
-
 /* ***************************************************** */
 
 ndpi_serializer* HostAlert::getSerializedAlert() {

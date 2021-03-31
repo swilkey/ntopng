@@ -50,8 +50,6 @@ class HostAlert {
   HostAlert(HostCallback *c, Host *h);
   virtual ~HostAlert();
 
-  bool loadConfiguration(json_object *config);
-
   inline void setSeverity(AlertLevel alert_severity) { severity_id = alert_severity; };
   inline AlertLevel getSeverity()           const { return(severity_id);   }  
 
