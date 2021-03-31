@@ -29,13 +29,19 @@
 class DNSRequestsErrorsRatioAlert : public HostAlert {
  private:
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
+  bool sent;
+  u_int32_t positives, errors;
 
  public:
   static HostAlertType getClassType() { return { host_alert_dns_requests_errors_ratio, alert_category_network }; }
 
   DNSRequestsErrorsRatioAlert(HostCallback *c, Host *f);
   ~DNSRequestsErrorsRatioAlert() {};
-  
+ 
+  void toggleSent(bool v) { sent = v; };
+  void setPositives(u_int32_t v) { positives = v; }
+  void setErrors(u_int32_t v) { errors = v; }
+
   HostAlertType getAlertType() const { return getClassType(); }
 };
 

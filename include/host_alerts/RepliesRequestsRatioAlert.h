@@ -28,6 +28,10 @@
 
 class RepliesRequestsRatioAlert : public HostAlert {
  private:
+  u_int8_t ratio;
+  u_int32_t requests;
+  u_int32_t replies;
+
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
@@ -36,6 +40,10 @@ class RepliesRequestsRatioAlert : public HostAlert {
   RepliesRequestsRatioAlert(HostCallback *c, Host *f);
   ~RepliesRequestsRatioAlert() {};
   
+  void setRatio(u_int8_t  v)    { ratio = v;    }
+  void setRequests(u_int32_t v) { requests = v; }
+  void setReplies(u_int32_t v)  { replies = v;  }
+
   HostAlertType getAlertType() const { return getClassType(); }
 };
 

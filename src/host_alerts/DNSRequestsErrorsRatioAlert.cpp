@@ -33,9 +33,9 @@ ndpi_serializer* DNSRequestsErrorsRatioAlert::getAlertJSON(ndpi_serializer* seri
     return NULL;
 
   /* Sync fields with host_alert_dns_requests_errors_ratio.lua */
-  ndpi_serialize_string_string(serializer, "type", "dns_rcvd" /* TODO, either dns_rcvd */);
-  ndpi_serialize_string_uint64(serializer, "positives", 0 /* TODO */);
-  ndpi_serialize_string_uint64(serializer, "errors", 0 /* TODO */);
+  ndpi_serialize_string_string(serializer, "type", sent ? "dns_sent" : "dns_rcvd");
+  ndpi_serialize_string_uint64(serializer, "positives", positives);
+  ndpi_serialize_string_uint64(serializer, "errors", errors);
   
   return serializer;
 
