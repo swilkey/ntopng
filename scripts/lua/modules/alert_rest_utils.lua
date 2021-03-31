@@ -28,7 +28,7 @@ function _exclude_flow_alert(additional_filters, delete_alerts)
 
    if success then
       if alert_addr then
-	 alert_exclusions.disable_alert(alert_addr, alert_key)
+	 alert_exclusions.disable_flow_alert(alert_addr, alert_key)
 	 if delete_alerts == "true" then
 	    alert_utils.deleteFlowAlertsMatching(alert_addr, alert_key)
 	 end

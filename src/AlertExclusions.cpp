@@ -136,13 +136,13 @@ void AlertExclusions::setDisabledHostAlertsBitmaps(IpAddress *addr, Bitmap *host
 
 void AlertExclusions::loadConfiguration() {
   json_object *json = NULL;
-  struct json_object_iterator it;
-  struct json_object_iterator itEnd;
+  struct json_object_iterator entity_it;
+  struct json_object_iterator entity_itEnd;
   enum json_tokener_error jerr = json_tokener_success;
   char *value = NULL;
   u_int actual_len = ntop->getRedis()->len(ALERT_EXCLUSIONS_KEY_PREFIX);
 
-  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Reloading alert exclusions"); 
+  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Reloading alert exclusions");
 
   if((value = (char *) malloc(actual_len + 1)) == NULL) {
     ntop->getTrace()->traceEvent(TRACE_ERROR, "Unable to allocate memory to deserialize %s", ALERT_EXCLUSIONS_KEY_PREFIX);
@@ -160,33 +160,61 @@ void AlertExclusions::loadConfiguration() {
     goto out;
   }
 
-  /* Iterate over all alert exclusions */
-  it = json_object_iter_begin(json);
-  itEnd = json_object_iter_end(json);
+  /* Iterate over all alert entities */
+  entity_it = json_object_iter_begin(json);
+  entity_itEnd = json_object_iter_end(json);
 
-  while(!json_object_iter_equal(&it, &itEnd)) {
-    const char *alert_key     = json_object_iter_peek_name(&it);
-    json_object *alert_config = json_object_iter_peek_value(&it);
-    json_object *excluded_hosts;
+  while(!json_object_iter_equal(&entity_it, &entity_itEnd)) {
+    const char *alert_entity_id  = json_object_iter_peek_name(&entity_it);
+    json_object *entity_config = json_object_iter_peek_value(&entity_it);
 
-    if(json_object_object_get_ex(alert_config, "excluded_hosts", &excluded_hosts)) {
-      /* For each alert, iterate over all its excluded hosts */
-      struct json_object_iterator hosts_it = json_object_iter_begin(excluded_hosts);
-      struct json_object_iterator hosts_it_end = json_object_iter_end(excluded_hosts);
+    /* Take the alert entity from the key */
+    AlertEntity alert_entity = (AlertEntity)atoi(alert_entity_id);
 
-      while(!json_object_iter_equal(&hosts_it, &hosts_it_end)) {
-	const char *host_ip = json_object_iter_peek_name(&hosts_it);
+    /* Iterate over all entity alert exclusions */
+    struct json_object_iterator excl_it = json_object_iter_begin(entity_config);
+    struct json_object_iterator excl_itEnd = json_object_iter_end(entity_config);
 
-	/* Add the exclusion for this alert and for this host */
-	addHostDisabledFlowAlert(host_ip, (FlowAlertTypeEnum)atoi(alert_key));
+    while(!json_object_iter_equal(&excl_it, &excl_itEnd)) {
+      const char *alert_key     = json_object_iter_peek_name(&excl_it);
+      json_object *alert_config = json_object_iter_peek_value(&excl_it);
+      json_object *excluded_hosts;
 
-	json_object_iter_next(&hosts_it);
+      if(json_object_object_get_ex(alert_config, "excluded_hosts", &excluded_hosts)) {
+	/* For each alert, iterate over all its excluded hosts */
+	struct json_object_iterator hosts_it = json_object_iter_begin(excluded_hosts);
+	struct json_object_iterator hosts_it_end = json_object_iter_end(excluded_hosts);
+
+	while(!json_object_iter_equal(&hosts_it, &hosts_it_end)) {
+	  const char *host_ip = json_object_iter_peek_name(&hosts_it);
+
+	  /* Add the exclusion for this alert and for this host */
+	  switch(alert_entity) {
+	  case alert_entity_flow:
+	    addHostDisabledFlowAlert(host_ip, (FlowAlertTypeEnum)atoi(alert_key));
+	    break;
+	  case alert_entity_host:
+	    addHostDisabledHostAlert(host_ip, (HostAlertTypeEnum)atoi(alert_key));
+	  default:
+	    break;
+	  }
+
+#if 1
+	  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Exclusion loaded [%s][alert_entity: %u][alert_key: %u]",
+				       host_ip, alert_entity, atoi(alert_key));
+#endif
+
+	  json_object_iter_next(&hosts_it);
+	}
       }
-    }
+
+      /* Move to the next element */
+      json_object_iter_next(&excl_it);
+    } /* EXCLUSIONS while */
 
     /* Move to the next element */
-    json_object_iter_next(&it);
-  } /* while */
+    json_object_iter_next(&entity_it);
+  } /* ENTITIES while */
 
  out:
   /* Free the json */
