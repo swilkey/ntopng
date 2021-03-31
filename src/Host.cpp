@@ -148,6 +148,7 @@ void Host::initialize(Mac *_mac, u_int16_t _vlanId) {
   prefs_loaded = false;
   host_services_bitmap = 0;
   disabled_alerts_tstamp = 0;
+  memset(cb_status, 0, sizeof(cb_status));
 
   // readStats(); - Commented as if put here it's too early and the key is not yet set
 
@@ -1665,36 +1666,20 @@ bool Host::enqueueAlert(HostAlert *alert) {
 
 /* *************************************** */
 
-HostCallbackStatus *Host::getCallbackStatus(HostCallbackType t) {
-  for(std::list<HostCallbackStatus*>::iterator it = cb_status.begin(); it != cb_status.end(); ++it) {
-    HostCallbackStatus *s = (*it);
-    if (s->getCallbackType() == t)
-      return s;
-  }
-
-  return NULL;
-}
-
-/* *************************************** */
-
-void Host::getCallbacksStatus(HostCallbackStatus *callbacks_status_arr[]) {
-  memset(callbacks_status_arr, 0, sizeof(HostCallbackStatus *) * NUM_DEFINED_HOST_CALLBACKS);
-  for(std::list<HostCallbackStatus*>::iterator it = cb_status.begin(); it != cb_status.end(); ++it) {
-    HostCallbackStatus *s = (*it);
-    callbacks_status_arr[s->getCallbackType()] = s;
-  }
+void Host::setCallbackStatus(HostCallbackType t, HostCallbackStatus *s) {
+   if (cb_status[t])
+     delete cb_status[t];
+  cb_status[t] = s;
 }
 
 /* *************************************** */
 
 void Host::clearCallbackStatus() {
-  std::list<HostCallbackStatus*>::iterator it = cb_status.begin();
-
-  while (it != cb_status.end()) {
-    HostCallbackStatus *s = (*it);
-    ++it; /* inc the iterator before removing */
-    cb_status.remove(s);
-    delete s;
+  for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
+    if (cb_status[i]) {
+      delete cb_status[i];
+      cb_status[i] = NULL;
+    }
   }
 }
 
@@ -1759,7 +1744,7 @@ bool Host::triggerAlert(HostAlert *alert) {
     return res;
 
   //TODO check if alert already exists (safety check)
-  //a = findEngagedAlert(alert_type);
+  //a = findEngagedAlert(alert_type, alert->getCallbackType());
 
   /* Add to the list of engaged alerts*/
   addEngagedAlert(alert);
@@ -1775,11 +1760,9 @@ bool Host::triggerAlert(HostAlert *alert) {
 
 /* *************************************** */
 
-void Host::releaseAlert(HostAlertType alert_type) {
-  HostAlert *alert = findEngagedAlert(alert_type);
-
-  if (alert)
-    alert->setExpiring();  
+void Host::releaseAlert(HostAlert *alert) {
+  alert->release();  
 }
 
 /* *************************************** */
+

@@ -85,7 +85,7 @@ HostCallbackStatus *HostCallback::getStatus(Host *h, bool create) {
   if (create) {
     status = allocStatus();
     if (status)
-      h->addCallbackStatus(status);
+      h->setCallbackStatus(getType(), status);
   }
 
   return status;

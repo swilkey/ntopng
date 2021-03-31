@@ -52,7 +52,6 @@ void HostCallbacksExecutor::loadHostCallbacks(HostCallbacksLoader *fcl) {
 /* **************************************************** */
 
 bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, HostCallbackStatus *status, time_t now) {
-  if (!callback) return false; /* Callback not available */
   if (!callback->getPeriod()) return true; /* No periodicity configured - always run */
   if (!status || !status->getLastCallTime()) return true; /* First time - run */
   if (status->getLastCallTime() + callback->getPeriod() <= now) return true; /* Timeout reached - run */
@@ -61,69 +60,75 @@ bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, HostCall
 
 /* **************************************************** */
 
-void HostCallbacksExecutor::execCallbacks(Host *h) {
-  std::list<HostAlert*> *engaged_alerts = h->getEngagedAlerts();
-  HostCallbackStatus *host_cb_status_cache[NUM_DEFINED_HOST_CALLBACKS]; /* optimization */
-  time_t now = time(NULL);
+void HostCallbacksExecutor::releaseAlert(HostAlert *alert) {
+  Host *h = alert->getHost();
 
-  h->getCallbacksStatus(host_cb_status_cache);
+  /* Remove from the list of engaged alerts */
+  h->removeEngagedAlert(alert);
 
-  /* This is used to check which of the engaged should be released due to: 
-   * - Callback disabled
-   * - Alert no longer engaged */
-  for(std::list<HostAlert*>::iterator it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it) {
-    HostAlert *alert = (*it);
-    HostCallback *cb = getCallback(alert->getCallbackType());
-    HostCallbackStatus *cbs = NULL;
+  /* Enqueue the released alert to be notified */
+  iface->enqueueHostAlert(alert);
+}
 
-    /* Get callback status */
-    if (cb) {
-      HostCallbackType ct = cb->getType();
-      cbs = host_cb_status_cache[ct];
-    }
+/* **************************************************** */
 
-    if (alert->hasAutoRelease() && isTimeToRunCallback(cb, cbs, now)) {
-      /* Initializing the status to expiring, to check if this needs to be released (when not engaged again) */
-      alert->setExpiring();
+void HostCallbacksExecutor::releaseAllDisabledAlerts(Host *h) {
+  for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
+    HostCallbackType t = (HostCallbackType) i;
+    HostCallback *cb = getCallback(t);
+
+    if (!cb) { /* callback disabled, check engaged alerts with auto release */
+      std::list<HostAlert*> *cb_alerts = h->getEngagedAlerts(t);
+
+      for(std::list<HostAlert*>::iterator it = cb_alerts->begin(); it != cb_alerts->end(); ++it) {
+        HostAlert *alert = (*it);
+        if (alert->hasAutoRelease()) {
+          alert->release();
+          releaseAlert(alert);
+        }
+      }
     }
   }
+}
+
+/* **************************************************** */
+
+void HostCallbacksExecutor::execCallbacks(Host *h) {
+  time_t now = time(NULL);
+
+  /* Release (auto-release) alerts for disabled callbacks */
+  releaseAllDisabledAlerts(h);
 
   /* Exec all enabled callbacks */
   for(std::list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
     HostCallback *cb = (*it);
+    HostCallbackStatus *cbs = cb->getStatus(h, true /* create */);
     HostCallbackType ct = cb->getType();
-    HostCallbackStatus *cbs;
-
-    if (!host_cb_status_cache[ct]) host_cb_status_cache[ct] = cb->getStatus(h, true /* create */);
-    cbs = host_cb_status_cache[ct];
+    std::list<HostAlert*> *cb_alerts = h->getEngagedAlerts(ct);
 
     /* Check if it's time to run the callback on this host */
     if (isTimeToRunCallback(cb, cbs, now)) {
+      std::list<HostAlert*>::iterator it;
+
+      /* Initializing (auto-release) alerts to expiring, to check if
+       * they need to be released when not engaged again */
+      for (it = cb_alerts->begin(); it != cb_alerts->end(); ++it)
+        if ((*it)->hasAutoRelease()) (*it)->setExpiring();
 
       /* Call Handler */
-      cb->periodicUpdate(h, NULL /* TODO */);
+      cb->periodicUpdate(h, cb_alerts);
+
+      /* Check alerts to be released */
+      it = cb_alerts->begin();
+      while (it != cb_alerts->end()) {
+        HostAlert *alert = (*it);
+        ++it; /* inc the iterator before removing */
+        if (alert->isExpired() && !alert->isReleased()) alert->release();
+        if (alert->isReleased()) releaseAlert(alert);
+      }
 
       if (cbs)
         cbs->setLastCallTime(now);
-    }
-  }
-
-  /* Check engaged alerts to be released */
-  std::list<HostAlert*>::iterator it = engaged_alerts->begin();
-  while (it != engaged_alerts->end()) {
-    HostAlert *alert = (*it);
-    Host *host = alert->getHost();
-
-    ++it; /* inc the iterator before removing */
-
-    if (alert->isExpired()) {
-      alert->release();
-
-      /* Remove from the list of engaged alerts */
-      host->removeEngagedAlert(alert);
-
-      /* Enqueue the released alert to be notified */
-      iface->enqueueHostAlert(alert);
     }
   }
 }

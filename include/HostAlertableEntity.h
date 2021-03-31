@@ -30,7 +30,9 @@ class HostAlert;
 class HostAlertableEntity : public AlertableEntity {
  private:
   Bitmap engaged_alerts_map; /* Alerts Bitmap */
-  std::list<HostAlert*> engaged_alerts; /* List of engaged alerts */
+  
+  std::list<HostAlert*> engaged_alerts[NUM_DEFINED_HOST_CALLBACKS]; /* List of engaged alerts for each callback */
+
   RwLock engaged_alerts_lock; /* Lock to handle concurrent access from the GUI */
 
   void luaAlert(lua_State* vm, HostAlert *alert);
@@ -42,8 +44,8 @@ class HostAlertableEntity : public AlertableEntity {
   void addEngagedAlert(HostAlert *a);
   void removeEngagedAlert(HostAlert *a);
   bool isEngagedAlert(HostAlertType alert_type) { return engaged_alerts_map.isSetBit(alert_type.id); }
-  HostAlert *findEngagedAlert(HostAlertType alert_type);
-  std::list<HostAlert*> *getEngagedAlerts() { return &engaged_alerts; }
+  HostAlert *findEngagedAlert(HostAlertType alert_type, HostCallbackType callback_type);
+  std::list<HostAlert*> *getEngagedAlerts(HostCallbackType t) { return &engaged_alerts[t]; }
   void clearEngagedAlerts();
 
   void countAlerts(grouped_alerts_counters *counters);

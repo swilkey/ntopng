@@ -89,8 +89,7 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   Bitmap disabled_flow_alerts;
   time_t disabled_alerts_tstamp;
 
-  std::list<HostCallbackStatus*> cb_status; /* Callbacks status */
-
+  HostCallbackStatus *cb_status[NUM_DEFINED_HOST_CALLBACKS];
   Bitmap alerts_map;
 
   void initialize(Mac *_mac, u_int16_t _vlan_id);
@@ -444,16 +443,15 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   void alert2JSON(HostAlert *alert, ndpi_serializer *serializer);
 
   /* Callbacks status */
-  void addCallbackStatus(HostCallbackStatus *s) { cb_status.push_back(s); }
-  HostCallbackStatus *getCallbackStatus(HostCallbackType t);
-  void getCallbacksStatus(HostCallbackStatus *callbacks_status_arr[]);
+  void setCallbackStatus(HostCallbackType t, HostCallbackStatus *s);
+  inline HostCallbackStatus *getCallbackStatus(HostCallbackType t) { return cb_status[t]; };
   void clearCallbackStatus();
 
   /* Same as flow alerts */
   inline Bitmap getAlertsBitmap() const { return(alerts_map); }
   bool setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_int8_t score_as_srv);
   bool triggerAlert(HostAlert *alert);
-  void releaseAlert(HostAlertType alert_type);
+  void releaseAlert(HostAlert* alert);
 };
 
 #endif /* _HOST_H_ */
