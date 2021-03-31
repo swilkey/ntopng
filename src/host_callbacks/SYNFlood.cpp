@@ -32,27 +32,45 @@ SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
 
 void SYNFlood::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   static u_int8_t attacker_score = 100, victim_score = 20;
-  HostAlert *alert = NULL;
+  std::list<HostAlert*>::iterator it;
   u_int16_t hits = 0;
+  bool already_engaged = false;
 
-  /* Attacker alert has priority over the Victim alert */
   if((hits = h->syn_flood_attacker_hits()) >= syns_threshold) {
-    SYNFloodAttackerAlert *alert = new SYNFloodAttackerAlert(this, h); 
-    if (alert) {
-      //TODO alert_level_error, attacker_score, 0
-      alert->setHits(hits);
-      alert->setThreshold(syns_threshold);
-      h->triggerAlert(alert);
+    SYNFloodAttackerAlert *attacker_alert = NULL;
+
+    for (it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it)
+      if ((*it)->equals(SYNFloodAttackerAlert::getClassType()))
+        attacker_alert = static_cast<SYNFloodAttackerAlert*>(*it), already_engaged = true;
+
+    if (!already_engaged)
+       attacker_alert = new SYNFloodAttackerAlert(this, h); 
+
+    if (attacker_alert) {
+      attacker_alert->setSeverity(alert_level_error);
+      attacker_alert->setCliScore(attacker_score);
+      attacker_alert->setHits(hits);
+      attacker_alert->setThreshold(syns_threshold);
+      if (!already_engaged) h->triggerAlert(attacker_alert);
     }
   }
 
   if((hits = h->syn_flood_victim_hits()) >= syns_threshold) {
-    SYNFloodVictimAlert *alert = new SYNFloodVictimAlert(this, h); 
-    //TODO alert_level_error, 0, victim_score
-    if (alert) {
-      alert->setHits(hits);
-      alert->setThreshold(syns_threshold);
-      h->triggerAlert(alert);
+    SYNFloodVictimAlert *victim_alert = NULL;
+
+    for (it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it)
+      if ((*it)->equals(SYNFloodVictimAlert::getClassType()))
+        victim_alert = static_cast<SYNFloodVictimAlert*>(*it), already_engaged = true;
+
+    if (!already_engaged)
+       victim_alert = new SYNFloodVictimAlert(this, h); 
+
+    if (victim_alert) {
+      victim_alert->setSeverity(alert_level_error);
+      victim_alert->setCliScore(victim_score);
+      victim_alert->setHits(hits);
+      victim_alert->setThreshold(syns_threshold);
+      if (!already_engaged) h->triggerAlert(victim_alert);
     }
   }
 

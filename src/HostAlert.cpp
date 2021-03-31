@@ -31,7 +31,8 @@ HostAlert::HostAlert(HostCallback *c, Host *h) {
   callback_name = c->getName();
   engage_time = time(NULL);
   release_time = 0;
-  auto_release = true;
+  score_as_cli = score_as_srv = 0;
+  score_inc_as_cli = score_inc_as_srv = 0;
 }
 
 /* **************************************************** */

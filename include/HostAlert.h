@@ -32,11 +32,14 @@ class HostAlert {
   AlertLevel severity_id;
   bool released; /* to be released */
   bool expiring; /* engaged, under re-evaluation */
-  bool auto_release;
   HostCallbackType callback_type;
   std::string callback_name;
   time_t engage_time;
   time_t release_time;
+  u_int8_t score_as_cli;
+  u_int8_t score_as_srv;
+  int8_t score_inc_as_cli;
+  int8_t score_inc_as_srv;
 
   /* 
      Adds to the passed `serializer` (generated with `getAlertSerializer`) information specific to this alert
@@ -48,7 +51,17 @@ class HostAlert {
   virtual ~HostAlert();
 
   bool loadConfiguration(json_object *config);
+
   inline void setSeverity(AlertLevel alert_severity) { severity_id = alert_severity; };
+  inline AlertLevel getSeverity()           const { return(severity_id);   }  
+
+  inline void setCliScore(u_int8_t score) { score_inc_as_cli += score - score_as_cli; score_as_cli = score; }
+  inline void setSrvScore(u_int8_t score) { score_inc_as_srv += score - score_as_srv; score_as_srv = score; }
+  inline u_int8_t getCliScore() { return score_as_cli; }
+  inline u_int8_t getSrvScore() { return score_as_srv; }
+
+  inline int8_t getCliScoreInc() { int8_t tmp = score_inc_as_cli; score_inc_as_cli = 0; return tmp; }
+  inline int8_t getSrvScoreInc() { int8_t tmp = score_inc_as_srv; score_inc_as_srv = 0; return tmp; }
 
   virtual HostAlertType getAlertType() const = 0;
   virtual std::string   getName()      const = 0;
@@ -56,7 +69,6 @@ class HostAlert {
   /* Alert automatically released when the condition is no longer satisfied. */
   virtual bool hasAutoRelease()  { return true; }
 
-  inline AlertLevel getSeverity()           const { return(severity_id);   }  
   inline Host *getHost()                    const { return(host);          }
   inline HostCallbackType getCallbackType() const { return(callback_type); }
   inline std::string getCallbackName()      const { return(callback_name); }
@@ -71,6 +83,8 @@ class HostAlert {
 
   inline time_t getEngageTime()  { return engage_time;  }
   inline time_t getReleaseTime() { return release_time; }
+
+  inline bool equals(HostAlertType type) { return getAlertType().id == type.id; }
 
   /* Generates the JSON alert serializer with base information and per-callback information gathered with `getAlertJSON`.
    *  NOTE: memory must be freed by the caller. */
