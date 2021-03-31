@@ -19,27 +19,20 @@
  *
  */
 
-#ifndef _P2P_TRAFFIC_H_
-#define _P2P_TRAFFIC_H_
+#ifndef _DELTA_HOST_CALLBACK_STATUS_H_
+#define _DELTA_HOST_CALLBACK_STATUS_H_
 
 #include "ntop_includes.h"
 
-class P2PTraffic : public HostCallback {
-private:
-  u_int64_t p2p_bytes_threshold;  
+class DeltaHostCallbackStatus : public HostCallbackStatus {
+ private:
+  u_int64_t cur_value; /* Keeps the current value that is periodically snapshotted */
 
  public:
-  P2PTraffic();
-  ~P2PTraffic() {};
-
-  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
-
-  HostCallbackStatus *allocStatus() { return new DeltaHostCallbackStatus(this); };
-
-  bool loadConfiguration(json_object *config);  
-
-  HostCallbackType getType() const { return host_callback_p2p_traffic; }
-  std::string getName()        const { return(std::string("p2p")); }
+ DeltaHostCallbackStatus(HostCallback *cb) : HostCallbackStatus(cb) { cur_value = (u_int64_t)-1; };
+  inline u_int64_t delta(u_int64_t new_value) {
+    u_int64_t res = new_value > cur_value ? new_value - cur_value : 0; cur_value = new_value; return res;
+  };
 };
 
-#endif
+#endif /* _DELTA_HOST_CALLBACK_STATUS_H_ */

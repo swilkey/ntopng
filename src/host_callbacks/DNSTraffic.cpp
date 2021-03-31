@@ -31,7 +31,11 @@ DNSTraffic::DNSTraffic() : HostCallback(ntopng_edition_community) {
 /* ***************************************************** */
 
 void DNSTraffic::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
-  //return new DNSTrafficAlert(this, h);
+  DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
+  u_int64_t delta;
+
+  if(status && (delta = status->delta(h->get_ndpi_stats()->getProtoBytes(NDPI_PROTOCOL_DNS))) > dns_bytes_threshold)
+    ; /* TODO: trigger */
 }
 
 /* ***************************************************** */

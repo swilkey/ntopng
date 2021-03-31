@@ -31,7 +31,24 @@ ThroughputHostCallback::ThroughputHostCallback() : HostCallback(ntopng_edition_c
 /* ***************************************************** */
 
 void ThroughputHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
-  //return new ThroughputAlert(this, h);
+  DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
+  u_int64_t delta;
+  time_t prev_call, cur_call, delta_call;
+
+  if(status) {
+    delta = status->delta(h->getNumBytes());
+
+    if(delta > 0
+       && (prev_call = status->getLastCallTime()) > 0 /* Time of the previous call */
+       && (cur_call = time(NULL)) > 0 /* Time of the current call */
+       && (delta_call = cur_call - prev_call) > 0 /* Positive difference */) {
+      float thpt = delta / (float)delta_call;
+
+      if(thpt * 8 * 1024 * 1024 /* throughput in Mbps */ > throughput_threshold)
+	; /* TODO: trigger */
+    }
+
+  }
 }
 
 /* ***************************************************** */

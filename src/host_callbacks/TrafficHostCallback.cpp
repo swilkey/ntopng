@@ -31,10 +31,11 @@ TrafficHostCallback::TrafficHostCallback() : HostCallback(ntopng_edition_communi
 /* ***************************************************** */
 
 void TrafficHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
-  /* Example
-  u_int8_t score = 100;
-  h->triggerAlert(new TrafficAlert(getSeverity, score, score));
-  */
+  DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
+  u_int64_t delta;
+
+  if(status && (delta = status->delta(h->getNumBytes())) > bytes_threshold)
+    ; /* TODO: trigger */
 }
 
 /* ***************************************************** */

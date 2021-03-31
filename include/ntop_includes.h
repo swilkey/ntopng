@@ -417,6 +417,7 @@ using namespace std;
 #include "HostAlert.h"
 #include "HostCallback.h"
 #include "HostCallbackStatus.h"
+#include "DeltaHostCallbackStatus.h"
 #include "CallbacksLoader.h"
 #include "FlowCallbacksLoader.h"
 #include "FlowCallbacksExecutor.h"

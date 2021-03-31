@@ -34,6 +34,8 @@ public:
 
   void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
+  HostCallbackStatus *allocStatus() { return new DeltaHostCallbackStatus(this); };
+
   bool loadConfiguration(json_object *config);  
 
   HostCallbackType getType() const { return host_callback_traffic_host; }

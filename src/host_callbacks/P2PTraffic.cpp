@@ -31,7 +31,11 @@ P2PTraffic::P2PTraffic() : HostCallback(ntopng_edition_community) {
 /* ***************************************************** */
 
 void P2PTraffic::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
-  //return new P2PTrafficAlert(this, h);
+  DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
+  u_int64_t delta;
+
+  if(status && (delta = status->delta(h->get_ndpi_stats()->getCategoryBytes(NDPI_PROTOCOL_CATEGORY_FILE_SHARING))) > p2p_bytes_threshold)
+    ; /* TODO: trigger */
 }
 
 /* ***************************************************** */

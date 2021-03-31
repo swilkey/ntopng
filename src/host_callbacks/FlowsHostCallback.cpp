@@ -31,7 +31,11 @@ FlowsHostCallback::FlowsHostCallback() : HostCallback(ntopng_edition_community) 
 /* ***************************************************** */
 
 void FlowsHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
-  //return new FlowsAlert(this, h);
+  DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
+  u_int64_t delta;
+
+  if(status && (delta = status->delta(h->getTotalNumFlowsAsClient() + h->getTotalNumFlowsAsServer())) > flows_threshold)
+    ; /* TODO: trigger */
 }
 
 /* ***************************************************** */
