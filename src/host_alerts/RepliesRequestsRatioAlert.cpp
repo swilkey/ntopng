@@ -19,24 +19,26 @@
  *
  */
 
-#ifndef _REPLIES_REQUESTS_RATIO_ALERT_H_
-#define _REPLIES_REQUESTS_RATIO_ALERT_H_
+#include "host_alerts_includes.h"
 
+/* ***************************************************** */
 
-#include "ntop_includes.h"
-
-
-class RepliesRequestsRatioAlert : public HostAlert {
- private:
-  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
-  
- public:
-  static HostAlertType getClassType() { return { host_alert_replies_requests_ratio, alert_category_network }; }
-
-  RepliesRequestsRatioAlert(HostCallback *c, Host *f);
-  ~RepliesRequestsRatioAlert() {};
-  
-  HostAlertType getAlertType() const { return getClassType(); }
+RepliesRequestsRatioAlert::RepliesRequestsRatioAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
 };
 
-#endif /* _REPLIES_REQUESTS_RATIO_ALERT_H_ */
+/* ***************************************************** */
+
+ndpi_serializer* RepliesRequestsRatioAlert::getAlertJSON(ndpi_serializer* serializer) {
+  if(serializer == NULL)
+    return NULL;
+
+  /* Sync fields with host_alert_dns_requests_errors_ratio.lua */
+  ndpi_serialize_string_string(serializer, "ratio", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "requests", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "replies", 0 /* TODO */);
+  
+  return serializer;
+
+}
+
+/* ***************************************************** */
