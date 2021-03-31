@@ -31,9 +31,7 @@ public:
    P2PTraffic() : HostCallback(ntopng_edition_community) {};
   ~P2PTraffic() {};
 
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
+  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
   bool loadConfiguration(json_object *config);  
 

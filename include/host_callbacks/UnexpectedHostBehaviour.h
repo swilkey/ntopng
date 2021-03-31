@@ -31,9 +31,7 @@ public:
    UnexpectedHostBehaviour() : HostCallback(ntopng_edition_community) {};
   ~UnexpectedHostBehaviour() {};
 
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
+  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
   bool loadConfiguration(json_object *config);  
 

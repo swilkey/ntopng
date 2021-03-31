@@ -24,13 +24,8 @@
 
 /* ***************************************************** */
 
-void P2PTraffic::periodicUpdate(Host *h) {
-}
-
-/* ***************************************************** */
-
-HostAlert *P2PTraffic::buildAlert(HostAlertType t, Host *h) {
-  return new P2PTrafficAlert(this, h);
+void P2PTraffic::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+  //return new P2PTrafficAlert(this, h);
 }
 
 /* ***************************************************** */

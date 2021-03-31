@@ -24,13 +24,8 @@
 
 /* ***************************************************** */
 
-void ThroughputHostCallback::periodicUpdate(Host *h) {
-}
-
-/* ***************************************************** */
-
-HostAlert *ThroughputHostCallback::buildAlert(HostAlertType t, Host *h) {
-  return new ThroughputAlert(this, h);
+void ThroughputHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+  //return new ThroughputAlert(this, h);
 }
 
 /* ***************************************************** */

@@ -31,10 +31,7 @@ public:
    TrafficHostCallback() : HostCallback(ntopng_edition_community) {};
   ~TrafficHostCallback() {};
 
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-  void updateAlert(HostAlert *a);
-
-  void periodicUpdate(Host *h);
+  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
   bool loadConfiguration(json_object *config);  
 

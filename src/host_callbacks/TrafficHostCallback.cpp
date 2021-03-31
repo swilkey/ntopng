@@ -24,24 +24,11 @@
 
 /* ***************************************************** */
 
-void TrafficHostCallback::periodicUpdate(Host *h) {
+void TrafficHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   /* Example
   u_int8_t score = 100;
-  h->triggerAlertAsync(TrafficAlert::getClassType(), getSeverity, score, score);
+  h->triggerAlert(new TrafficAlert(getSeverity, score, score));
   */
-}
-
-/* ***************************************************** */
-
-HostAlert *TrafficHostCallback::buildAlert(HostAlertType alert_type, Host *h) {
-  /* Build new alert */
-  return new TrafficAlert(this, h);
-}
-
-/* ***************************************************** */
-
-void TrafficHostCallback::updateAlert(HostAlert *a) {
-  /* TODO update alert already engaged or released (see a->isReleased()) */
 }
 
 /* ***************************************************** */

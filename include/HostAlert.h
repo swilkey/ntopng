@@ -53,29 +53,27 @@ class HostAlert {
   virtual HostAlertType getAlertType() const = 0;
   virtual std::string   getName()      const = 0;
 
-  inline AlertLevel    getSeverity()  const { return(severity_id); }  
-  inline Host *getHost() const { return(host); }
+  /* Alert automatically released when the condition is no longer satisfied. */
+  virtual bool hasAutoRelease()  { return true; }
+
+  inline AlertLevel getSeverity()           const { return(severity_id);   }  
+  inline Host *getHost()                    const { return(host);          }
   inline HostCallbackType getCallbackType() const { return(callback_type); }
-  inline std::string getCallbackName() const { return(callback_name); }
+  inline std::string getCallbackName()      const { return(callback_name); }
 
-  inline void setEngaged()  { expiring = released = false; }
+  inline void setEngaged()       { expiring = released = false; }
 
-  inline void setExpiring() { expiring = true; }
-  inline bool isExpired()   { return expiring; }
+  inline void setExpiring()      { expiring = true; }
+  inline bool isExpired()        { return expiring; }
 
-  inline void setReleased() { released = true; release_time = time(NULL); }
-  inline bool isReleased()  { return released; }
+  inline void release()          { released = true; release_time = time(NULL); }
+  inline bool isReleased()       { return released; }
 
-  inline void disableAutoRelease() { auto_release = false; }
-  inline bool isAutoReleaseEnabled() { return auto_release; }
-
-  inline time_t getEngageTime()  { return engage_time; }
+  inline time_t getEngageTime()  { return engage_time;  }
   inline time_t getReleaseTime() { return release_time; }
 
-  /* 
-     Generates the JSON alert serializer with base information and per-callback information gathered with `getAlertJSON`.
-     NOTE: memory must be freed by the caller.
-  */
+  /* Generates the JSON alert serializer with base information and per-callback information gathered with `getAlertJSON`.
+   *  NOTE: memory must be freed by the caller. */
   ndpi_serializer* getSerializedAlert();
 };
 

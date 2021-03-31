@@ -31,9 +31,7 @@ public:
    ThroughputHostCallback() : HostCallback(ntopng_edition_community) {};
   ~ThroughputHostCallback() {};
 
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
+  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
   bool loadConfiguration(json_object *config);  
 

@@ -30,27 +30,29 @@ SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
-void SYNFlood::periodicUpdate(Host *h) {
+void SYNFlood::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   static u_int8_t attacker_score = 100, victim_score = 20;
   HostAlert *alert = NULL;
   u_int16_t hits = 0;
 
   /* Attacker alert has priority over the Victim alert */
   if((hits = h->syn_flood_attacker_hits()) >= syns_threshold) {
-    alert = h->triggerAlertAsync(SYNFloodAttackerAlert::getClassType(), alert_level_error, attacker_score, 0);
+    SYNFloodAttackerAlert *alert = new SYNFloodAttackerAlert(this, h); 
     if (alert) {
-      SYNFloodAttackerAlert *attacker_alert = static_cast<SYNFloodAttackerAlert*>(alert);
-      attacker_alert->setHits(hits);
-      attacker_alert->setThreshold(syns_threshold);
+      //TODO alert_level_error, attacker_score, 0
+      alert->setHits(hits);
+      alert->setThreshold(syns_threshold);
+      h->triggerAlert(alert);
     }
   }
 
   if((hits = h->syn_flood_victim_hits()) >= syns_threshold) {
-    alert = h->triggerAlertAsync(this, SYNFloodVictimAlert::getClassType(), alert_level_error, 0, victim_score);
+    SYNFloodVictimAlert *alert = new SYNFloodVictimAlert(this, h); 
+    //TODO alert_level_error, 0, victim_score
     if (alert) {
-      SYNFloodVictimAlert *victim_alert = static_cast<SYNFloodVictimAlert*>(alert);
-      victim_alert->setHits(hits);
-      victim_alert->setThreshold(syns_threshold);
+      alert->setHits(hits);
+      alert->setThreshold(syns_threshold);
+      h->triggerAlert(alert);
     }
   }
 

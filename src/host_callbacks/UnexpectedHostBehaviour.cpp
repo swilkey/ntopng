@@ -24,13 +24,8 @@
 
 /* ***************************************************** */
 
-void UnexpectedHostBehaviour::periodicUpdate(Host *h) {
-}
-
-/* ***************************************************** */
-
-HostAlert *UnexpectedHostBehaviour::buildAlert(HostAlertType t, Host *h) {
-  return new UnexpectedHostBehaviourAlert(this, h);
+void UnexpectedHostBehaviour::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+  //return new UnexpectedHostBehaviourAlert(this, h);
 }
 
 /* ***************************************************** */

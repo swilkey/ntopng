@@ -32,12 +32,7 @@ private:
   SYNFlood();
   ~SYNFlood() {};
 
-  HostAlert *buildAlert(HostAlertType t, Host *h) {
-    if (t.id == host_alert_syn_flood_attacker) return new SYNFloodAttackerAlert(this, h); 
-    else return new SYNFloodVictimAlert(this, h); 
-  }
-
-  void periodicUpdate(Host *h);
+  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
   bool loadConfiguration(json_object *config);  
 

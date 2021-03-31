@@ -24,13 +24,8 @@
 
 /* ***************************************************** */
 
-void DNSTraffic::periodicUpdate(Host *h) {
-}
-
-/* ***************************************************** */
-
-HostAlert *DNSTraffic::buildAlert(HostAlertType t, Host *h) {
-  return new DNSTrafficAlert(this, h);
+void DNSTraffic::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+  //return new DNSTrafficAlert(this, h);
 }
 
 /* ***************************************************** */

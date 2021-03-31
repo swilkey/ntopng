@@ -24,16 +24,6 @@
 
 #include "ntop_includes.h"
 
-class SYNScanHostCallbackStatus : public HostCallbackStatus {
- private:
-  u_int16_t hits; /* Keeps the number of syns that exceeded the threshold and caused the alert to be triggered */
-
- public:
- SYNScanHostCallbackStatus(HostCallback *cb) : HostCallbackStatus(cb) { hits = 0; };
-  inline void updateHits(u_int16_t _hits) { hits = _hits; };
-  inline u_int16_t getHits() const { return hits; };
-};
-
 class SYNScan : public HostCallback {
 private:
   u_int64_t syns_threshold;
@@ -42,11 +32,7 @@ public:
   SYNScan();
   ~SYNScan() {};
 
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
-
-  HostCallbackStatus *allocStatus() { return new SYNScanHostCallbackStatus(this); };
+  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
   bool loadConfiguration(json_object *config);  
 

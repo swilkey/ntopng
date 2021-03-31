@@ -47,9 +47,7 @@ private:
   ServerContacts();
   ~ServerContacts() {};
 
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
+  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
   HostCallbackStatus *allocStatus() { return new ServerContactsHostCallbackStatus(this); };
 

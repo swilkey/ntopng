@@ -82,7 +82,7 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
       cbs = host_cb_status_cache[ct];
     }
 
-    if (alert->isAutoReleaseEnabled() && isTimeToRunCallback(cb, cbs, now)) {
+    if (alert->hasAutoRelease() && isTimeToRunCallback(cb, cbs, now)) {
       /* Initializing the status to expiring, to check if this needs to be released (when not engaged again) */
       alert->setExpiring();
     }
@@ -101,7 +101,7 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     if (isTimeToRunCallback(cb, cbs, now)) {
 
       /* Call Handler */
-      cb->periodicUpdate(h);
+      cb->periodicUpdate(h, NULL /* TODO */);
 
       if (cbs)
         cbs->setLastCallTime(now);
@@ -117,7 +117,7 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     ++it; /* inc the iterator before removing */
 
     if (alert->isExpired()) {
-      alert->setReleased();
+      alert->release();
 
       /* Remove from the list of engaged alerts */
       host->removeEngagedAlert(alert);
@@ -129,3 +129,4 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
 }
 
 /* **************************************************** */
+

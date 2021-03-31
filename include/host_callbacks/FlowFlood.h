@@ -24,16 +24,6 @@
 
 #include "ntop_includes.h"
 
-class FlowFloodHostCallbackStatus : public HostCallbackStatus {
- private:
-  u_int16_t flows; /* Keeps the number of syns that exceeded the threshold and caused the alert to be triggered */
-
- public:
- FlowFloodHostCallbackStatus(HostCallback *cb) : HostCallbackStatus(cb) { flows = 0; };
-  inline void updateFlows(u_int16_t _flows) { flows = _flows; };
-  inline u_int16_t getFlows() const { return flows; };
-};
-
 class FlowFlood : public HostCallback {
 private:
   u_int64_t flows_threshold;
@@ -42,11 +32,7 @@ public:
   FlowFlood();
   ~FlowFlood() {};
 
-  HostAlert *buildAlert(HostAlertType t, Host *h);
-
-  void periodicUpdate(Host *h);
-
-  HostCallbackStatus *allocStatus() { return new FlowFloodHostCallbackStatus(this); };
+  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
 
   bool loadConfiguration(json_object *config);  
 

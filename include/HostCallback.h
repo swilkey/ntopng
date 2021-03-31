@@ -42,15 +42,7 @@ class HostCallback {
   virtual void scriptDisable()           {};
   
   /* Callback hooks */
-  virtual void periodicUpdate(Host *h)   {};
-
-  /* Used to build an alert when triggerAlertAsync is used */
-  virtual HostAlert *buildAlert(HostAlertType t, Host *h) { return NULL; };
-
-  /* Used to update an alert when triggerAlertAsync is used
-   * and the alert was already present (engaged), or when
-   * an alert is released (a->isReleased()) is set in that case  */
-  virtual void updateAlert(HostAlert *a) { return; };
+  virtual void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {};
 
   virtual u_int32_t getPeriod() { return periodicity_secs; }
 

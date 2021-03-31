@@ -29,26 +29,20 @@ ServerContacts::ServerContacts() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
-void ServerContacts::periodicUpdate(Host *h) {
+void ServerContacts::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   static const u_int8_t cli_score = 50;
   u_int32_t contacted_servers = 0;
   ServerContactsHostCallbackStatus *status = static_cast<ServerContactsHostCallbackStatus*>(getStatus(h));
 
-  if((contacted_servers = getContactedServers(h)) >= contacts_threshold)
-    h->triggerAlertAsync(getAlertType(), alert_level_error, cli_score /* Attacker */, 0 /* Victim */);
+  if((contacted_servers = getContactedServers(h)) >= contacts_threshold) {
+    HostAlert *ha = allocAlert(this, h, status ? status->getContacts() : 0, contacts_threshold);
+    //TODO alert_level_error, cli_score /* Attacker */, 0 /* Victim */
+    h->triggerAlert(ha);
+  }
 
   if(status) status->updateContacts(contacted_servers);
 
   /* TODO: reset contacted servers cardinality */
-}
-
-/* ***************************************************** */
-
-HostAlert *ServerContacts::buildAlert(HostAlertType t, Host *h) {
-  ServerContactsHostCallbackStatus *status = static_cast<ServerContactsHostCallbackStatus*>(getStatus(h));
-  HostAlert *ha = allocAlert(this, h, status ? status->getContacts() : 0, contacts_threshold);
-
-  return ha;
 }
 
 /* ***************************************************** */

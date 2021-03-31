@@ -30,42 +30,35 @@ FlowFlood::FlowFlood() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
-void FlowFlood::periodicUpdate(Host *h) {
+void FlowFlood::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   static u_int8_t attacker_score = 100, victim_score = 20;
   u_int16_t flows = 0;
-  FlowFloodHostCallbackStatus *status = static_cast<FlowFloodHostCallbackStatus*>(getStatus(h));
+  HostAlert *ffa;
 
   /* Attacker alert has priority over the Victim alert */
-  if((flows = h->flow_flood_attacker_hits()) >= flows_threshold)
-    h->triggerAlertAsync(FlowFloodAttackerAlert::getClassType(), alert_level_error, attacker_score, 0);
-  else if((flows = h->flow_flood_victim_hits()) >= flows_threshold)
-    h->triggerAlertAsync(FlowFloodVictimAlert::getClassType(), alert_level_error, 0, victim_score);
-
+  if((flows = h->flow_flood_attacker_hits()) >= flows_threshold) {
+    ffa = new FlowFloodAttackerAlert(this, h, flows, flows_threshold);
+    //TODO alert_level_error, attacker_score, 0
+    h->triggerAlert(ffa);
+  } else if((flows = h->flow_flood_victim_hits()) >= flows_threshold) {
+    ffa = new FlowFloodVictimAlert(this, h, flows, flows_threshold);
+    //TODO alert_level_error, 0, victim_score
+    h->triggerAlert(ffa);
+  }
   
-  /* Updates the status with the flows detected. This will be possibly used later by buildAlert */
-  if(status) status->updateFlows(flows);
-
-  /* Reset counters once done */
-  h->reset_flow_flood_hits();
-}
-
-/* ***************************************************** */
-
-HostAlert *FlowFlood::buildAlert(HostAlertType t, Host *h) {
+  /*
   FlowFloodAlert *ffa = NULL;
-  FlowFloodHostCallbackStatus *status = static_cast<FlowFloodHostCallbackStatus*>(getStatus(h));
-
   switch(t.id) {
   case host_alert_flow_flood_attacker:
-    ffa = new FlowFloodAttackerAlert(this, h, status ? status->getFlows() : 0 /* Actual flows */, flows_threshold);
     break;
   case host_alert_flow_flood_victim:
-    ffa = new FlowFloodVictimAlert(this, h, status ? status->getFlows() : 0 /* Actual flows */, flows_threshold);
   default:
     break;
   }
-  
-  return ffa;
+  */
+
+  /* Reset counters once done */
+  h->reset_flow_flood_hits();
 }
 
 /* ***************************************************** */

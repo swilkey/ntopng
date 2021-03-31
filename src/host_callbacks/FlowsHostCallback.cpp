@@ -24,13 +24,8 @@
 
 /* ***************************************************** */
 
-void FlowsHostCallback::periodicUpdate(Host *h) {
-}
-
-/* ***************************************************** */
-
-HostAlert *FlowsHostCallback::buildAlert(HostAlertType t, Host *h) {
-  return new FlowsAlert(this, h);
+void FlowsHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+  //return new FlowsAlert(this, h);
 }
 
 /* ***************************************************** */
