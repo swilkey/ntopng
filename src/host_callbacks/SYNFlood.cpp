@@ -30,51 +30,39 @@ SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
-void SYNFlood::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
-  static u_int8_t attacker_score = 100, victim_score = 20;
+template<class T> void SYNFlood::triggerSYNFloodAlert(Host *h, std::list<HostAlert*> *engaged,
+    u_int16_t hits, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score) {
   std::list<HostAlert*>::iterator it;
+  bool already_engaged = false;
+  T *alert = NULL;
+
+  for (it = engaged->begin(); it != engaged->end(); ++it)
+    if ((*it)->equals(T::getClassType()))
+      alert = static_cast<T*>(*it), already_engaged = true;
+
+  if (!already_engaged)
+     alert = new T(this, h); 
+
+  if (alert) {
+    alert->setSeverity(alert_level_error);
+    alert->setCliScore(cli_score);
+    alert->setSrvScore(srv_score);
+    alert->setHits(hits);
+    alert->setThreshold(threshold);
+    if (!already_engaged) h->triggerAlert(alert);
+  }
+}
+
+/* ***************************************************** */
+
+void SYNFlood::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
   u_int16_t hits = 0;
-  bool already_engaged;
 
-  if((hits = h->syn_flood_attacker_hits()) >= syns_threshold) {
-    SYNFloodAttackerAlert *attacker_alert = NULL;
+  if((hits = h->syn_flood_attacker_hits()) >= syns_threshold)
+    triggerSYNFloodAlert<SYNFloodAttackerAlert>(h, engaged_alerts, hits, syns_threshold, 100, 0);
 
-    already_engaged = false;
-    for (it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it)
-      if ((*it)->equals(SYNFloodAttackerAlert::getClassType()))
-        attacker_alert = static_cast<SYNFloodAttackerAlert*>(*it), already_engaged = true;
-
-    if (!already_engaged)
-       attacker_alert = new SYNFloodAttackerAlert(this, h); 
-
-    if (attacker_alert) {
-      attacker_alert->setSeverity(alert_level_error);
-      attacker_alert->setCliScore(attacker_score);
-      attacker_alert->setHits(hits);
-      attacker_alert->setThreshold(syns_threshold);
-      if (!already_engaged) h->triggerAlert(attacker_alert);
-    }
-  }
-
-  if((hits = h->syn_flood_victim_hits()) >= syns_threshold) {
-    SYNFloodVictimAlert *victim_alert = NULL;
-
-    already_engaged = false;
-    for (it = engaged_alerts->begin(); it != engaged_alerts->end(); ++it)
-      if ((*it)->equals(SYNFloodVictimAlert::getClassType()))
-        victim_alert = static_cast<SYNFloodVictimAlert*>(*it), already_engaged = true;
-
-    if (!already_engaged)
-       victim_alert = new SYNFloodVictimAlert(this, h); 
-
-    if (victim_alert) {
-      victim_alert->setSeverity(alert_level_error);
-      victim_alert->setCliScore(victim_score);
-      victim_alert->setHits(hits);
-      victim_alert->setThreshold(syns_threshold);
-      if (!already_engaged) h->triggerAlert(victim_alert);
-    }
-  }
+  if((hits = h->syn_flood_victim_hits()) >= syns_threshold)
+    triggerSYNFloodAlert<SYNFloodVictimAlert>(h, engaged_alerts, hits, syns_threshold, 0, 20);
 
   /* Reset counters once done */
   h->reset_syn_flood_hits();  

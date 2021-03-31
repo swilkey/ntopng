@@ -28,6 +28,9 @@ class SYNFlood : public HostCallback {
 private:
   u_int64_t syns_threshold;
 
+  template<class T> void triggerSYNFloodAlert(Host *h, std::list<HostAlert*> *engaged_alerts,
+    u_int16_t hits, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score);
+
  public:
   SYNFlood();
   ~SYNFlood() {};
