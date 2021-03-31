@@ -36,7 +36,6 @@ class SMTPServerContactsAlert : public ServerContactsAlert {
   ~SMTPServerContactsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("host_alert_smtp_server_contacts"); }
 };
 
 #endif /* _SMTP_SERVER_CONTACTS_ALERT_H_ */

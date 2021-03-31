@@ -36,7 +36,6 @@ class ScoreAlert : public HostAlert {
   ~ScoreAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _SCORE_ALERT_H_ */

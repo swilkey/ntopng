@@ -37,7 +37,6 @@ class SYNScanVictimAlert : public SYNScanAlert {
   ~SYNScanVictimAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("host_alert_tcp_syn_scan_victim"); }
 };
 
 #endif /* _SYN_SCAN_VICTIM_ALERT_H_ */

@@ -62,7 +62,6 @@ class HostAlert {
   inline int8_t getSrvScoreInc() { int8_t tmp = score_inc_as_srv; score_inc_as_srv = 0; return tmp; }
 
   virtual HostAlertType getAlertType() const = 0;
-  virtual std::string   getName()      const = 0;
 
   /* Alert automatically released when the condition is no longer satisfied. */
   virtual bool hasAutoRelease()  { return true; }

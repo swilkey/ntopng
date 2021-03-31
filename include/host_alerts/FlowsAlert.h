@@ -36,7 +36,6 @@ class FlowsAlert : public HostAlert {
   ~FlowsAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _FLOWS_ALERT_H_ */

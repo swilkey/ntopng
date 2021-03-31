@@ -37,7 +37,6 @@ class FlowFloodVictimAlert : public FlowFloodAlert {
   ~FlowFloodVictimAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_flows_flood_victim"); }
 };
 
 #endif /* _FLOW_FLOOD_VICTIM_ALERT_H_ */

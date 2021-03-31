@@ -36,7 +36,6 @@ class DNSTrafficAlert : public HostAlert {
   ~DNSTrafficAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _DNS_TRAFFIC__ALERT_H_ */

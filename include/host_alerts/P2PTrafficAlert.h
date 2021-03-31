@@ -36,7 +36,6 @@ class P2PTrafficAlert : public HostAlert {
   ~P2PTrafficAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _P2P_TRAFFIC_ALERT_H_ */

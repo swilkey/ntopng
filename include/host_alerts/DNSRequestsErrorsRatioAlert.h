@@ -36,7 +36,6 @@ class DNSRequestsErrorsRatioAlert : public HostAlert {
   ~DNSRequestsErrorsRatioAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_dns_positive_error_ratio"); }
 };
 
 #endif /* _DNS_REQUESTS_ERRORS_RATIO_ALERT_H_ */

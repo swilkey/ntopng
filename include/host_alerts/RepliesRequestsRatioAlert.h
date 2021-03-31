@@ -36,7 +36,6 @@ class RepliesRequestsRatioAlert : public HostAlert {
   ~RepliesRequestsRatioAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_request_reply_ratio"); }
 };
 
 #endif /* _REPLIES_REQUESTS_RATIO_ALERT_H_ */

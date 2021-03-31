@@ -36,7 +36,6 @@ class TrafficAlert : public HostAlert {
   ~TrafficAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_threshold_cross"); }
 };
 
 #endif /* _TRAFFIC_ALERT_H_ */

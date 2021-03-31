@@ -36,7 +36,6 @@ class SYNFloodVictimAlert : public SYNFloodAlert {
   ~SYNFloodVictimAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
-  std::string getName() const { return std::string("alert_tcp_syn_flood_victim"); }
 };
 
 #endif /* _SYN_FLOOD_VICTIM_ALERT_H_ */
