@@ -48,6 +48,7 @@ class HostAlert {
 
  public:
   HostAlert(HostCallback *c, Host *h);
+  HostAlert(HostCallback *c, Host *h, AlertLevel severity, u_int8_t cli_score, u_int8_t srv_score);
   virtual ~HostAlert();
 
   inline void setSeverity(AlertLevel alert_severity) { severity_id = alert_severity; };

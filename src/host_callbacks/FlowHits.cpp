@@ -34,20 +34,17 @@ void FlowHits::triggerFlowHitsAlert(Host *h, HostAlert *engaged, bool attacker,
     u_int16_t hits, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score) {
   FlowHitsAlert *alert = static_cast<FlowHitsAlert*>(engaged);
 
-  /* New alert */
-  if (!alert)
-     alert = allocAlert(h, attacker); 
+  if (!alert) {
 
-  if (alert) {
-    /* Set alert info */
-    alert->setSeverity(alert_level_error);
-    alert->setCliScore(cli_score);
-    alert->setSrvScore(srv_score);
+     /* Trigger new alert */
+     alert = allocAlert(h, alert_level_error, cli_score, srv_score, hits, threshold, attacker); 
+     h->triggerAlert(alert);
+
+  } else {
+
+    /* Update engaged alert */
     alert->setHits(hits);
-    alert->setThreshold(threshold);
 
-    /* Trigger if new */
-    if (!engaged) h->triggerAlert(alert);
   }
 }
 

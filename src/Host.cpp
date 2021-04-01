@@ -1709,6 +1709,10 @@ bool Host::triggerAlert(HostAlert *alert) {
   HostAlertType alert_type = alert->getAlertType();
   bool res;
 
+  if (alert == NULL) {
+    return false;
+  }
+
   /* Check host filter */
   if(isHostAlertDisabled(alert_type)) {
 #ifdef DEBUG_SCORE
