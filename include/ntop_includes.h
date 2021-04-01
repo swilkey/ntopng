@@ -216,6 +216,9 @@ using namespace std;
 #include "TcpPacketStats.h"
 #include "DSCPStats.h"
 #include "ntop_typedefs.h"
+#include "ScoreStats.h"
+#include "ViewScoreStats.h"
+#include "Score.h"
 #include "FrequentStringItems.h"
 #include "Trace.h"
 #include "ProtoStats.h"
@@ -304,6 +307,7 @@ using namespace std;
 #ifdef HAVE_RADIUS
 #include <radcli/radcli.h>
 #endif
+
 #include "Condvar.h"
 #include "TimeseriesExporter.h"
 #include "InfluxDBTimeseriesExporter.h"
@@ -390,9 +394,6 @@ using namespace std;
 #include "BehaviouralCounter.h"
 #include "FlowTrafficStats.h"
 #include "HostStats.h"
-#include "ScoreStats.h"
-#include "ViewScoreStats.h"
-#include "Score.h"
 #include "Host.h"
 #include "LocalHostStats.h"
 #include "LocalHost.h"
