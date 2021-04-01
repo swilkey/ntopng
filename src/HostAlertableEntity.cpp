@@ -24,6 +24,7 @@
 /* ****************************************** */
 
 HostAlertableEntity::HostAlertableEntity(NetworkInterface *iface, AlertEntity entity) : AlertableEntity(iface, entity) {
+  memset(engaged_alerts, 0, sizeof(engaged_alerts));
 }
 
 /* ****************************************** */
