@@ -8355,10 +8355,7 @@ void NetworkInterface::getEngagedAlertsCount(lua_State *vm, int entity_type, con
 
 void NetworkInterface::releaseAllEngagedAlerts() {
   AlertCheckLuaEngine network_script(alert_entity_network, minute_script /* doesn't matter */, this, NULL);
-  AlertCheckLuaEngine host_script(alert_entity_host, minute_script /* doesn't matter */, this, NULL);
   u_int8_t num_local_networks = ntop->getNumLocalNetworks();
-  u_int32_t begin_slot = 0;
-  bool walk_all = true;
 
   /* Interface */
   if(getNumEngagedAlerts()) {
