@@ -17,15 +17,15 @@ local alert = require "alert"
 
 -- ##############################################
 
-local alert_flow_flood = classes.class(alert)
+local alert_flows_flood_victim = classes.class(alert)
 
 -- ##############################################
 
-alert_flow_flood.meta = {
-  alert_key = other_alert_keys.alert_flows_flood,
-  i18n_title = "alerts_dashboard.flow_flood",
+alert_flows_flood_victim.meta = {
+  alert_key = other_alert_keys.alert_flows_flood_victim,
+  i18n_title = "alerts_dashboard.flows_flood_victim",
   icon = "fas fa-life-ring",
-  has_attacker = true,
+  has_victim = true,
 }
 
 -- ##############################################
@@ -34,7 +34,7 @@ alert_flow_flood.meta = {
 -- @param one_param The first alert param
 -- @param another_param The second alert param
 -- @return A table with the alert built
-function alert_flow_flood:init(metric, value, operator, threshold)
+function alert_flows_flood_victim:init(metric, value, operator, threshold)
    -- Call the parent constructor
    self.super:init()
 
@@ -48,12 +48,14 @@ end
 -- @param alert The alert description table, including alert data such as the generating entity, timestamp, granularity, type
 -- @param alert_type_params Table `alert_type_params` as built in the `:init` method
 -- @return A human-readable string
-function alert_flow_flood.format(ifid, alert, alert_type_params)
+function alert_flows_flood_victim.format(ifid, alert, alert_type_params)
   local alert_consts = require("alert_consts")
   local entity = alert_consts.formatAlertEntity(ifid, alert_consts.alertEntityRaw(alert["alert_entity"]), alert["alert_entity_val"])
   local value = alert_type_params.value
 
-  return i18n("alert_messages.flow_flood", {
+  if(value == nil) then value = 0 end
+  
+  return i18n("alert_messages.flow_flood_victim", {
     entity = firstToUpper(entity),
     host_category = format_utils.formatAddressCategory((json.decode(alert.alert_json)).alert_generation.host_info),
     value = string.format("%u", math.ceil(value)),
@@ -63,4 +65,4 @@ end
 
 -- #######################################################
 
-return alert_flow_flood
+return alert_flows_flood_victim
