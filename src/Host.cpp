@@ -128,6 +128,9 @@ void Host::housekeep(time_t t) {
   case hash_entry_state_active:
     iface->execHostCallbacks(this);
     break;
+  case hash_entry_state_idle:
+    releaseAllEngagedAlerts();
+    break;
   default:
     break;
   }
@@ -1702,10 +1705,8 @@ void Host::releaseEngagedAlert(HostAlert *alert) {
 
 /* **************************************************** */
 
-void Host::releaseAllEngagedAlerts(Host *h) {
-
-  //TODO call this when removing an host from memory (is the destructor the right place?)
-
+/* Call this when setting host idle (before removing it from memory) */
+void Host::releaseAllEngagedAlerts() {
   for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
     HostCallbackType t = (HostCallbackType) i;
     std::list<HostAlert*> *cb_alerts = getEngagedAlerts(t);
@@ -1713,7 +1714,7 @@ void Host::releaseAllEngagedAlerts(Host *h) {
       HostAlert *alert = (*it);
       if (alert->hasAutoRelease()) {
         alert->release();
-        h->releaseEngagedAlert(alert);
+        releaseEngagedAlert(alert);
       }
     }
   }
