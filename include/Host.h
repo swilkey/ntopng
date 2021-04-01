@@ -158,9 +158,11 @@ class Host : public GenericHashEntry, public HostAlertableEntity, public Score {
   };
 
   virtual HostStats* allocateStats()                { return(new HostStats(this)); };
-  void updateStats(periodic_stats_update_user_data_t *periodic_stats_update_user_data);
-  void incLowGoodputFlows(time_t t, bool asClient);
-  void decLowGoodputFlows(time_t t, bool asClient);
+
+  /* Override Score members to perform incs/decs on the host and also on its members, e.g., AS. VLAN, Country. */
+  u_int16_t incScoreValue(u_int16_t score_incr, ScoreCategory score_category, bool as_client);
+  u_int16_t decScoreValue(u_int16_t score_decr, ScoreCategory score_category, bool as_client);
+
   inline u_int16_t get_host_pool()    const { return(host_pool_id);   };
   inline u_int16_t get_vlan_id()      const { return(vlan_id);        };
   char* get_name(char *buf, u_int buf_len, bool force_resolution_if_not_found);

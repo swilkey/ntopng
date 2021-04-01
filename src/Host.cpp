@@ -95,6 +95,37 @@ Host::~Host() {
 
 /* *************************************** */
 
+/* NOTE: overrides Score::incScoreValue to handle increments for host members as well */
+u_int16_t Host::incScoreValue(u_int16_t score_incr, ScoreCategory score_category, bool as_client) {
+  NetworkStats *ns = getNetworkStats(get_local_network_id());
+
+  if(as)      as->incScoreValue(score_incr, score_category, as_client);
+  if(vlan)    vlan->incScoreValue(score_incr, score_category, as_client);
+  if(country) country->incScoreValue(score_incr, score_category, as_client);
+  if(os)      os->incScoreValue(score_incr, score_category, as_client);
+  if(ns)      ns->incScoreValue(score_incr, score_category, as_client);
+
+  return Score::incScoreValue(score_incr, score_category, as_client);
+}
+
+/* *************************************** */
+
+/* NOTE: overrides Score::decScoreValue to handle increments for host members as well */
+u_int16_t Host::decScoreValue(u_int16_t score_decr, ScoreCategory score_category, bool as_client) {
+  NetworkStats *ns = getNetworkStats(get_local_network_id());
+
+  if(as)      as->decScoreValue(score_decr, score_category, as_client);
+  if(vlan)    vlan->decScoreValue(score_decr, score_category, as_client);
+  if(country) country->decScoreValue(score_decr, score_category, as_client);
+  if(os)      os->decScoreValue(score_decr, score_category, as_client);
+  if(ns)      ns->decScoreValue(score_decr, score_category, as_client);
+
+  return Score::decScoreValue(score_decr, score_category, as_client);
+}
+
+
+/* *************************************** */
+
 void Host::updateSynAlertsCounter(time_t when, bool syn_sent) {
   AlertCounter *counter = syn_sent ? syn_flood_attacker_alert : syn_flood_victim_alert;
 
