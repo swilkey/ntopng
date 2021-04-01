@@ -24,62 +24,17 @@
 
 /* ***************************************************** */
 
-SYNFlood::SYNFlood() : HostCallback(ntopng_edition_community) {
-  syns_threshold = (u_int64_t)-1;
-};
-
-/* ***************************************************** */
-
-void SYNFlood::triggerSYNFloodAlert(Host *h, HostAlert *engaged, bool attacker,
-    u_int16_t hits, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score) {
-  SYNFloodAlert *alert = static_cast<SYNFloodAlert*>(engaged);
-
-  /* New alert */
-  if (!alert)
-     alert = new SYNFloodAlert(this, h, attacker); 
-
-  if (alert) {
-    /* Set alert info */
-    alert->setSeverity(alert_level_error);
-    alert->setCliScore(cli_score);
-    alert->setSrvScore(srv_score);
-    alert->setHits(hits);
-    alert->setThreshold(threshold);
-
-    /* Trigger if new */
-    if (!engaged) h->triggerAlert(alert);
-  }
-}
-
-/* ***************************************************** */
-
 void SYNFlood::periodicUpdate(Host *h, HostAlert *engaged_alert) {
   u_int16_t hits = 0;
 
-  if((hits = h->syn_flood_attacker_hits()) >= syns_threshold)
-    triggerSYNFloodAlert(h, engaged_alert, true, hits, syns_threshold, 100, 0);
+  if((hits = h->syn_flood_attacker_hits()) >= threshold)
+    triggerFlowHitsAlert(h, engaged_alert, true, hits, threshold, 100, 0);
 
-  if((hits = h->syn_flood_victim_hits()) >= syns_threshold)
-    triggerSYNFloodAlert(h, engaged_alert, false, hits, syns_threshold, 0, 20);
+  if((hits = h->syn_flood_victim_hits()) >= threshold)
+    triggerFlowHitsAlert(h, engaged_alert, false, hits, threshold, 0, 20);
 
   /* Reset counters once done */
   h->reset_syn_flood_hits();  
 }
 
 /* ***************************************************** */
-
-bool SYNFlood::loadConfiguration(json_object *config) {
-  json_object *json_threshold;
-
-  HostCallback::loadConfiguration(config); /* Parse parameters in common */
-
-  if(json_object_object_get_ex(config, "threshold", &json_threshold))
-    syns_threshold = json_object_get_int64(json_threshold);
-
-  // ntop->getTrace()->traceEvent(TRACE_NORMAL, "%s", json_object_to_json_string(config));
-
-  return(true);
-}
-
-/* ***************************************************** */
-

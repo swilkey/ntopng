@@ -19,27 +19,25 @@
  *
  */
 
-#include "host_alerts_includes.h"
+#ifndef _FLOW_HITS_ALERT_H_
+#define _FLOW_HITS_ALERT_H_
 
-/* ***************************************************** */
+#include "ntop_includes.h"
 
-SYNFloodAlert::SYNFloodAlert(HostCallback *c, Host *f, bool _is_attacker) : HostAlert(c, f) {
-  syns = 0;
-  syns_threshold = 0;
-  is_attacker = _is_attacker; 
+class FlowHitsAlert : public HostAlert {
+ private:
+  u_int64_t hits, hits_threshold;
+  bool is_attacker; /* attacker or victim */
+
+  ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
+  
+ public:
+  FlowHitsAlert(HostCallback *c, Host *f, bool is_attacker);
+  ~FlowHitsAlert() {};
+
+  void toggleAttacker(bool _is_attacker) { is_attacker = _is_attacker; }
+  void setHits(u_int64_t _hits) { hits = _hits;}
+  void setThreshold(u_int64_t _hits_threshold) { hits_threshold = _hits_threshold; }
 };
 
-/* ***************************************************** */
-
-ndpi_serializer* SYNFloodAlert::getAlertJSON(ndpi_serializer* serializer) {
-  if(serializer == NULL)
-    return NULL;
-
-  ndpi_serialize_string_boolean(serializer, "is_attacker", is_attacker);
-  ndpi_serialize_string_uint64(serializer, "value", syns);
-  ndpi_serialize_string_uint64(serializer, "threshold", syns_threshold);
-  
-  return serializer;
-}
-
-/* ***************************************************** */
+#endif /* _FLOW_HITS_ALERT_H_ */

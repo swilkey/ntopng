@@ -25,6 +25,7 @@
 #include "host_alerts_includes.h"
 #include "host_callbacks_includes.h"
 
+#include "host_callbacks/FlowHits.h"
 #include "host_callbacks/FlowFlood.h"
 #include "host_callbacks/SYNScan.h"
 #include "host_callbacks/SYNFlood.h"

@@ -24,20 +24,16 @@
 
 #include "ntop_includes.h"
 
-class FlowFlood : public HostCallback {
+class FlowFlood : public FlowHits {
 private:
-  u_int64_t flows_threshold;
-  
-  void triggerFlowFloodAlert(Host *h, HostAlert *engaged_alert, bool attacker,
-    u_int16_t flows, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score);
 
 public:
-  FlowFlood();
+  FlowFlood() : FlowHits() {};
   ~FlowFlood() {};
 
-  void periodicUpdate(Host *h, HostAlert *engaged_alert);
+  FlowHitsAlert *allocAlert(Host *h, bool attacker) { return new FlowFloodAlert(this, h, attacker); };
 
-  bool loadConfiguration(json_object *config);  
+  void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
   HostCallbackType getType() const { return host_callback_flow_flood; }
   std::string getName()      const { return(std::string("flow_flood")); }

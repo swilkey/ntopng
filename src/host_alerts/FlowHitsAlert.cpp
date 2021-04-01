@@ -23,21 +23,21 @@
 
 /* ***************************************************** */
 
-FlowFloodAlert::FlowFloodAlert(HostCallback *c, Host *f, bool _is_attacker) : HostAlert(c, f) {
-  flows = 0;
-  flows_threshold = 0;
-  is_attacker = _is_attacker;
+FlowHitsAlert::FlowHitsAlert(HostCallback *c, Host *f, bool _is_attacker) : HostAlert(c, f) {
+  hits = 0;
+  hits_threshold = 0;
+  is_attacker = _is_attacker; 
 };
 
 /* ***************************************************** */
 
-ndpi_serializer* FlowFloodAlert::getAlertJSON(ndpi_serializer* serializer) {
+ndpi_serializer* FlowHitsAlert::getAlertJSON(ndpi_serializer* serializer) {
   if(serializer == NULL)
     return NULL;
 
   ndpi_serialize_string_boolean(serializer, "is_attacker", is_attacker);
-  ndpi_serialize_string_uint64(serializer, "value", flows);
-  ndpi_serialize_string_uint64(serializer, "threshold", flows_threshold);
+  ndpi_serialize_string_uint64(serializer, "value", hits);
+  ndpi_serialize_string_uint64(serializer, "threshold", hits_threshold);
   
   return serializer;
 }

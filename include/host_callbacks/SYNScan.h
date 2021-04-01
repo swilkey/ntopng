@@ -24,20 +24,16 @@
 
 #include "ntop_includes.h"
 
-class SYNScan : public HostCallback {
+class SYNScan : public FlowHits {
 private:
-  u_int64_t syns_threshold;
-  
-  void triggerSYNScanAlert(Host *h, HostAlert *engaged_alert, bool attacker,
-    u_int16_t hits, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score);
 
 public:
-  SYNScan();
+  SYNScan() : FlowHits() {};
   ~SYNScan() {};
 
-  void periodicUpdate(Host *h, HostAlert *engaged_alert);
+  FlowHitsAlert *allocAlert(Host *h, bool attacker) { return new SYNScanAlert(this, h, attacker); };
 
-  bool loadConfiguration(json_object *config);  
+  void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
   HostCallbackType getType() const { return host_callback_syn_scan; }
   std::string getName()        const { return(std::string("syn_scan")); }

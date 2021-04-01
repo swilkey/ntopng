@@ -24,20 +24,16 @@
 
 #include "ntop_includes.h"
 
-class SYNFlood : public HostCallback {
-private:
-  u_int64_t syns_threshold;
-
-  void triggerSYNFloodAlert(Host *h, HostAlert *engaged_alert, bool attacker,
-    u_int16_t hits, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score);
+class SYNFlood : public FlowHits {
+ private:
 
  public:
-  SYNFlood();
+  SYNFlood() : FlowHits() {};
   ~SYNFlood() {};
 
-  void periodicUpdate(Host *h, HostAlert *engaged_alert);
+  FlowHitsAlert *allocAlert(Host *h, bool attacker) { return new SYNFloodAlert(this, h, attacker); };
 
-  bool loadConfiguration(json_object *config);  
+  void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
   HostCallbackType getType() const { return host_callback_syn_flood; }
   std::string getName()        const { return(std::string("syn_flood")); }
