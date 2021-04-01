@@ -22,7 +22,7 @@ local alert_flow_flood = classes.class(alert)
 -- ##############################################
 
 alert_flow_flood.meta = {
-  alert_key = other_alert_keys.alert_flow_flood,
+  alert_key = other_alert_keys.alert_flows_flood,
   i18n_title = "alerts_dashboard.flow_flood",
   icon = "fas fa-life-ring",
   has_attacker = true,
