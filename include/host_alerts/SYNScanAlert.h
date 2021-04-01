@@ -22,20 +22,24 @@
 #ifndef _SYN_SCAN_ALERT_H_
 #define _SYN_SCAN_ALERT_H_
 
-
 #include "ntop_includes.h"
-
 
 class SYNScanAlert : public HostAlert {
  private:
   u_int64_t syns, syns_threshold;
+  bool is_attacker; /* attacker or victim */
 
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
-  SYNScanAlert(HostCallback *c, Host *f);
+  static HostAlertType getClassType() { return { host_alert_syn_scan, alert_category_security }; }
+
+  SYNScanAlert(HostCallback *c, Host *f, bool is_attacker);
   ~SYNScanAlert() {};
 
+  HostAlertType getAlertType() const { return getClassType(); }
+
+  void toggleAttacker(bool _is_attacker) { is_attacker = _is_attacker; }
   void setHits(u_int64_t _syns) { syns = _syns;}
   void setThreshold(u_int64_t _syns_threshold) { syns_threshold = _syns_threshold; }
 };

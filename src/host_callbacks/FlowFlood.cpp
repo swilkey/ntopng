@@ -30,20 +30,13 @@ FlowFlood::FlowFlood() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
-template<class T> void FlowFlood::triggerFlowFloodAlert(Host *h, std::list<HostAlert*> *engaged,
+void FlowFlood::triggerFlowFloodAlert(Host *h, HostAlert *engaged, bool attacker,
     u_int16_t flows, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score) {
-  std::list<HostAlert*>::iterator it;
-  bool already_engaged = false;
-  T *alert = NULL;
-
-  /* Check alerts already engaged */
-  for (it = engaged->begin(); it != engaged->end(); ++it)
-    if ((*it)->equals(T::getClassType()))
-      alert = static_cast<T*>(*it), already_engaged = true;
+  FlowFloodAlert *alert = static_cast<FlowFloodAlert*>(engaged);
 
   /* New alert */
-  if (!already_engaged)
-     alert = new T(this, h); 
+  if (!alert)
+     alert = new FlowFloodAlert(this, h, attacker); 
 
   if (alert) {
     /* Set alert info */
@@ -54,20 +47,20 @@ template<class T> void FlowFlood::triggerFlowFloodAlert(Host *h, std::list<HostA
     alert->setThreshold(threshold);
 
     /* Trigger if new */
-    if (!already_engaged) h->triggerAlert(alert);
+    if (!engaged) h->triggerAlert(alert);
   }
 }
 
 /* ***************************************************** */
 
-void FlowFlood::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+void FlowFlood::periodicUpdate(Host *h, HostAlert *engaged_alert) {
   u_int16_t flows = 0;
 
   if((flows = h->flow_flood_attacker_hits()) >= flows_threshold)
-    triggerFlowFloodAlert<FlowFloodAttackerAlert>(h, engaged_alerts, flows, flows_threshold, 100, 0);
+    triggerFlowFloodAlert(h, engaged_alert, true, flows, flows_threshold, 100, 0);
 
   if((flows = h->flow_flood_victim_hits()) >= flows_threshold)
-    triggerFlowFloodAlert<FlowFloodVictimAlert>(h, engaged_alerts, flows, flows_threshold, 0, 20);
+    triggerFlowFloodAlert(h, engaged_alert, false, flows, flows_threshold, 0, 20);
 
   /* Reset counters once done */
   h->reset_flow_flood_hits();

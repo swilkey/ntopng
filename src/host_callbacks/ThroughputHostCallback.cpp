@@ -30,7 +30,7 @@ ThroughputHostCallback::ThroughputHostCallback() : HostCallback(ntopng_edition_c
 
 /* ***************************************************** */
 
-void ThroughputHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+void ThroughputHostCallback::periodicUpdate(Host *h, HostAlert *engaged_alert) {
   DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
   u_int64_t delta;
   time_t prev_call, cur_call, delta_call;

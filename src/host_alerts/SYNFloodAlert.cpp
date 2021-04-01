@@ -23,9 +23,10 @@
 
 /* ***************************************************** */
 
-SYNFloodAlert::SYNFloodAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+SYNFloodAlert::SYNFloodAlert(HostCallback *c, Host *f, bool _is_attacker) : HostAlert(c, f) {
   syns = 0;
   syns_threshold = 0;
+  is_attacker = _is_attacker; 
 };
 
 /* ***************************************************** */
@@ -34,6 +35,7 @@ ndpi_serializer* SYNFloodAlert::getAlertJSON(ndpi_serializer* serializer) {
   if(serializer == NULL)
     return NULL;
 
+  ndpi_serialize_string_boolean(serializer, "is_attacker", is_attacker);
   ndpi_serialize_string_uint64(serializer, "value", syns);
   ndpi_serialize_string_uint64(serializer, "threshold", syns_threshold);
   

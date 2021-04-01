@@ -66,14 +66,10 @@ void HostCallbacksExecutor::releaseAllDisabledAlerts(Host *h) {
     HostCallback *cb = getCallback(t);
 
     if (!cb) { /* callback disabled, check engaged alerts with auto release */
-      std::list<HostAlert*> *cb_alerts = h->getEngagedAlerts(t);
-
-      for(std::list<HostAlert*>::iterator it = cb_alerts->begin(); it != cb_alerts->end(); ++it) {
-        HostAlert *alert = (*it);
-        if (alert->hasAutoRelease()) {
-          alert->release();
-          h->releaseEngagedAlert(alert);
-        }
+      HostAlert *alert = h->getEngagedAlert(t);
+      if (alert && alert->hasAutoRelease()) {
+        alert->release();
+        h->releaseEngagedAlert(alert);
       }
     }
   }
@@ -92,29 +88,28 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
     HostCallback *cb = (*it);
     HostCallbackStatus *cbs = cb->getStatus(h, true /* create */);
     HostCallbackType ct = cb->getType();
-    std::list<HostAlert*> *cb_alerts = h->getEngagedAlerts(ct);
 
     /* Check if it's time to run the callback on this host */
     if (isTimeToRunCallback(cb, cbs, now)) {
-      std::list<HostAlert*>::iterator it;
+      HostAlert *alert;
 
-      /* Initializing (auto-release) alerts to expiring, to check if
-       * they need to be released when not engaged again */
-      for (it = cb_alerts->begin(); it != cb_alerts->end(); ++it)
-        if ((*it)->hasAutoRelease()) (*it)->setExpiring();
+      /* Initializing (auto-release) alert to expiring, to check if
+       * it needs to be released when not engaged again */
+      alert = h->getEngagedAlert(ct);
+      if (alert && alert->hasAutoRelease())
+        alert->setExpiring();
 
       /* Call Handler */
-      cb->periodicUpdate(h, cb_alerts);
+      cb->periodicUpdate(h, alert);
 
-      /* Check alerts to be released */
-      it = cb_alerts->begin();
-      while (it != cb_alerts->end()) {
-        HostAlert *alert = (*it);
-        ++it; /* inc the iterator before removing */
+      /* Check if alert should be released */
+      alert = h->getEngagedAlert(ct);
+      if (alert) {
         if (alert->isExpired() && !alert->isReleased()) alert->release();
         if (alert->isReleased()) h->releaseEngagedAlert(alert);
       }
 
+      /* Update last call time */
       if (cbs)
         cbs->setLastCallTime(now);
     }

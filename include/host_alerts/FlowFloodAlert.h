@@ -29,13 +29,19 @@
 class FlowFloodAlert : public HostAlert {
  private:
   u_int64_t flows, flows_threshold;
+  bool is_attacker;
 
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
-  FlowFloodAlert(HostCallback *c, Host *f);
+  static HostAlertType getClassType() { return { host_alert_flow_flood, alert_category_security }; }
+
+  FlowFloodAlert(HostCallback *c, Host *f, bool is_attacker);
   ~FlowFloodAlert() {};
 
+  HostAlertType getAlertType() const { return getClassType(); }
+
+  void toggleAttacker(bool _is_attacker) { is_attacker = _is_attacker; }
   void setFlows(u_int64_t _flows) { flows = _flows;}
   void setThreshold(u_int64_t _flows_threshold) { flows_threshold = _flows_threshold; }
 };

@@ -30,7 +30,7 @@ FlowsHostCallback::FlowsHostCallback() : HostCallback(ntopng_edition_community) 
 
 /* ***************************************************** */
 
-void FlowsHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+void FlowsHostCallback::periodicUpdate(Host *h, HostAlert *engaged_alert) {
   DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
   u_int64_t delta;
 

@@ -41,8 +41,10 @@ class HostCallback {
   virtual void scriptEnable()            {};
   virtual void scriptDisable()           {};
   
-  /* Callback hooks */
-  virtual void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {};
+  /* Callback hook (periodic)
+   * engaged_alert is the alert already engaged by the callback
+   * in a previous iteration, if any. */
+  virtual void periodicUpdate(Host *h, HostAlert *engaged_alert) {};
 
   virtual u_int32_t getPeriod() { return periodicity_secs; }
 

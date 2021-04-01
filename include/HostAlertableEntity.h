@@ -31,22 +31,23 @@ class HostAlertableEntity : public AlertableEntity {
  private:
   Bitmap engaged_alerts_map; /* Alerts Bitmap */
   
-  std::list<HostAlert*> engaged_alerts[NUM_DEFINED_HOST_CALLBACKS]; /* List of engaged alerts for each callback */
+  HostAlert *engaged_alerts[NUM_DEFINED_HOST_CALLBACKS]; /* List of engaged alerts for each callback */
 
   RwLock engaged_alerts_lock; /* Lock to handle concurrent access from the GUI */
 
+  void clearEngagedAlerts();
   void luaAlert(lua_State* vm, HostAlert *alert);
 
  public:
   HostAlertableEntity(NetworkInterface *alert_iface, AlertEntity entity);
   virtual ~HostAlertableEntity();
 
-  void addEngagedAlert(HostAlert *a);
-  void removeEngagedAlert(HostAlert *a);
+  bool addEngagedAlert(HostAlert *a);
+  bool removeEngagedAlert(HostAlert *a);
   bool isEngagedAlert(HostAlertType alert_type) { return engaged_alerts_map.isSetBit(alert_type.id); }
+  bool hasEngagedAlert(HostCallbackType callback_type);
   HostAlert *findEngagedAlert(HostAlertType alert_type, HostCallbackType callback_type);
-  std::list<HostAlert*> *getEngagedAlerts(HostCallbackType t) { return &engaged_alerts[t]; }
-  void clearEngagedAlerts();
+  HostAlert *getEngagedAlert(HostCallbackType t) { return engaged_alerts[t]; }
 
   void countAlerts(grouped_alerts_counters *counters);
   void getAlerts(lua_State* vm, ScriptPeriodicity p,

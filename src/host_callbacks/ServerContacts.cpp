@@ -29,21 +29,14 @@ ServerContacts::ServerContacts() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
-void ServerContacts::periodicUpdate(Host *h, std::list<HostAlert*> *engaged) {
+void ServerContacts::periodicUpdate(Host *h, HostAlert *engaged_alert) {
   ServerContactsHostCallbackStatus *status = static_cast<ServerContactsHostCallbackStatus*>(getStatus(h));
-  std::list<HostAlert*>::iterator it;
-  bool already_engaged = false;
-  HostAlert *alert = NULL;
+  HostAlert *alert = engaged_alert;
   u_int32_t contacted_servers = 0;
 
   if((contacted_servers = getContactedServers(h)) >= contacts_threshold) {
-    /* Check alerts already engaged */
-    for (it = engaged->begin(); it != engaged->end(); ++it)
-      if ((*it)->equals(getAlertType()))
-        alert = (*it), already_engaged = true;
-
     /* New alert */
-    if (!already_engaged)
+    if (!alert)
        alert = allocAlert(this, h, status ? status->getContacts() : 0, contacts_threshold);
 
     if (alert) {
@@ -52,7 +45,7 @@ void ServerContacts::periodicUpdate(Host *h, std::list<HostAlert*> *engaged) {
       alert->setCliScore(50);
 
       /* Trigger if new */
-      if (!already_engaged) h->triggerAlert(alert);
+      if (!engaged_alert) h->triggerAlert(alert);
     }
   }
 

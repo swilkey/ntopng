@@ -28,14 +28,14 @@ class FlowFlood : public HostCallback {
 private:
   u_int64_t flows_threshold;
   
-  template<class T> void triggerFlowFloodAlert(Host *h, std::list<HostAlert*> *engaged_alerts,
+  void triggerFlowFloodAlert(Host *h, HostAlert *engaged_alert, bool attacker,
     u_int16_t flows, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score);
 
 public:
   FlowFlood();
   ~FlowFlood() {};
 
-  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
+  void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
   bool loadConfiguration(json_object *config);  
 

@@ -32,7 +32,7 @@ private:
   FlowsHostCallback();
   ~FlowsHostCallback() {};
 
-  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
+  void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
   HostCallbackStatus *allocStatus() { return new DeltaHostCallbackStatus(this); };
 

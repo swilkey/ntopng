@@ -34,49 +34,68 @@ HostAlertableEntity::~HostAlertableEntity() {
 
 /* *************************************** */
 
-void HostAlertableEntity::addEngagedAlert(HostAlert *a) {
+void HostAlertableEntity::clearEngagedAlerts() {
+  for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
+    HostAlert *alert = engaged_alerts[i];
+    if (alert) {
+      removeEngagedAlert(alert);
+      delete alert;
+    }
+  }
+}
+
+/* *************************************** */
+
+bool HostAlertableEntity::addEngagedAlert(HostAlert *a) {
+  bool success = false;
+
   engaged_alerts_lock.wrlock(__FILE__, __LINE__);
 
-  engaged_alerts[a->getCallbackType()].push_back(a); 
-  engaged_alerts_map.setBit(a->getAlertType().id);
+  if (!engaged_alerts[a->getCallbackType()]) {
+    engaged_alerts[a->getCallbackType()] = a; 
+    engaged_alerts_map.setBit(a->getAlertType().id);
+    success = true;
+  }
 
   engaged_alerts_lock.unlock(__FILE__, __LINE__);
+
+  return success;
 } 
 
 /* *************************************** */
 
-void HostAlertableEntity::removeEngagedAlert(HostAlert *a) { 
+bool HostAlertableEntity::removeEngagedAlert(HostAlert *a) {
+  bool success = false;
+ 
   engaged_alerts_lock.wrlock(__FILE__, __LINE__);
 
-  engaged_alerts[a->getCallbackType()].remove(a);
-  engaged_alerts_map.clearBit(a->getAlertType().id);
+  if (engaged_alerts[a->getCallbackType()] == a) {
+    engaged_alerts[a->getCallbackType()] = NULL;
+    engaged_alerts_map.clearBit(a->getAlertType().id);
+    success = true;
+  }
 
   engaged_alerts_lock.unlock(__FILE__, __LINE__);
+
+  return success;
+}
+
+/* *************************************** */
+
+bool HostAlertableEntity::hasEngagedAlert(HostCallbackType callback_type) {
+  return (engaged_alerts[callback_type] ? true : false);
 }
 
 /* *************************************** */
 
 HostAlert *HostAlertableEntity::findEngagedAlert(HostAlertType alert_type, HostCallbackType callback_type) {
-  if (isEngagedAlert(alert_type))
-    for(std::list<HostAlert*>::iterator it = engaged_alerts[callback_type].begin(); it != engaged_alerts[callback_type].end(); ++it)
-      if ((*it)->getAlertType().id == alert_type.id)
-        return (*it);
+
+  if (isEngagedAlert(alert_type)
+      && engaged_alerts[callback_type]
+      && engaged_alerts[callback_type]->getAlertType().id == alert_type.id)
+    return engaged_alerts[callback_type];
 
   return NULL;
-}
-
-/* *************************************** */
-
-void HostAlertableEntity::clearEngagedAlerts() {
-  for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
-    std::list<HostAlert*>::iterator it = engaged_alerts[i].begin();
-    while (it != engaged_alerts[i].end()) {
-      HostAlert *a = (*it);
-      ++it; /* inc the iterator before removing */
-      removeEngagedAlert(a);
-      delete a;
-    }
-  }
 }
 
 /* ****************************************** */
@@ -85,8 +104,8 @@ void HostAlertableEntity::countAlerts(grouped_alerts_counters *counters) {
   engaged_alerts_lock.rdlock(__FILE__, __LINE__);
 
   for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
-    for(std::list<HostAlert*>::iterator it = engaged_alerts[i].begin(); it != engaged_alerts[i].end(); ++it) {
-      HostAlert *alert = (*it);
+    HostAlert *alert = engaged_alerts[i];
+    if (alert) {
       counters->severities[alert->getSeverity()]++;
       counters->types[alert->getAlertType().id]++;
     }
@@ -134,9 +153,8 @@ void HostAlertableEntity::getAlerts(lua_State* vm, ScriptPeriodicity p /* not us
   engaged_alerts_lock.rdlock(__FILE__, __LINE__);
 
   for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
-    for(std::list<HostAlert*>::iterator it = engaged_alerts[i].begin(); it != engaged_alerts[i].end(); ++it) {
-      HostAlert *alert = (*it);
-
+    HostAlert *alert = engaged_alerts[i];
+    if (alert) {
       if ((type_filter == alert_none || type_filter == alert->getAlertType().id) &&
           (severity_filter == alert_level_none || severity_filter == alert->getSeverity())) {
         lua_newtable(vm);

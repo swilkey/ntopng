@@ -32,7 +32,7 @@ private:
   ThroughputHostCallback();
   ~ThroughputHostCallback() {};
 
-  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
+  void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
   bool loadConfiguration(json_object *config);  
 

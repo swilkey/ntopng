@@ -30,7 +30,7 @@ P2PTraffic::P2PTraffic() : HostCallback(ntopng_edition_community) {
 
 /* ***************************************************** */
 
-void P2PTraffic::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+void P2PTraffic::periodicUpdate(Host *h, HostAlert *engaged_alert) {
   DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
   u_int64_t delta;
 

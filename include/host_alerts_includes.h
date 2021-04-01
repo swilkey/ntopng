@@ -23,25 +23,14 @@
 #define _HOST_ALERTS_INCLUDES_H_
 
 #include "host_alerts/FlowFloodAlert.h"
-#include "host_alerts/FlowFloodAttackerAlert.h"
-#include "host_alerts/FlowFloodVictimAlert.h"
-
 #include "host_alerts/SYNScanAlert.h"
-#include "host_alerts/SYNScanAttackerAlert.h"
-#include "host_alerts/SYNScanVictimAlert.h"
-
 #include "host_alerts/SYNFloodAlert.h"
-#include "host_alerts/SYNFloodAttackerAlert.h"
-#include "host_alerts/SYNFloodVictimAlert.h"
-
 #include "host_alerts/RepliesRequestsRatioAlert.h"
 #include "host_alerts/DNSRequestsErrorsRatioAlert.h"
-
 #include "host_alerts/ServerContactsAlert.h"
 #include "host_alerts/DNSServerContactsAlert.h"
 #include "host_alerts/SMTPServerContactsAlert.h"
 #include "host_alerts/NTPServerContactsAlert.h"
-
 #include "host_alerts/P2PTrafficAlert.h"
 #include "host_alerts/DNSTrafficAlert.h"
 #include "host_alerts/TrafficAlert.h"

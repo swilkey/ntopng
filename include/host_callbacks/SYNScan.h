@@ -28,14 +28,14 @@ class SYNScan : public HostCallback {
 private:
   u_int64_t syns_threshold;
   
-  template<class T> void triggerSYNScanAlert(Host *h, std::list<HostAlert*> *engaged_alerts,
+  void triggerSYNScanAlert(Host *h, HostAlert *engaged_alert, bool attacker,
     u_int16_t hits, u_int64_t threshold, u_int8_t cli_score, u_int8_t srv_score);
 
 public:
   SYNScan();
   ~SYNScan() {};
 
-  void periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts);
+  void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
   bool loadConfiguration(json_object *config);  
 

@@ -30,7 +30,7 @@ TrafficHostCallback::TrafficHostCallback() : HostCallback(ntopng_edition_communi
 
 /* ***************************************************** */
 
-void TrafficHostCallback::periodicUpdate(Host *h, std::list<HostAlert*> *engaged_alerts) {
+void TrafficHostCallback::periodicUpdate(Host *h, HostAlert *engaged_alert) {
   DeltaHostCallbackStatus *status = static_cast<DeltaHostCallbackStatus*>(getStatus(h));
   u_int64_t delta;
 

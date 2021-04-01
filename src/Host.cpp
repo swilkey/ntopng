@@ -1664,13 +1664,10 @@ void Host::releaseEngagedAlert(HostAlert *alert) {
 void Host::releaseAllEngagedAlerts() {
   for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
     HostCallbackType t = (HostCallbackType) i;
-    std::list<HostAlert*> *cb_alerts = getEngagedAlerts(t);
-    for(std::list<HostAlert*>::iterator it = cb_alerts->begin(); it != cb_alerts->end(); ++it) {
-      HostAlert *alert = (*it);
-      if (alert->hasAutoRelease()) {
-        alert->release();
-        releaseEngagedAlert(alert);
-      }
+    HostAlert *alert = getEngagedAlert(t);
+    if (alert && alert->hasAutoRelease()) {
+      alert->release();
+      releaseEngagedAlert(alert);
     }
   }
 }
@@ -1710,14 +1707,21 @@ bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_in
  */
 bool Host::triggerAlert(HostAlert *alert) {
   HostAlertType alert_type = alert->getAlertType();
-  bool res = false;
+  bool res;
 
   /* Check host filter */
   if(isHostAlertDisabled(alert_type)) {
 #ifdef DEBUG_SCORE
     ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (host filter)");
 #endif
-    return res;
+    delete alert;
+    return false;
+  }
+
+  /* Safety check (one alert is allowed per callback) */
+  if (hasEngagedAlert(alert->getCallbackType())) {
+    delete alert;
+    return false;
   }
 
   res = setAlertsBitmap(alert_type, alert->getCliScoreInc(), alert->getSrvScoreInc());
