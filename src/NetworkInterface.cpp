@@ -2534,12 +2534,6 @@ u_int64_t NetworkInterface::dequeueFlowAlertsFromCallbacks(u_int budget) {
   }
 #endif
 
-  /* Purging of idle flows is done here as it involves decreasing certain hosts counters (such as host scores)
-     that are increased by flow user script hooks. Hence, by executing the purging here in this thread, we ensure
-     consistency of counters.
-  */
-  num_done += purgeQueuedIdleFlows();
-
 #if DEBUG_FLOW_CALLBACKS
   if(num_done > 0)
     ntop->getTrace()->traceEvent(TRACE_NORMAL, "Dequeued flows total [%u]", num_done);
@@ -3152,10 +3146,10 @@ u_int64_t NetworkInterface::purgeQueuedIdleEntries() {
 #if 0
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "Updating hash tables [%s]", get_name());
 #endif
-  GenericHash *ghs[] = { /* Flows are done separately by NetworkInterface::purgeQueuedIdleFlows() */
-			hosts_hash,
+  GenericHash *ghs[] = {hosts_hash,
+			flows_hash,
 			ases_hash,
-      oses_hash,
+			oses_hash,
 			countries_hash,
 			vlans_hash,
 			macs_hash
@@ -3168,22 +3162,6 @@ u_int64_t NetworkInterface::purgeQueuedIdleEntries() {
   }
 
   return num_purged;
-}
-
-/* **************************************************** */
-
-/*
-  Frees the memory (~Flow) used by idle flow hash table entries.
-*/
-u_int64_t NetworkInterface::purgeQueuedIdleFlows() {
-#if 0
-  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Updating flow tables [%s]", get_name());
-#endif
-
-  if(!isView() && flows_hash)
-    return flows_hash->purgeQueuedIdleEntries();
-
-  return 0;
 }
 
 /* **************************************************** */
