@@ -28,6 +28,8 @@
 
 class FlowsAlert : public HostAlert {
  private:
+  u_int64_t flows, flows_threshold;
+
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:

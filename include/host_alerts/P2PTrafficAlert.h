@@ -28,6 +28,8 @@
 
 class P2PTrafficAlert : public HostAlert {
  private:
+  u_int64_t p2p_bytes, p2p_bytes_threshold;
+
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:

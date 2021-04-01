@@ -34,7 +34,7 @@ ndpi_serializer* RepliesRequestsRatioAlert::getAlertJSON(ndpi_serializer* serial
     return NULL;
 
   /* Sync fields with host_alert_dns_requests_errors_ratio.lua */
-  //ndpi_serialize_string_string(serializer, "ratio", ratio);
+  ndpi_serialize_string_uint32(serializer, "ratio", ratio);
   ndpi_serialize_string_uint64(serializer, "requests", requests);
   ndpi_serialize_string_uint64(serializer, "replies", replies);
   

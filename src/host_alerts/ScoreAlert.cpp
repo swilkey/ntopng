@@ -24,6 +24,7 @@
 /* ***************************************************** */
 
 ScoreAlert::ScoreAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+  score = score_threshold = 0;
 };
 
 /* ***************************************************** */
@@ -32,8 +33,8 @@ ndpi_serializer* ScoreAlert::getAlertJSON(ndpi_serializer* serializer) {
   if(serializer == NULL)
     return NULL;
 
-  ndpi_serialize_string_uint64(serializer, "value", 0 /* TODO */);
-  ndpi_serialize_string_uint64(serializer, "threshold", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "value", score);
+  ndpi_serialize_string_uint64(serializer, "threshold", score_threshold);
   
   return serializer;
 }

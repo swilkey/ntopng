@@ -24,6 +24,7 @@
 /* ***************************************************** */
 
 P2PTrafficAlert::P2PTrafficAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+  p2p_bytes = p2p_bytes_threshold = 0;
 };
 
 /* ***************************************************** */
@@ -32,8 +33,8 @@ ndpi_serializer* P2PTrafficAlert::getAlertJSON(ndpi_serializer* serializer) {
   if(serializer == NULL)
     return NULL;
 
-  ndpi_serialize_string_uint64(serializer, "value", 0 /* TODO */);
-  ndpi_serialize_string_uint64(serializer, "threshold", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "value", p2p_bytes);
+  ndpi_serialize_string_uint64(serializer, "threshold", p2p_bytes_threshold);
   
   return serializer;
 }

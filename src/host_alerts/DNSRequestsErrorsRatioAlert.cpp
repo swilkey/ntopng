@@ -24,6 +24,8 @@
 /* ***************************************************** */
 
 DNSRequestsErrorsRatioAlert::DNSRequestsErrorsRatioAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+  sent = false;
+  positives = errors = 0;
 };
 
 /* ***************************************************** */

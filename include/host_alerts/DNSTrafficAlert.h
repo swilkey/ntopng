@@ -28,6 +28,8 @@
 
 class DNSTrafficAlert : public HostAlert {
  private:
+  u_int64_t dns_bytes, dns_bytes_threshold;
+
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:

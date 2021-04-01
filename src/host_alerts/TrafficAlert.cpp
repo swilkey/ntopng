@@ -24,6 +24,7 @@
 /* ***************************************************** */
 
 TrafficAlert::TrafficAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+  bytes = bytes_threshold = 0;
 };
 
 /* ***************************************************** */
@@ -32,8 +33,8 @@ ndpi_serializer* TrafficAlert::getAlertJSON(ndpi_serializer* serializer) {
   if(serializer == NULL)
     return NULL;
 
-  ndpi_serialize_string_uint64(serializer, "value", 0 /* TODO */);
-  ndpi_serialize_string_uint64(serializer, "threshold", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "value", bytes);
+  ndpi_serialize_string_uint64(serializer, "threshold", bytes_threshold);
   
   return serializer;
 }

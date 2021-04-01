@@ -28,6 +28,8 @@
 
 class TrafficAlert : public HostAlert {
  private:
+  u_int64_t bytes, bytes_threshold;
+
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:

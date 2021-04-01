@@ -24,6 +24,7 @@
 /* ***************************************************** */
 
 DNSTrafficAlert::DNSTrafficAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+  dns_bytes = dns_bytes_threshold = 0;
 };
 
 /* ***************************************************** */
@@ -32,8 +33,8 @@ ndpi_serializer* DNSTrafficAlert::getAlertJSON(ndpi_serializer* serializer) {
   if(serializer == NULL)
     return NULL;
 
-  ndpi_serialize_string_uint64(serializer, "value", 0 /* TODO */);
-  ndpi_serialize_string_uint64(serializer, "threshold", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "value", dns_bytes);
+  ndpi_serialize_string_uint64(serializer, "threshold", dns_bytes_threshold);
   
   return serializer;
 }

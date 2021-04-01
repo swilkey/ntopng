@@ -24,6 +24,7 @@
 /* ***************************************************** */
 
 ThroughputAlert::ThroughputAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
+  throughput = throughput_threshold = 0;
 };
 
 /* ***************************************************** */
@@ -32,8 +33,8 @@ ndpi_serializer* ThroughputAlert::getAlertJSON(ndpi_serializer* serializer) {
   if(serializer == NULL)
     return NULL;
 
-  ndpi_serialize_string_uint64(serializer, "value", 0 /* TODO */);
-  ndpi_serialize_string_uint64(serializer, "threshold", 0 /* TODO */);
+  ndpi_serialize_string_uint64(serializer, "value", throughput);
+  ndpi_serialize_string_uint64(serializer, "threshold", throughput_threshold);
   
   return serializer;
 }

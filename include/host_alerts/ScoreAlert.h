@@ -28,6 +28,8 @@
 
 class ScoreAlert : public HostAlert {
  private:
+  u_int64_t score, score_threshold;
+
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:

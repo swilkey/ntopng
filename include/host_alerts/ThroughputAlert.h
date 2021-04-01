@@ -28,6 +28,8 @@
 
 class ThroughputAlert : public HostAlert {
  private:
+  u_int64_t throughput, throughput_threshold;
+
   ndpi_serializer* getAlertJSON(ndpi_serializer* serializer);
   
  public:
