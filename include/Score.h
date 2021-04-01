@@ -19,10 +19,10 @@
  *
  */
 
-#ifndef _NTOP_HOST_SCORE_H_
-#define _NTOP_HOST_SCORE_H_
+#ifndef _NTOP_SCORE_H_
+#define _NTOP_SCORE_H_
 
-class HostScore {
+class Score {
  private:
 
  protected:
@@ -35,8 +35,8 @@ class HostScore {
   void lua_breakdown(lua_State *vm, bool as_client);
   
  public:
-  HostScore();
-  virtual ~HostScore() {};
+  Score();
+  virtual ~Score() {};
 
   /* Total getters */
   u_int64_t get()               const { return(getClient() + getServer()); };

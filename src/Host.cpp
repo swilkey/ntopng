@@ -1436,7 +1436,7 @@ void Host::checkBroadcastDomain() {
 
 u_int16_t Host::incScoreValue(u_int16_t score_incr, ScoreCategory score_category, bool as_client) {
   if(score
-     || (score = getInterface()->isView() ? new (std::nothrow) ViewHostScore() : new (std::nothrow) HostScore())) { /* Allocate if necessary */
+     || (score = getInterface()->isView() ? new (std::nothrow) ViewScore() : new (std::nothrow) Score())) { /* Allocate if necessary */
     return score->incValue(score_incr, score_category, as_client);
   } else {
     ntop->getTrace()->traceEvent(TRACE_ERROR, "Internal error. Unable to allocate memory for score");

@@ -23,14 +23,14 @@
 
 /* *************************************** */
 
-HostScore::HostScore() {
+Score::Score() {
   memset(&cli_score, 0, sizeof(cli_score)),
     memset(&srv_score, 0, sizeof(srv_score));
 }
 
 /* *************************************** */
 
-u_int64_t HostScore::sum(u_int32_t const scores[]) {
+u_int64_t Score::sum(u_int32_t const scores[]) {
   u_int64_t res = 0;
 
   for(int i = 0; i < MAX_NUM_SCORE_CATEGORIES; i++)
@@ -45,7 +45,7 @@ u_int64_t HostScore::sum(u_int32_t const scores[]) {
   Increases a value for the `score_category` score by `score`. Client/server score is increased,
   according to parameter `as_client`. The actual increment performed is returned by the function.
 */
-u_int16_t HostScore::incValue(u_int32_t scores[], u_int16_t score, ScoreCategory score_category) {
+u_int16_t Score::incValue(u_int32_t scores[], u_int16_t score, ScoreCategory score_category) {
   scores[score_category] += score;
 
   return score;
@@ -57,7 +57,7 @@ u_int16_t HostScore::incValue(u_int32_t scores[], u_int16_t score, ScoreCategory
   Decreases a value for the `score_category` score by `score`. Client/server score is decreased,
   according to parameter `as_client`. The actual decrement performed is returned by the function.
 */
-u_int16_t HostScore::decValue(u_int32_t scores[], u_int16_t score, ScoreCategory score_category) {
+u_int16_t Score::decValue(u_int32_t scores[], u_int16_t score, ScoreCategory score_category) {
   scores[score_category] -= score;
 
   return score;
@@ -65,19 +65,19 @@ u_int16_t HostScore::decValue(u_int32_t scores[], u_int16_t score, ScoreCategory
 
 /* *************************************** */
 
-u_int16_t HostScore::incValue(u_int16_t score, ScoreCategory score_category, bool as_client) {
+u_int16_t Score::incValue(u_int16_t score, ScoreCategory score_category, bool as_client) {
   return as_client ? incValue(cli_score, score, score_category) : incValue(srv_score, score, score_category);
 }
 
 /* *************************************** */
 
-u_int16_t HostScore::decValue(u_int16_t score, ScoreCategory score_category, bool as_client) {
+u_int16_t Score::decValue(u_int16_t score, ScoreCategory score_category, bool as_client) {
     return as_client ? decValue(cli_score, score, score_category) : decValue(srv_score, score, score_category);
 }
 
 /* *************************************** */
 
-void HostScore::lua_breakdown(lua_State *vm, bool as_client) {
+void Score::lua_breakdown(lua_State *vm, bool as_client) {
   u_int32_t total = as_client ? getClient() : getServer();
 
   if(total == 0) total = 1; /* Prevents zero-division errors */
@@ -102,7 +102,7 @@ void HostScore::lua_breakdown(lua_State *vm, bool as_client) {
 /*
   Outputs Lua tables for client and server per-category score breakdown.
 */
-void HostScore::lua_breakdown(lua_State *vm) {
+void Score::lua_breakdown(lua_State *vm) {
   lua_newtable(vm);
 
   lua_breakdown(vm, true  /* as client */);

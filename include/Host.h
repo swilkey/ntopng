@@ -42,7 +42,7 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   bool stats_reset_requested, name_reset_requested, data_delete_requested;
   u_int16_t vlan_id, host_pool_id, host_services_bitmap;
   HostStats *stats, *stats_shadow;
-  HostScore *score;
+  Score *score;
   time_t last_stats_reset;
   std::atomic<u_int32_t> active_alerted_flows;
   
