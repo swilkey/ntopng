@@ -19,17 +19,17 @@
  *
  */
 
-#ifndef _NTOP_VIEW_SCORE_H_
-#define _NTOP_VIEW_SCORE_H_
+#ifndef _NTOP_VIEW_SCORE_STATS_H_
+#define _NTOP_VIEW_SCORE_STATS_H_
 
-class ViewScore : public Score {
+class ViewScoreStats : public ScoreStats {
  private:
   Mutex m;
   u_int32_t cli_dec[MAX_NUM_SCORE_CATEGORIES], srv_dec[MAX_NUM_SCORE_CATEGORIES];
   
  public:
-  ViewScore();
-  ~ViewScore() {};
+  ViewScoreStats();
+  ~ViewScoreStats() {};
 
   /* Total Getters */
   u_int64_t getClient() const { return(sum(cli_score) - sum(cli_dec)); };

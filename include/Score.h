@@ -24,33 +24,21 @@
 
 class Score {
  private:
-
- protected:
-  u_int32_t cli_score[MAX_NUM_SCORE_CATEGORIES], srv_score[MAX_NUM_SCORE_CATEGORIES];
-  
-  static u_int64_t sum(u_int32_t const scores[]);
-  static u_int16_t incValue(u_int32_t scores[], u_int16_t score, ScoreCategory score_category);
-  static u_int16_t decValue(u_int32_t scores[], u_int16_t score, ScoreCategory score_category);
-
-  void lua_breakdown(lua_State *vm, bool as_client);
+  bool view_interface_score;
+  ScoreStats *score; /* A pointer to the score class, which depents on view/non-view interfaces */
   
  public:
-  Score();
-  virtual ~Score() {};
+  Score(NetworkInterface *_iface);
+  virtual ~Score();
 
-  /* Total getters */
-  u_int64_t get()               const { return(getClient() + getServer()); };
-  virtual u_int64_t getClient() const { return(sum(cli_score /* as client */)); };
-  virtual u_int64_t getServer() const { return(sum(srv_score /* as server */)); };
+  inline u_int32_t getScore()         const { return score ? score->get() : 0; };
+  inline u_int32_t getScoreAsClient() const { return score ? score->getClient() : 0; };
+  inline u_int32_t getScoreAsServer() const { return score ? score->getServer() : 0; };
+  u_int16_t incScoreValue(u_int16_t score_incr, ScoreCategory score_category, bool as_client);
+  u_int16_t decScoreValue(u_int16_t score_decr, ScoreCategory score_category, bool as_client);
 
-  /* Getters by category */
-  virtual u_int32_t getClient(ScoreCategory sc) const { return(cli_score[sc]); };
-  virtual u_int32_t getServer(ScoreCategory sc) const { return(srv_score[sc]); };
-
-  u_int16_t incValue(u_int16_t score, ScoreCategory score_category, bool as_client);
-  virtual u_int16_t decValue(u_int16_t score, ScoreCategory score_category, bool as_client);
-
-  void lua_breakdown(lua_State *vm);
+  void lua_get_score(lua_State* vm);
+  void lua_get_score_breakdown(lua_State* vm);
 };
 
 #endif

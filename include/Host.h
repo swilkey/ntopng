@@ -28,7 +28,7 @@ class HostAlert;
 class HostCallback;
 class HostCallbackStatus;
 
-class Host : public GenericHashEntry, public HostAlertableEntity {
+class Host : public GenericHashEntry, public HostAlertableEntity, public Score {
  protected:
   IpAddress ip;
   Mac *mac;
@@ -42,7 +42,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   bool stats_reset_requested, name_reset_requested, data_delete_requested;
   u_int16_t vlan_id, host_pool_id, host_services_bitmap;
   HostStats *stats, *stats_shadow;
-  Score *score;
   time_t last_stats_reset;
   std::atomic<u_int32_t> active_alerted_flows;
   
@@ -280,8 +279,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
   void lua_get_min_info(lua_State* vm);
   void lua_get_num_contacts(lua_State* vm);
   void lua_get_num_http_hosts(lua_State*vm);
-  void lua_get_score(lua_State* vm);
-  void lua_get_score_breakdown(lua_State* vm);
   void lua_get_os(lua_State* vm);
   void lua_get_fingerprints(lua_State *vm);
   void lua_get_geoloc(lua_State *vm);
@@ -405,11 +402,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity {
       prefs_loaded = true;
     }
   }
-  inline u_int32_t getScore()         const { return score ? score->get() : 0; };
-  inline u_int32_t getScoreAsClient() const { return score ? score->getClient() : 0; };
-  inline u_int32_t getScoreAsServer() const { return score ? score->getServer() : 0; };
-  u_int16_t incScoreValue(u_int16_t score_incr, ScoreCategory score_category, bool as_client);
-  u_int16_t decScoreValue(u_int16_t score_decr, ScoreCategory score_category, bool as_client);
 
   void refreshDisabledAlerts();
   bool isHostAlertDisabled(HostAlertType alert_type);

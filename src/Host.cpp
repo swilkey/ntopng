@@ -24,7 +24,7 @@
 /* *************************************** */
 
 Host::Host(NetworkInterface *_iface, char *ipAddress, u_int16_t _vlanId) : GenericHashEntry(_iface),
-									   HostAlertableEntity(_iface, alert_entity_host) {
+									   HostAlertableEntity(_iface, alert_entity_host), Score(_iface) {
   ip.set(ipAddress);
   initialize(NULL, _vlanId);
 }
@@ -32,7 +32,7 @@ Host::Host(NetworkInterface *_iface, char *ipAddress, u_int16_t _vlanId) : Gener
 /* *************************************** */
 
 Host::Host(NetworkInterface *_iface, Mac *_mac,
-	   u_int16_t _vlanId, IpAddress *_ip) : GenericHashEntry(_iface), HostAlertableEntity(_iface, alert_entity_host) {
+	   u_int16_t _vlanId, IpAddress *_ip) : GenericHashEntry(_iface), HostAlertableEntity(_iface, alert_entity_host), Score(_iface) {
   ip.set(_ip);
 
 #ifdef BROADCAST_DEBUG
@@ -82,8 +82,6 @@ Host::~Host() {
 
   if(stats)                     delete stats;
   if(stats_shadow)              delete stats_shadow;
-
-  if(score)                     delete score;
 
   clearCallbackStatus();
 
@@ -140,8 +138,6 @@ void Host::housekeep(time_t t) {
 
 void Host::initialize(Mac *_mac, u_int16_t _vlanId) {
   char buf[64];
-
-  score = NULL; /* Lazy, possibly initialized if necessary */
 
   stats = NULL; /* it will be instantiated by specialized classes */
   stats_shadow = NULL;
@@ -420,25 +416,6 @@ void Host::lua_get_as(lua_State *vm) const {
 void Host::lua_get_host_pool(lua_State *vm) const {
   lua_push_uint64_table_entry(vm, "host_pool_id", get_host_pool());
 }
-
-/* ***************************************************** */
-
-void Host::lua_get_score(lua_State *vm) {
-  if(stats) stats->luaHostBehaviour(vm);
-
-  lua_push_uint64_table_entry(vm, "score", score ? score->get() : 0);
-  lua_push_uint64_table_entry(vm, "score.as_client", score ? score->getClient() : 0);
-  lua_push_uint64_table_entry(vm, "score.as_server", score ? score->getServer() : 0);
-  lua_push_uint64_table_entry(vm, "score.total", score ? score->get() : 0);
-}
-
-/* ***************************************************** */
-
-void Host::lua_get_score_breakdown(lua_State *vm) {
-  if(score)
-    score->lua_breakdown(vm);
-}
-
 /* ***************************************************** */
 
 void Host::lua_get_os(lua_State *vm) {
@@ -642,7 +619,8 @@ void Host::lua(lua_State* vm, AddressTree *ptree,
   lua_get_host_pool(vm);
 
   if(stats)
-    stats->lua(vm, mask_host, Utils::bool2DetailsLevel(verbose, host_details));
+    stats->lua(vm, mask_host, Utils::bool2DetailsLevel(verbose, host_details)),
+      stats->luaHostBehaviour(vm);
 
   lua_get_num_flows(vm);
   lua_get_num_contacts(vm);
@@ -1430,29 +1408,6 @@ void Host::checkStatsReset() {
 void Host::checkBroadcastDomain() {
   if(iface->reloadHostsBroadcastDomain())
     is_in_broadcast_domain = iface->isLocalBroadcastDomainHost(this, false /* Non-inline call */);
-}
-
-/* *************************************** */
-
-u_int16_t Host::incScoreValue(u_int16_t score_incr, ScoreCategory score_category, bool as_client) {
-  if(score
-     || (score = getInterface()->isView() ? new (std::nothrow) ViewScore() : new (std::nothrow) Score())) { /* Allocate if necessary */
-    return score->incValue(score_incr, score_category, as_client);
-  } else {
-    ntop->getTrace()->traceEvent(TRACE_ERROR, "Internal error. Unable to allocate memory for score");
-    return 0;
-  }
-}
-
-/* *************************************** */
-
-u_int16_t Host::decScoreValue(u_int16_t score_decr, ScoreCategory score_category, bool as_client) {
-  if(score) {
-    return score->decValue(score_decr, score_category, as_client);
-  } else {
-    ntop->getTrace()->traceEvent(TRACE_ERROR, "Internal error. Memory for score not allocated");
-    return 0;
-  }
 }
 
 /* *************************************** */
