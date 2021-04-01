@@ -17,20 +17,20 @@ local alert = require "alert"
 
 -- ##############################################
 
-local host_alert_tcp_syn_scan_victim = classes.class(alert)
+local host_alert_tcp_syn_scan = classes.class(alert)
 
 -- ##############################################
 
-host_alert_tcp_syn_scan_victim.meta = {
-  alert_key = host_alert_keys.host_alert_syn_scan_victim,
-  i18n_title = "alerts_dashboard.tcp_syn_scan_victim",
+host_alert_tcp_syn_scan.meta = {
+  alert_key = host_alert_keys.host_alert_syn_scan,
+  i18n_title = "alerts_dashboard.tcp_syn_scan",
   icon = "fas fa-life-ring",
-  has_victim = true,
+  has_attacker = true,
 }
 
 -- ##############################################
 
-function host_alert_tcp_syn_scan_victim:init(metric, value, operator, threshold)
+function host_alert_tcp_syn_scan:init(metric, value, operator, threshold)
    -- Call the parent constructor
    self.super:init()
 
@@ -39,11 +39,18 @@ end
 
 -- #######################################################
 
-function host_alert_tcp_syn_scan_victim.format(ifid, alert, alert_type_params)
+function host_alert_tcp_syn_scan.format(ifid, alert, alert_type_params)
   local alert_consts = require("alert_consts")
   local entity = alert_consts.formatAlertEntity(ifid, alert_consts.alertEntityRaw(alert["alert_entity"]), alert["alert_entity_val"])
+  local i18n_key
 
-  return i18n("alert_messages.syn_scan_victim", {
+  if alert_type_params.is_attacker then
+    i18n_key = "alert_messages.syn_scan_attacker"
+  else
+    i18n_key = "alert_messages.syn_scan_victim"
+  end
+
+  return i18n(i18n_key, {
     entity = firstToUpper(entity),
     host_category = format_utils.formatAddressCategory((json.decode(alert.alert_json)).alert_generation.host_info),
     value = string.format("%u", math.ceil(alert_type_params.value or 0)),
@@ -53,4 +60,4 @@ end
 
 -- #######################################################
 
-return host_alert_tcp_syn_scan_victim
+return host_alert_tcp_syn_scan
