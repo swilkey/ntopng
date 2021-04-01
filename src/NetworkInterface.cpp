@@ -8353,32 +8353,12 @@ void NetworkInterface::getEngagedAlertsCount(lua_State *vm, int entity_type, con
 
 /* *************************************** */
 
-static bool host_release_engaged_alerts(GenericHashEntry *entity, void *user_data, bool *matched) {
-  Host *host = (Host *) entity;
-  AlertCheckLuaEngine *host_script = (AlertCheckLuaEngine *)user_data;
-
-  if(host->getNumEngagedAlerts()) {
-    lua_getglobal(host_script->getState(), USER_SCRIPTS_RELEASE_ALERTS_CALLBACK);
-    host_script->setHost(host);
-    host_script->pcall(0, 0);
-  }
-
-  *matched = true;
-
-  return(false); /* false = keep on walking */
-}
-
-/* *************************************** */
-
 void NetworkInterface::releaseAllEngagedAlerts() {
   AlertCheckLuaEngine network_script(alert_entity_network, minute_script /* doesn't matter */, this, NULL);
   AlertCheckLuaEngine host_script(alert_entity_host, minute_script /* doesn't matter */, this, NULL);
   u_int8_t num_local_networks = ntop->getNumLocalNetworks();
   u_int32_t begin_slot = 0;
   bool walk_all = true;
-
-  /* Hosts */
-  walker(&begin_slot, walk_all, walker_hosts, host_release_engaged_alerts, &host_script);
 
   /* Interface */
   if(getNumEngagedAlerts()) {
