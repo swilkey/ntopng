@@ -83,7 +83,7 @@ Host::~Host() {
   if(stats)                     delete stats;
   if(stats_shadow)              delete stats_shadow;
 
-  if(score)              delete score;
+  if(score)                     delete score;
 
   clearCallbackStatus();
 
@@ -1433,9 +1433,9 @@ void Host::checkBroadcastDomain() {
 
 u_int16_t Host::incScoreValue(u_int16_t score_incr, ScoreCategory score_category, bool as_client) {
   if(score
-     || (score = getInterface()->isView() ? new (std::nothrow) ViewHostScore() : new (std::nothrow) HostScore())) /* Allocate if necessary */
+     || (score = getInterface()->isView() ? new (std::nothrow) ViewHostScore() : new (std::nothrow) HostScore())) { /* Allocate if necessary */
     return score->incValue(score_incr, score_category, as_client);
-  else {
+  } else {
     ntop->getTrace()->traceEvent(TRACE_ERROR, "Internal error. Unable to allocate memory for score");
     return 0;
   }
@@ -1444,9 +1444,9 @@ u_int16_t Host::incScoreValue(u_int16_t score_incr, ScoreCategory score_category
 /* *************************************** */
 
 u_int16_t Host::decScoreValue(u_int16_t score_decr, ScoreCategory score_category, bool as_client) {
-  if(score)
+  if(score) {
     return score->decValue(score_decr, score_category, as_client);
-  else {
+  } else {
     ntop->getTrace()->traceEvent(TRACE_ERROR, "Internal error. Memory for score not allocated");
     return 0;
   }
@@ -1685,10 +1685,47 @@ void Host::clearCallbackStatus() {
 
 /* *************************************** */
 
+void Host::releaseEngagedAlert(HostAlert *alert) {
+  ScoreCategory score_category;
+
+  /* Remove from the list of engaged alerts */
+  removeEngagedAlert(alert);
+
+  /* Dec score */
+  score_category = Utils::mapAlertToScoreCategory(alert->getAlertType().category);
+  decScoreValue(alert->getCliScore(), score_category,  true /* as client */);
+  decScoreValue(alert->getSrvScore(), score_category,  false /* as server */);
+
+  /* Enqueue the released alert to be notified */
+  iface->enqueueHostAlert(alert);
+}
+
+/* **************************************************** */
+
+void Host::releaseAllEngagedAlerts(Host *h) {
+
+  //TODO call this when removing an host from memory (is the destructor the right place?)
+
+  for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
+    HostCallbackType t = (HostCallbackType) i;
+    std::list<HostAlert*> *cb_alerts = getEngagedAlerts(t);
+    for(std::list<HostAlert*>::iterator it = cb_alerts->begin(); it != cb_alerts->end(); ++it) {
+      HostAlert *alert = (*it);
+      if (alert->hasAutoRelease()) {
+        alert->release();
+        h->releaseEngagedAlert(alert);
+      }
+    }
+  }
+}
+
+/* *************************************** */
+
 /*
  * This method is called to update status and score of the flow
  */
 bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_int8_t score_as_srv) {
+  ScoreCategory score_category;
 
 #ifdef DEBUG_SCORE
   ntop->getTrace()->traceEvent(TRACE_NORMAL, "Set host score %u/%u", score_as_cli/score_as_srv);
@@ -1701,15 +1738,9 @@ bool Host::setAlertsBitmap(HostAlertType alert_type, u_int8_t score_as_cli, u_in
     return false;
   }
 
-  /* Check if the same alert has been already triggered and accounted in the score */
-  if(alerts_map.isSetBit(alert_type.id)) {
-#ifdef DEBUG_SCORE
-    ntop->getTrace()->traceEvent(TRACE_NORMAL, "Discarding alert (already set)");
-#endif
-    return false;
-  }
-
-  // TODO update score for host, network, AS, ..
+  score_category = Utils::mapAlertToScoreCategory(alert_type.category);
+  incScoreValue(score_as_cli, score_category, true /* as client */);
+  incScoreValue(score_as_srv, score_category, false /* as server */);
 
   alerts_map.setBit(alert_type.id);
 
@@ -1735,9 +1766,6 @@ bool Host::triggerAlert(HostAlert *alert) {
 
   res = setAlertsBitmap(alert_type, alert->getCliScoreInc(), alert->getSrvScoreInc());
 
-  if (ntop->getPrefs()->dontEmitHostAlerts())
-    return res;
-
   alert->setEngaged();
 
   /* Add to the list of engaged alerts*/
@@ -1751,6 +1779,9 @@ bool Host::triggerAlert(HostAlert *alert) {
 
 /* *************************************** */
 
+/*
+ * This is called by the Callback to explicitly release an alert
+ */
 void Host::releaseAlert(HostAlert *alert) {
   alert->release();  
 }

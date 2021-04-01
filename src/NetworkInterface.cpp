@@ -677,8 +677,10 @@ bool NetworkInterface::enqueueHostAlert(HostAlert *alert) {
   bool ret = false;
   Host *h = alert->getHost();
 
-  /* Perform the actual enqueue */
-  if(hostAlertsQueue) {
+  if (!ntop->getPrefs()->dontEmitHostAlerts()
+      && hostAlertsQueue) {
+
+    /* Perform the actual enqueue */
     if(hostAlertsQueue->enqueue(alert, true)) {
 
       /*
@@ -701,8 +703,10 @@ bool NetworkInterface::enqueueHostAlert(HostAlert *alert) {
     }
   }
 
-  if(!ret)
-    delete alert;  
+  if(!ret) {
+    if(alert->isReleased())
+      delete alert;  
+  }
 
   return ret;
 }

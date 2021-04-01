@@ -60,18 +60,6 @@ bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, HostCall
 
 /* **************************************************** */
 
-void HostCallbacksExecutor::releaseAlert(HostAlert *alert) {
-  Host *h = alert->getHost();
-
-  /* Remove from the list of engaged alerts */
-  h->removeEngagedAlert(alert);
-
-  /* Enqueue the released alert to be notified */
-  iface->enqueueHostAlert(alert);
-}
-
-/* **************************************************** */
-
 void HostCallbacksExecutor::releaseAllDisabledAlerts(Host *h) {
   for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
     HostCallbackType t = (HostCallbackType) i;
@@ -84,7 +72,7 @@ void HostCallbacksExecutor::releaseAllDisabledAlerts(Host *h) {
         HostAlert *alert = (*it);
         if (alert->hasAutoRelease()) {
           alert->release();
-          releaseAlert(alert);
+          h->releaseEngagedAlert(alert);
         }
       }
     }
@@ -124,7 +112,7 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
         HostAlert *alert = (*it);
         ++it; /* inc the iterator before removing */
         if (alert->isExpired() && !alert->isReleased()) alert->release();
-        if (alert->isReleased()) releaseAlert(alert);
+        if (alert->isReleased()) h->releaseEngagedAlert(alert);
       }
 
       if (cbs)
