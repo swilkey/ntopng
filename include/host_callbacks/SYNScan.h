@@ -35,7 +35,7 @@ public:
 
   void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
-  HostCallbackType getType() const { return host_callback_syn_scan; }
+  HostCallbackID getID() const { return host_callback_syn_scan; }
   std::string getName()        const { return(std::string("syn_scan")); }
 };
 

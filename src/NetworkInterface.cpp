@@ -8816,7 +8816,7 @@ void NetworkInterface::incrOS(char *hostname) {
 
 /* *************************************** */
 
-HostCallback *NetworkInterface::getCallback(HostCallbackType t) {
+HostCallback *NetworkInterface::getCallback(HostCallbackID t) {
   return(host_callbacks_executor->getCallback(t)); 
 }
 

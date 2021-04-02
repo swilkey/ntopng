@@ -34,7 +34,7 @@ private:
   NTPServerContacts();
   ~NTPServerContacts() {};
 
-  HostCallbackType getType() const { return host_callback_ntp_server_contacts; }
+  HostCallbackID getID() const { return host_callback_ntp_server_contacts; }
   std::string getName()        const { return(std::string("ntp_contacts")); }
 };
 

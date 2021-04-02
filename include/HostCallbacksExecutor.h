@@ -41,7 +41,7 @@ class HostCallbacksExecutor { /* One instance per ntopng Interface */
   HostCallbacksExecutor(HostCallbacksLoader *fcl, NetworkInterface *_iface);
   virtual ~HostCallbacksExecutor();
 
-  HostCallback *getCallback(HostCallbackType t) { return host_cb_arr[t]; }
+  HostCallback *getCallback(HostCallbackID t) { return host_cb_arr[t]; }
   void execCallbacks(Host *h);
 };
 

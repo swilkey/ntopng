@@ -482,7 +482,7 @@ typedef enum {
   host_callback_dns_traffic,
 
   NUM_DEFINED_HOST_CALLBACKS, /* Leave it as last member */ 
-} HostCallbackType;
+} HostCallbackID;
 
 typedef enum {
   flow_lua_call_exec_status_ok = 0,                             /* Call executed successfully                                */

@@ -35,7 +35,7 @@ class SYNFlood : public FlowHits {
 
   void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
-  HostCallbackType getType() const { return host_callback_syn_flood; }
+  HostCallbackID getID() const { return host_callback_syn_flood; }
   std::string getName()        const { return(std::string("syn_flood")); }
 };
 

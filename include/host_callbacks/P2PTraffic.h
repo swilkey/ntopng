@@ -38,7 +38,7 @@ private:
 
   bool loadConfiguration(json_object *config);  
 
-  HostCallbackType getType() const { return host_callback_p2p_traffic; }
+  HostCallbackID getID() const { return host_callback_p2p_traffic; }
   std::string getName()        const { return(std::string("p2p")); }
 };
 

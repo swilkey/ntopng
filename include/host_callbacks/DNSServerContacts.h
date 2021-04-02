@@ -34,7 +34,7 @@ private:
   DNSServerContacts();
   ~DNSServerContacts() {};
 
-  HostCallbackType getType() const { return host_callback_dns_server_contacts; }
+  HostCallbackID getID() const { return host_callback_dns_server_contacts; }
   std::string getName()      const { return(std::string("dns_contacts")); }
 };
 

@@ -1672,8 +1672,8 @@ void Host::releaseEngagedAlert(HostAlert *alert) {
 /* Call this when setting host idle (before removing it from memory) */
 void Host::releaseAllEngagedAlerts() {
   for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
-    HostCallbackType t = (HostCallbackType) i;
-    HostAlert *alert = getEngagedAlert(t);
+    HostCallbackID t = (HostCallbackID) i;
+    HostAlert *alert = getCallbackEngagedAlert(t);
     if (alert && alert->hasAutoRelease()) {
       alert->release();
       releaseEngagedAlert(alert);
@@ -1736,7 +1736,7 @@ bool Host::triggerAlert(HostAlert *alert) {
   }
 
   /* Safety check (one alert is allowed per callback) */
-  if (hasEngagedAlert(alert->getCallbackType())) {
+  if (hasCallbackEngagedAlert(alert->getCallbackType())) {
     delete alert;
     return false;
   }

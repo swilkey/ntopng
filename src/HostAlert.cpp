@@ -32,7 +32,7 @@ HostAlert::HostAlert(HostCallback *c, Host *h, AlertLevel severity, u_int8_t cli
   host = h;
   severity_id = severity;
   expiring = released = false;
-  callback_type = c->getType();
+  callback_id = c->getID();
   callback_name = c->getName();
   engage_time = time(NULL);
   release_time = 0;

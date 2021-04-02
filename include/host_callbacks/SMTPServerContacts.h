@@ -34,7 +34,7 @@ private:
   SMTPServerContacts();
   ~SMTPServerContacts() {};
 
-  HostCallbackType getType() const { return host_callback_smtp_server_contacts; }
+  HostCallbackID getID() const { return host_callback_smtp_server_contacts; }
   std::string getName()        const { return(std::string("smtp_contacts")); }
 };
 

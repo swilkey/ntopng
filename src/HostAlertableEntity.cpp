@@ -85,18 +85,18 @@ bool HostAlertableEntity::removeEngagedAlert(HostAlert *a) {
 
 /* *************************************** */
 
-bool HostAlertableEntity::hasEngagedAlert(HostCallbackType callback_type) {
-  return (engaged_alerts[callback_type] ? true : false);
+bool HostAlertableEntity::hasCallbackEngagedAlert(HostCallbackID callback_id) {
+  return (engaged_alerts[callback_id] ? true : false);
 }
 
 /* *************************************** */
 
-HostAlert *HostAlertableEntity::findEngagedAlert(HostAlertType alert_type, HostCallbackType callback_type) {
+HostAlert *HostAlertableEntity::findEngagedAlert(HostAlertType alert_type, HostCallbackID callback_id) {
 
   if (isEngagedAlert(alert_type)
-      && engaged_alerts[callback_type]
-      && engaged_alerts[callback_type]->getAlertType().id == alert_type.id)
-    return engaged_alerts[callback_type];
+      && engaged_alerts[callback_id]
+      && engaged_alerts[callback_id]->getAlertType().id == alert_type.id)
+    return engaged_alerts[callback_id];
 
   return NULL;
 }

@@ -35,7 +35,7 @@ public:
 
   void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
-  HostCallbackType getType() const { return host_callback_flow_flood; }
+  HostCallbackID getID() const { return host_callback_flow_flood; }
   std::string getName()      const { return(std::string("flow_flood")); }
 };
 
