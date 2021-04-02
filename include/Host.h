@@ -88,10 +88,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity, public Score, 
 
   Bitmap16 alerts_map;
 
-  /* Status related to host callbacks */
-  u_int64_t cb_status_p2p_bytes;  /* Holds the P2P bytes and is used to compute the delta of p2p bytes across consecutive callback calls */
-  u_int64_t cb_status_dns_bytes;  /* Holds the DNS bytes and is used to compute the delta of NDS bytes across consecutive callback calls */
-
   void initialize(Mac *_mac, u_int16_t _vlan_id);
   void inlineSetOS(OSType _os);
   bool statsResetRequested();
@@ -446,10 +442,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity, public Score, 
   /* Callbacks API */
   bool triggerAlert(HostAlert *alert);
   void releaseAlert(HostAlert* alert);
-
-  /* Callbacks status API */
-  inline u_int64_t cb_status_delta_p2p_bytes(u_int64_t new_value) { return Utils::uintDiff(&cb_status_p2p_bytes, new_value); };
-  inline u_int64_t cb_status_delta_dns_bytes(u_int64_t new_value) { return Utils::uintDiff(&cb_status_dns_bytes, new_value); };
 };
 
 #endif /* _HOST_H_ */

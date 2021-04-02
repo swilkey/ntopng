@@ -176,7 +176,6 @@ void Host::initialize(Mac *_mac, u_int16_t _vlanId) {
   prefs_loaded = false;
   host_services_bitmap = 0;
   disabled_alerts_tstamp = 0;
-  cb_status_p2p_bytes = cb_status_dns_bytes = (u_int64_t)-1; /* Set to the maximum value to discard the first delta */
 
   // readStats(); - Commented as if put here it's too early and the key is not yet set
 

@@ -28,9 +28,14 @@ class HostCallbacksStatus { /* Container to keep per-callback status (e.g., traf
  private:
   time_t last_call_min, /* The last time minute callbacks were executed  */
     last_call_5min;     /* The last time 5minute callbacks were executed */
+  u_int64_t p2p_bytes;  /* Holds the P2P bytes and is used to compute the delta of P2P bytes across consecutive callback calls */
+  u_int64_t dns_bytes;  /* Holds the DNS bytes and is used to compute the delta of DNS bytes across consecutive callback calls */
 
  public:
-  HostCallbacksStatus() { last_call_min = last_call_5min = 0; }
+  HostCallbacksStatus() {
+    last_call_min = last_call_5min = 0;
+    p2p_bytes = dns_bytes = (u_int64_t)-1; /* Set to the maximum value to discard the first delta */
+  }
   virtual ~HostCallbacksStatus() {};
 
   inline bool isTimeToRunMinCallbacks(time_t now)  const { return last_call_min  +  60 <= now; }
@@ -38,6 +43,10 @@ class HostCallbacksStatus { /* Container to keep per-callback status (e.g., traf
 
   inline void setMinLastCallTime(time_t now)  { last_call_min  = now; }
   inline void set5MinLastCallTime(time_t now) { last_call_5min = now; }
+
+  /* Callbacks status API */
+  inline u_int64_t cb_status_delta_p2p_bytes(u_int64_t new_value) { return Utils::uintDiff(&p2p_bytes, new_value); };
+  inline u_int64_t cb_status_delta_dns_bytes(u_int64_t new_value) { return Utils::uintDiff(&dns_bytes, new_value); };
 };
 
 #endif /* _HOST_CALLBACKS_STATUS_H_ */
