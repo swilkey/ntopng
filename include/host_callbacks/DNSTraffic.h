@@ -26,7 +26,9 @@
 
 class DNSTraffic : public HostCallback {
 private:
-  u_int64_t dns_bytes_threshold;  
+  u_int64_t dns_bytes_threshold;
+
+  HostAlert *allocAlert(HostCallback *c, Host *f, u_int64_t _dns_bytes, u_int64_t _dns_bytes_threshold) { return new DNSTrafficAlert(c, f, _dns_bytes, _dns_bytes_threshold); };
 
  public:
   DNSTraffic();

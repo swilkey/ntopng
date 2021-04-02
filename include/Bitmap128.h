@@ -31,7 +31,7 @@ private:
 public:
   Bitmap128() { reset(); }
 
-  static inline u_int numBits() { return sizeof(bitmap) * 64; };
+  static inline u_int numBits() { return sizeof(bitmap) * 8; };
   void reset();
   void setBit(u_int8_t id);
   void clearBit(u_int8_t id);

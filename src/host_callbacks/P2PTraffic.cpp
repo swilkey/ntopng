@@ -31,10 +31,23 @@ P2PTraffic::P2PTraffic() : HostCallback(ntopng_edition_community) {
 /* ***************************************************** */
 
 void P2PTraffic::periodicUpdate(Host *h, HostAlert *engaged_alert) {
+  HostAlert *alert = engaged_alert;
   u_int64_t delta;
 
-  if((delta = h->cb_status_delta_p2p_bytes(h->get_ndpi_stats()->getCategoryBytes(NDPI_PROTOCOL_CATEGORY_FILE_SHARING))) > p2p_bytes_threshold)
-    ; /* TODO: trigger */
+  if((delta = h->cb_status_delta_p2p_bytes(h->get_ndpi_stats()->getCategoryBytes(NDPI_PROTOCOL_CATEGORY_FILE_SHARING))) > p2p_bytes_threshold){
+    /* New alert */
+    if (!alert)
+      alert = allocAlert(this, h, delta, p2p_bytes_threshold);
+
+    if (alert) {
+      /* Set alert info */
+      alert->setSeverity(getSeverity());
+      alert->setCliScore(50);
+
+      /* Trigger if new */
+      if (!engaged_alert) h->triggerAlert(alert);
+    }
+  }
 }
 
 /* ***************************************************** */

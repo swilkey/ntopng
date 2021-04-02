@@ -31,10 +31,23 @@ DNSTraffic::DNSTraffic() : HostCallback(ntopng_edition_community) {
 /* ***************************************************** */
 
 void DNSTraffic::periodicUpdate(Host *h, HostAlert *engaged_alert) {
+  HostAlert *alert = engaged_alert;
   u_int64_t delta;
 
-  if((delta = h->cb_status_delta_dns_bytes(h->get_ndpi_stats()->getProtoBytes(NDPI_PROTOCOL_DNS))) > dns_bytes_threshold)
-    ; /* TODO: trigger */
+  if((delta = h->cb_status_delta_dns_bytes(h->get_ndpi_stats()->getProtoBytes(NDPI_PROTOCOL_DNS))) > dns_bytes_threshold) {
+    /* New alert */
+    if (!alert)
+      alert = allocAlert(this, h, delta, dns_bytes_threshold);
+
+    if (alert) {
+      /* Set alert info */
+      alert->setSeverity(getSeverity());
+      alert->setCliScore(50);
+
+      /* Trigger if new */
+      if (!engaged_alert) h->triggerAlert(alert);
+    }
+  }
 }
 
 /* ***************************************************** */

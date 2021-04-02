@@ -23,8 +23,9 @@
 
 /* ***************************************************** */
 
-DNSTrafficAlert::DNSTrafficAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
-  dns_bytes = dns_bytes_threshold = 0;
+DNSTrafficAlert::DNSTrafficAlert(HostCallback *c, Host *f, u_int64_t _dns_bytes, u_int64_t _dns_bytes_threshold) : HostAlert(c, f) {
+  dns_bytes = _dns_bytes,
+    dns_bytes_threshold = _dns_bytes_threshold;
 };
 
 /* ***************************************************** */

@@ -23,8 +23,9 @@
 
 /* ***************************************************** */
 
-P2PTrafficAlert::P2PTrafficAlert(HostCallback *c, Host *f) : HostAlert(c, f) {
-  p2p_bytes = p2p_bytes_threshold = 0;
+P2PTrafficAlert::P2PTrafficAlert(HostCallback *c, Host *f, u_int64_t _p2p_bytes, u_int64_t _p2p_bytes_threshold) : HostAlert(c, f) {
+  p2p_bytes = _p2p_bytes,
+    p2p_bytes_threshold = _p2p_bytes_threshold;
 };
 
 /* ***************************************************** */

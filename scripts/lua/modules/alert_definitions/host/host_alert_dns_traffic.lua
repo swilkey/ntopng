@@ -17,12 +17,12 @@ local alert = require "alert"
 
 -- ##############################################
 
-local host_alert_p2p_traffic = classes.class(alert)
+local host_alert_dns_traffic = classes.class(alert)
 
 -- ##############################################
 
-host_alert_p2p_traffic.meta = {
-  alert_key = host_alert_keys.host_alert_p2p_traffic,
+host_alert_dns_traffic.meta = {
+  alert_key = host_alert_keys.host_alert_dns_traffic,
   i18n_title = "alerts_dashboard.threashold_cross",
   icon = "fas fa-arrow-circle-up",
 }
@@ -35,7 +35,7 @@ host_alert_p2p_traffic.meta = {
 -- @param operator A string indicating the operator used when evaluating the threshold, one of "gt", ">", "<"
 -- @param threshold A number indicating the threshold compared with `value`  using operator
 -- @return A table with the alert built
-function host_alert_p2p_traffic:init(metric, value, operator, threshold)
+function host_alert_dns_traffic:init(metric, value, operator, threshold)
    -- Call the parent constructor
    self.super:init()
 
@@ -49,12 +49,12 @@ end
 -- @param alert The alert description table, including alert data such as the generating entity, timestamp, granularity, type
 -- @param alert_type_params Table `alert_type_params` as built in the `:init` method
 -- @return A human-readable string
-function host_alert_p2p_traffic.format(ifid, alert, alert_type_params)
+function host_alert_dns_traffic.format(ifid, alert, alert_type_params)
   local alert_consts = require("alert_consts")
   local entity = alert_consts.formatAlertEntity(ifid, alert_consts.alertEntityRaw(alert["alert_entity"]), alert["alert_entity_val"])
   local engine_label = alert_consts.alertEngineLabel(alert_consts.alertEngine(alert_consts.sec2granularity(alert["alert_granularity"])))
 
-  return i18n("alert_messages.host_alert_p2p_traffic", {
+  return i18n("alert_messages.host_alert_dns_traffic", {
     entity = entity,
     host_category = format_utils.formatAddressCategory((json.decode(alert.alert_json)).alert_generation.host_info),
     value = string.format("%u", math.ceil(alert_type_params.value)),
@@ -65,4 +65,4 @@ end
 
 -- #######################################################
 
-return host_alert_p2p_traffic
+return host_alert_dns_traffic

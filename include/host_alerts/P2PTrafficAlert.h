@@ -35,7 +35,7 @@ class P2PTrafficAlert : public HostAlert {
  public:
   static HostAlertType getClassType() { return { host_alert_p2p_traffic, alert_category_network }; }
 
-  P2PTrafficAlert(HostCallback *c, Host *f);
+  P2PTrafficAlert(HostCallback *c, Host *f, u_int64_t _p2p_bytes, u_int64_t _p2p_bytes_threshold);
   ~P2PTrafficAlert() {};
   
   HostAlertType getAlertType() const { return getClassType(); }
