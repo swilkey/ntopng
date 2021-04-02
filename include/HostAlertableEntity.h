@@ -29,7 +29,7 @@ class HostAlert;
 
 class HostAlertableEntity : public AlertableEntity {
  private:
-  Bitmap128 engaged_alerts_map; /* Alerts Bitmap128 */
+  Bitmap16 engaged_alerts_map; /* Alerts Bitmap128 */
   
   HostAlert *engaged_alerts[NUM_DEFINED_HOST_CALLBACKS]; /* List of engaged alerts for each callback */
 

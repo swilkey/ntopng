@@ -460,7 +460,7 @@ typedef enum {
   host_alert_dns_traffic               = 11,
 
   MAX_DEFINED_HOST_ALERT_TYPE, /* Leave it as last member */ 
-  MAX_HOST_ALERT_TYPE = 16 /* Constrained by `Bitmap16 alert_map` inside Host.h */
+  MAX_HOST_ALERT_TYPE = 16 /* Constrained by `Bitmap16 alert_map` inside Host.h and Bitmap16 engaged_alerts_map inside HostAlertableEntity */
 } HostAlertTypeEnum;
 
 typedef struct {
@@ -470,21 +470,16 @@ typedef struct {
 
 typedef enum {
   host_callback_dns_requests_errors_ratio =  0,
-  host_callback_dns_server_contacts,
-  host_callback_dns_traffic,
-  host_callback_flow_flood,
-  host_callback_flows_host,
-  host_callback_ntp_server_contacts,
-  host_callback_p2p_traffic,
   host_callback_replies_requests_ratio,
-  host_callback_score_host,
-  host_callback_smtp_server_contacts,
   host_callback_syn_flood,
   host_callback_syn_scan,
-  host_callback_snmp_attack_mitigation,
-  host_callback_throughput_host,
-  host_callback_traffic_host,
-  host_callback_unexpected_host_behaviour,
+  host_callback_flow_flood,
+  host_callback_ntp_server_contacts,
+  host_callback_smtp_server_contacts,
+  host_callback_dns_server_contacts,
+  host_callback_score_host,
+  host_callback_p2p_traffic,
+  host_callback_dns_traffic,
 
   NUM_DEFINED_HOST_CALLBACKS, /* Leave it as last member */ 
 } HostCallbackType;
