@@ -55,6 +55,7 @@ bool HostAlertableEntity::addEngagedAlert(HostAlert *a) {
   if (!engaged_alerts[a->getCallbackType()]) {
     engaged_alerts[a->getCallbackType()] = a; 
     engaged_alerts_map.setBit(a->getAlertType().id);
+    incNumAlertsEngaged();
     success = true;
   }
 
@@ -73,6 +74,7 @@ bool HostAlertableEntity::removeEngagedAlert(HostAlert *a) {
   if (engaged_alerts[a->getCallbackType()] == a) {
     engaged_alerts[a->getCallbackType()] = NULL;
     engaged_alerts_map.clearBit(a->getAlertType().id);
+    decNumAlertsEngaged();
     success = true;
   }
 
