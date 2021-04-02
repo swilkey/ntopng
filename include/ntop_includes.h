@@ -224,6 +224,7 @@ using namespace std;
 #include "ProtoStats.h"
 #include "Utils.h"
 #include "Bitmap128.h"
+#include "Bitmap16.h"
 #include "NtopGlobals.h"
 #include "Alert.h"
 #include "AlertableEntity.h"

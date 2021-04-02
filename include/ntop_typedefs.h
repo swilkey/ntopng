@@ -460,7 +460,7 @@ typedef enum {
   host_alert_dns_traffic               = 11,
 
   MAX_DEFINED_HOST_ALERT_TYPE, /* Leave it as last member */ 
-  MAX_HOST_ALERT_TYPE = 127 /* Constrained by `Bitmap128 alert_map` inside Host.h */
+  MAX_HOST_ALERT_TYPE = 16 /* Constrained by `Bitmap16 alert_map` inside Host.h */
 } HostAlertTypeEnum;
 
 typedef struct {

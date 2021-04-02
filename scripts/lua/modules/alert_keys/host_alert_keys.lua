@@ -17,7 +17,7 @@ local host_alert_keys = {
    host_alert_score                     =  9,
    host_alert_p2p_traffic               = 10,
    host_alert_dns_traffic               = 11,
-   -- NOTE: for host alerts not not go beyond the size of Bitmap alert_map inside Host.h (currently 128)
+   -- NOTE: for host alerts not not go beyond the size of Bitmap16 alert_map inside Host.h
 }
 
 -- ##############################################
