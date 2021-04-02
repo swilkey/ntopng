@@ -84,7 +84,7 @@ bool AlertExclusions::addHostDisabledHostAlert(const char * const host, HostAler
 
   if (!d->host_alert_filter) {
     /* Allocate a bitmap for the host */
-    d->host_alert_filter = new (std::nothrow) Bitmap();
+    d->host_alert_filter = new (std::nothrow) Bitmap128();
     if (!d->host_alert_filter) return false; /* allocation failure */
   }
 
@@ -104,7 +104,7 @@ bool AlertExclusions::addHostDisabledFlowAlert(const char * const host, FlowAler
 
   if (!d->flow_alert_filter) {
     /* Allocate a bitmap for the host */
-    d->flow_alert_filter = new (std::nothrow) Bitmap();
+    d->flow_alert_filter = new (std::nothrow) Bitmap128();
     if (!d->flow_alert_filter) return false; /* allocation failure */
   }
 
@@ -116,9 +116,9 @@ bool AlertExclusions::addHostDisabledFlowAlert(const char * const host, FlowAler
 
 /* *************************************** */
 
-void AlertExclusions::setDisabledHostAlertsBitmaps(IpAddress *addr, Bitmap *host_alerts, Bitmap *flow_alerts) const {
-  const Bitmap *hb = &default_host_host_alert_filter;
-  const Bitmap *fb = &default_host_flow_alert_filter;
+void AlertExclusions::setDisabledHostAlertsBitmaps(IpAddress *addr, Bitmap128 *host_alerts, Bitmap128 *flow_alerts) const {
+  const Bitmap128 *hb = &default_host_host_alert_filter;
+  const Bitmap128 *fb = &default_host_flow_alert_filter;
 
   if (host_filters != NULL && addr != NULL) {
     alert_exclusion_host_tree_data *d = (alert_exclusion_host_tree_data *) host_filters->matchAndGetData(addr);

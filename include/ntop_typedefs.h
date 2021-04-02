@@ -436,7 +436,7 @@ typedef enum {
 
   MAX_DEFINED_FLOW_ALERT_TYPE, /* Leave it as last member */
 
-  MAX_FLOW_ALERT_TYPE = 127 /* Constrained by `Bitmap alert_map` inside Flow.h */
+  MAX_FLOW_ALERT_TYPE = 127 /* Constrained by `Bitmap128 alert_map` inside Flow.h */
 } FlowAlertTypeEnum;
 
 typedef struct {
@@ -460,7 +460,7 @@ typedef enum {
   host_alert_dns_traffic               = 11,
 
   MAX_DEFINED_HOST_ALERT_TYPE, /* Leave it as last member */ 
-  MAX_HOST_ALERT_TYPE = 127 /* Constrained by `Bitmap alert_map` inside Host.h */
+  MAX_HOST_ALERT_TYPE = 127 /* Constrained by `Bitmap128 alert_map` inside Host.h */
 } HostAlertTypeEnum;
 
 typedef struct {

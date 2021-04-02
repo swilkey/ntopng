@@ -55,7 +55,7 @@ class Flow : public GenericHashEntry {
      A flow can have multiple alerts but at most ONE of its alerts is predominant
      of a flow, which is written into `predominant_alert`.
   */
-  Bitmap alerts_map;
+  Bitmap128 alerts_map;
   FlowAlertType predominant_alert;          /* This is the predominant alert */
   u_int16_t  predominant_alert_score;       /* The score associated to the predominant alert */
   AlertLevel predominant_alert_level;
@@ -292,7 +292,7 @@ class Flow : public GenericHashEntry {
        time_t _first_seen, time_t _last_seen);
   ~Flow();
 
-  inline Bitmap getAlertsBitmap() const { return(alerts_map); }
+  inline Bitmap128 getAlertsBitmap() const { return(alerts_map); }
 
   /* Flow callbacks have these methods to set/get certain statuses on the flow. */
   /* Setters */

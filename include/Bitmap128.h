@@ -24,21 +24,21 @@
 
 #include "ntop_includes.h"
 
-class Bitmap {
+class Bitmap128 {
 private:
   u_int64_t bitmap[2];
 
 public:
-  Bitmap() { reset(); }
+  Bitmap128() { reset(); }
 
   static inline u_int numBits() { return sizeof(bitmap) * 64; };
   void reset();
   void setBit(u_int8_t id);
   void clearBit(u_int8_t id);
   bool isSetBit(u_int8_t id) const;
-  void bitmapOr(const Bitmap b);
-  void set(const Bitmap *b);
-  bool equal(const Bitmap *b) const;
+  void bitmapOr(const Bitmap128 b);
+  void set(const Bitmap128 *b);
+  bool equal(const Bitmap128 *b) const;
   
   void lua(lua_State* vm, const char *label) const;
 };

@@ -82,11 +82,11 @@ class Host : public GenericHashEntry, public HostAlertableEntity, public Score, 
   bool is_in_broadcast_domain;
   bool is_dhcp_host;
 
-  Bitmap disabled_host_alerts;
-  Bitmap disabled_flow_alerts;
+  Bitmap128 disabled_host_alerts;
+  Bitmap128 disabled_flow_alerts;
   time_t disabled_alerts_tstamp;
 
-  Bitmap alerts_map;
+  Bitmap128 alerts_map;
 
   /* Status related to host callbacks */
   u_int64_t cb_status_p2p_bytes;  /* Holds the P2P bytes and is used to compute the delta of p2p bytes across consecutive callback calls */
@@ -438,7 +438,7 @@ class Host : public GenericHashEntry, public HostAlertableEntity, public Score, 
   void alert2JSON(HostAlert *alert, ndpi_serializer *serializer);
 
   /* Same as flow alerts */
-  inline Bitmap getAlertsBitmap() const { return(alerts_map); }
+  inline Bitmap128 getAlertsBitmap() const { return(alerts_map); }
   bool setAlertsBitmap(HostAlertType alert_type, int8_t score_as_cli_inc, int8_t score_as_srv_inc);
   void releaseEngagedAlert(HostAlert *alert);
   void releaseAllEngagedAlerts();

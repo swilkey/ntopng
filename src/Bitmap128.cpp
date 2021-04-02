@@ -24,13 +24,13 @@
 
 /* ****************************************** */
 
-void Bitmap::reset() {
+void Bitmap128::reset() {
   memset(bitmap, 0, sizeof(bitmap));
 }
 
 /* ****************************************** */
 
-void Bitmap::setBit(u_int8_t id) {
+void Bitmap128::setBit(u_int8_t id) {
   if(id < 64)
     bitmap[0] = Utils::bitmapSet(bitmap[0], id);
   else if(id < numBits())
@@ -39,7 +39,7 @@ void Bitmap::setBit(u_int8_t id) {
 
 /* ****************************************** */
 
-void Bitmap::clearBit(u_int8_t id) {
+void Bitmap128::clearBit(u_int8_t id) {
   if(id < 64)
     bitmap[0] = Utils::bitmapClear(bitmap[0], id);
   else if(id < numBits())
@@ -48,7 +48,7 @@ void Bitmap::clearBit(u_int8_t id) {
 
 /* ****************************************** */
 
-bool Bitmap::isSetBit(u_int8_t id) const {
+bool Bitmap128::isSetBit(u_int8_t id) const {
   if(id < 64)
     return(Utils::bitmapIsSet(bitmap[0], id));
   else if(id < numBits())
@@ -59,25 +59,25 @@ bool Bitmap::isSetBit(u_int8_t id) const {
 
 /* ****************************************** */
 
-void Bitmap::bitmapOr(const Bitmap b) {
+void Bitmap128::bitmapOr(const Bitmap128 b) {
   bitmap[0] |= b.bitmap[0], bitmap[1] |= b.bitmap[1];
 }
 
 /* ****************************************** */
 
-void Bitmap::set(const Bitmap *b) {
+void Bitmap128::set(const Bitmap128 *b) {
   memcpy(bitmap, b->bitmap, sizeof(bitmap));
 }
 
 /* ****************************************** */
 
-bool Bitmap::equal(const Bitmap *b) const {
+bool Bitmap128::equal(const Bitmap128 *b) const {
   return((memcmp(bitmap, b->bitmap, sizeof(bitmap)) == 0) ? true : false);
 }
 
 /* ****************************************** */
 
-void Bitmap::lua(lua_State* vm, const char *label) const {
+void Bitmap128::lua(lua_State* vm, const char *label) const {
   lua_newtable(vm);
 
   for(u_int i=0; i<numBits(); i++) {

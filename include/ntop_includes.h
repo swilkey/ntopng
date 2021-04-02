@@ -223,7 +223,7 @@ using namespace std;
 #include "Trace.h"
 #include "ProtoStats.h"
 #include "Utils.h"
-#include "Bitmap.h"
+#include "Bitmap128.h"
 #include "NtopGlobals.h"
 #include "Alert.h"
 #include "AlertableEntity.h"
@@ -266,7 +266,6 @@ using namespace std;
 #endif
 #endif
 #include "AlertExclusions.h"
-#include "ControlGroups.h"
 #include "HostPoolStats.h"
 #include "HostPools.h"
 #include "Fingerprint.h"
