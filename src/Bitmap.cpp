@@ -33,7 +33,7 @@ void Bitmap::reset() {
 void Bitmap::setBit(u_int8_t id) {
   if(id < 64)
     bitmap[0] = Utils::bitmapSet(bitmap[0], id);
-  else if(id < BITMAP_NUM_BITS)
+  else if(id < numBits())
     bitmap[1] = Utils::bitmapSet(bitmap[1], id-64);
 }
 
@@ -42,7 +42,7 @@ void Bitmap::setBit(u_int8_t id) {
 void Bitmap::clearBit(u_int8_t id) {
   if(id < 64)
     bitmap[0] = Utils::bitmapClear(bitmap[0], id);
-  else if(id < BITMAP_NUM_BITS)
+  else if(id < numBits())
     bitmap[1] = Utils::bitmapClear(bitmap[1], id-64);
 }
 
@@ -51,16 +51,10 @@ void Bitmap::clearBit(u_int8_t id) {
 bool Bitmap::isSetBit(u_int8_t id) const {
   if(id < 64)
     return(Utils::bitmapIsSet(bitmap[0], id));
-  else if(id < BITMAP_NUM_BITS)
+  else if(id < numBits())
     return(Utils::bitmapIsSet(bitmap[1], id-64));
   else
     return(0);
-}
-
-/* ****************************************** */
-
-bool Bitmap::isEmpty() const {
-  return(!(bitmap[0] || bitmap[1]));
 }
 
 /* ****************************************** */
@@ -86,7 +80,7 @@ bool Bitmap::equal(const Bitmap *b) const {
 void Bitmap::lua(lua_State* vm, const char *label) const {
   lua_newtable(vm);
 
-  for(u_int i=0; i<BITMAP_NUM_BITS; i++) {
+  for(u_int i=0; i<numBits(); i++) {
     if(isSetBit(i)) {
       lua_pushboolean(vm, true); /* The boolean indicating this risk is set            */
       lua_pushinteger(vm, i);    /* The integer risk id, used as key of this lua table */
