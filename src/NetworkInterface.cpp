@@ -552,12 +552,7 @@ NetworkInterface::~NetworkInterface() {
   }
 #endif
 
-  if(getNumPackets() > 0) {
-    ntop->getTrace()->traceEvent(TRACE_NORMAL,
-				 "Flushing host contacts for interface %s",
-                get_description());
-    cleanup();
-  }
+  cleanup();
 
   deleteDataStructures();
 
@@ -2705,9 +2700,6 @@ void NetworkInterface::flowAlertsDequeueLoop() {
   while(isRunning()) {
     /*
       Dequeue flows for dump.
-
-      To guarantee some sort of fairness and prioritization, different numbers are used for each
-      of the three queues. Higher numbers are used for queues with higher-priority.
      */
     u_int64_t n = dequeueFlowAlertsFromCallbacks(32 /* budget */);
 
@@ -2739,9 +2731,6 @@ void NetworkInterface::hostAlertsDequeueLoop() {
   while(isRunning()) {
     /*
       Dequeue hosts for dump.
-
-      To guarantee some sort of fairness and prioritization, different numbers are used for each
-      of the three queues. Higher numbers are used for queues with higher-priority.
      */
     u_int64_t n = dequeueHostAlertsFromCallbacks(32 /* budget */);
 
@@ -2900,18 +2889,23 @@ void NetworkInterface::shutdown() {
     if(pollLoopCreated)          pthread_join(pollLoop, &res);
     if(flowDumpLoopCreated)      pthread_join(flowDumpLoop, &res);
     if(flowAlertsDequeueLoopCreated) pthread_join(flowCallbacksLoop, &res);
+    if(hostAlertsDequeueLoopCreated) pthread_join(hostCallbacksLoop, &res);
 
     /* purgeIdle one last time to make sure all entries will be marked as idle */
     purgeIdle(time(NULL), true, true);
 
     /* Make sure all alerts have been dequeued and processed */
-    dequeueFlowAlertsFromCallbacks(0 /* unlimited budget */);
+    dequeueFlowAlertsFromCallbacks(0 /* unlimited budget */),
+      dequeueHostAlertsFromCallbacks(0 /* unlimited budged */);
   }
 }
 
 /* **************************************************** */
 
 void NetworkInterface::cleanup() {
+  if(this != ntop->getSystemInterface())
+    ntop->getTrace()->traceEvent(TRACE_NORMAL, "Cleanup interface %s", get_description());
+
   next_idle_flow_purge = next_idle_host_purge = 0;
   cpu_affinity = -1,
     has_vlan_packets = false, has_ebpf_events = false, has_mac_addresses = false;
@@ -2928,8 +2922,6 @@ void NetworkInterface::cleanup() {
   if(countries_hash)  countries_hash->cleanup();
   if(vlans_hash)      vlans_hash->cleanup();
   if(macs_hash)       macs_hash->cleanup();
-
-  ntop->getTrace()->traceEvent(TRACE_NORMAL, "Cleanup interface %s", get_description());
 }
 
 /* **************************************************** */
