@@ -34,8 +34,6 @@ private:
 
   void periodicUpdate(Host *h, HostAlert *engaged_alert);
 
-  HostCallbackStatus *allocStatus() { return new DeltaHostCallbackStatus(this); };
-
   bool loadConfiguration(json_object *config);  
 
   HostCallbackType getType() const { return host_callback_p2p_traffic; }

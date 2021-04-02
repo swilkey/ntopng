@@ -35,7 +35,6 @@ class HostCallbacksExecutor { /* One instance per ntopng Interface */
   void loadHostCallbacksAlerts(std::list<HostCallback*> *cb_list);
   void loadHostCallbacks(HostCallbacksLoader *fcl);
 
-  bool isTimeToRunCallback(HostCallback *callback, HostCallbackStatus *status, time_t now);
   void releaseAllDisabledAlerts(Host *h);
 
  public:

@@ -24,7 +24,7 @@
 /* *************************************** */
 
 Host::Host(NetworkInterface *_iface, char *ipAddress, u_int16_t _vlanId) : GenericHashEntry(_iface),
-									   HostAlertableEntity(_iface, alert_entity_host), Score(_iface) {
+									   HostAlertableEntity(_iface, alert_entity_host), Score(_iface), HostCallbacksStatus() {
   ip.set(ipAddress);
   initialize(NULL, _vlanId);
 }
@@ -32,7 +32,7 @@ Host::Host(NetworkInterface *_iface, char *ipAddress, u_int16_t _vlanId) : Gener
 /* *************************************** */
 
 Host::Host(NetworkInterface *_iface, Mac *_mac,
-	   u_int16_t _vlanId, IpAddress *_ip) : GenericHashEntry(_iface), HostAlertableEntity(_iface, alert_entity_host), Score(_iface) {
+	   u_int16_t _vlanId, IpAddress *_ip) : GenericHashEntry(_iface), HostAlertableEntity(_iface, alert_entity_host), Score(_iface), HostCallbacksStatus() {
   ip.set(_ip);
 
 #ifdef BROADCAST_DEBUG
@@ -82,8 +82,6 @@ Host::~Host() {
 
   if(stats)                     delete stats;
   if(stats_shadow)              delete stats_shadow;
-
-  clearCallbackStatus();
 
   /*
     Pool counters are updated both in and outside the datapath.
@@ -178,7 +176,7 @@ void Host::initialize(Mac *_mac, u_int16_t _vlanId) {
   prefs_loaded = false;
   host_services_bitmap = 0;
   disabled_alerts_tstamp = 0;
-  memset(cb_status, 0, sizeof(cb_status));
+  cb_status_p2p_bytes = cb_status_dns_bytes = (u_int64_t)-1; /* Set to the maximum value to discard the first delta */
 
   // readStats(); - Commented as if put here it's too early and the key is not yet set
 
@@ -1651,25 +1649,6 @@ bool Host::enqueueAlert(HostAlert *alert) {
     delete alert;
 
   return rv;
-}
-
-/* *************************************** */
-
-void Host::setCallbackStatus(HostCallbackType t, HostCallbackStatus *s) {
-   if (cb_status[t])
-     delete cb_status[t];
-  cb_status[t] = s;
-}
-
-/* *************************************** */
-
-void Host::clearCallbackStatus() {
-  for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
-    if (cb_status[i]) {
-      delete cb_status[i];
-      cb_status[i] = NULL;
-    }
-  }
 }
 
 /* *************************************** */

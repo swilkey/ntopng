@@ -30,14 +30,13 @@ ServerContacts::ServerContacts() : HostCallback(ntopng_edition_community) {
 /* ***************************************************** */
 
 void ServerContacts::periodicUpdate(Host *h, HostAlert *engaged_alert) {
-  ServerContactsHostCallbackStatus *status = static_cast<ServerContactsHostCallbackStatus*>(getStatus(h));
   HostAlert *alert = engaged_alert;
   u_int32_t contacted_servers = 0;
 
   if((contacted_servers = getContactedServers(h)) >= contacts_threshold) {
     /* New alert */
     if (!alert)
-       alert = allocAlert(this, h, status ? status->getContacts() : 0, contacts_threshold);
+       alert = allocAlert(this, h, contacted_servers, contacts_threshold);
 
     if (alert) {
       /* Set alert info */
@@ -48,10 +47,6 @@ void ServerContacts::periodicUpdate(Host *h, HostAlert *engaged_alert) {
       if (!engaged_alert) h->triggerAlert(alert);
     }
   }
-
-  if(status) status->updateContacts(contacted_servers);
-
-  /* TODO: reset contacted servers cardinality */
 }
 
 /* ***************************************************** */

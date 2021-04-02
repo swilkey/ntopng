@@ -47,6 +47,8 @@ class HostCallback {
   virtual void periodicUpdate(Host *h, HostAlert *engaged_alert) {};
 
   virtual u_int32_t getPeriod() { return periodicity_secs; }
+  inline bool isMinCallback()  const { return periodicity_secs == 60;  };
+  inline bool is5MinCallback() const { return periodicity_secs == 300; };
 
   inline void enable(u_int32_t _periodicity_secs) { enabled = 1; periodicity_secs = _periodicity_secs; }
   inline bool isEnabled() { return(enabled ? true : false); }
@@ -54,11 +56,6 @@ class HostCallback {
 
   inline void addCallback(std::list<HostCallback*> *l, NetworkInterface *iface) { l->push_back(this); }
   virtual bool loadConfiguration(json_object *config);
-
-  /* Allocate the status for the Callback for a specific Host */
-  virtual HostCallbackStatus *allocStatus();
-
-  HostCallbackStatus *getStatus(Host *h, bool create = false);
 
   virtual HostCallbackType getType() const = 0;  
   virtual std::string getName() const = 0;

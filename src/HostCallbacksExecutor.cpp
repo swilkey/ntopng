@@ -51,15 +51,6 @@ void HostCallbacksExecutor::loadHostCallbacks(HostCallbacksLoader *fcl) {
 
 /* **************************************************** */
 
-bool HostCallbacksExecutor::isTimeToRunCallback(HostCallback *callback, HostCallbackStatus *status, time_t now) {
-  if (!callback->getPeriod()) return true; /* No periodicity configured - always run */
-  if (!status || !status->getLastCallTime()) return true; /* First time - run */
-  if (status->getLastCallTime() + callback->getPeriod() <= now) return true; /* Timeout reached - run */
-  return false; /* Not yet */
-}
-
-/* **************************************************** */
-
 void HostCallbacksExecutor::releaseAllDisabledAlerts(Host *h) {
   for (u_int i = 0; i < NUM_DEFINED_HOST_CALLBACKS; i++) {
     HostCallbackType t = (HostCallbackType) i;
@@ -78,19 +69,23 @@ void HostCallbacksExecutor::releaseAllDisabledAlerts(Host *h) {
 /* **************************************************** */
 
 void HostCallbacksExecutor::execCallbacks(Host *h) {
+  bool run_min_cbs, run_5min_cbs; /* Callbacks to be executed during this run */
   time_t now = time(NULL);
 
   /* Release (auto-release) alerts for disabled callbacks */
   releaseAllDisabledAlerts(h);
 
+  run_min_cbs = h->isTimeToRunMinCallbacks(now),
+    run_5min_cbs = h->isTimeToRun5MinCallbacks(now);
+
   /* Exec all enabled callbacks */
   for(std::list<HostCallback*>::iterator it = periodic_host_cb->begin(); it != periodic_host_cb->end(); ++it) {
     HostCallback *cb = (*it);
-    HostCallbackStatus *cbs = cb->getStatus(h, true /* create */);
     HostCallbackType ct = cb->getType();
 
     /* Check if it's time to run the callback on this host */
-    if (isTimeToRunCallback(cb, cbs, now)) {
+    if ((run_min_cbs && cb->isMinCallback())
+	|| (run_5min_cbs && cb->is5MinCallback())) {
       HostAlert *alert;
 
       /* Initializing (auto-release) alert to expiring, to check if
@@ -108,12 +103,12 @@ void HostCallbacksExecutor::execCallbacks(Host *h) {
         if (alert->isExpired() && !alert->isReleased()) alert->release();
         if (alert->isReleased()) h->releaseEngagedAlert(alert);
       }
-
-      /* Update last call time */
-      if (cbs)
-        cbs->setLastCallTime(now);
     }
   }
+
+  /* Update last call time */
+  if(run_min_cbs)  h->setMinLastCallTime(now);
+  if(run_5min_cbs) h->set5MinLastCallTime(now);
 }
 
 /* **************************************************** */

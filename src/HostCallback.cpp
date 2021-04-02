@@ -69,26 +69,3 @@ bool HostCallback::loadConfiguration(json_object *config) {
 }
 
 /* **************************************************** */
-
-HostCallbackStatus *HostCallback::allocStatus() {
-  return new (std::nothrow) HostCallbackStatus(this);
-}
-
-/* **************************************************** */
-
-HostCallbackStatus *HostCallback::getStatus(Host *h, bool create) {
-  HostCallbackStatus *status = h->getCallbackStatus(getType());
-
-  if (status)
-    return status;
-
-  if (create) {
-    status = allocStatus();
-    if (status)
-      h->setCallbackStatus(getType(), status);
-  }
-
-  return status;
-}
-
-/* **************************************************** */

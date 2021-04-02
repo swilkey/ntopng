@@ -24,16 +24,6 @@
 
 #include "ntop_includes.h"
 
-class ServerContactsHostCallbackStatus : public HostCallbackStatus {
- private:
-  u_int16_t contacts; /* Keeps the number of syns that exceeded the threshold and caused the alert to be triggered */
-
- public:
- ServerContactsHostCallbackStatus(HostCallback *cb) : HostCallbackStatus(cb) { contacts = 0; };
-  inline void updateContacts(u_int16_t _contacts) { contacts = _contacts; };
-  inline u_int16_t getContacts() const { return contacts; };
-};
-
 class ServerContacts : public HostCallback {
 private:
   static const u_int64_t contacts_threshold = 5;
@@ -48,8 +38,6 @@ private:
   ~ServerContacts() {};
 
   void periodicUpdate(Host *h, HostAlert *engaged_alert);
-
-  HostCallbackStatus *allocStatus() { return new ServerContactsHostCallbackStatus(this); };
 
   bool loadConfiguration(json_object *config);  
 };

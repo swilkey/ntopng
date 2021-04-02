@@ -25,10 +25,8 @@
 #include "ntop_includes.h"
 
 class HostAlert;
-class HostCallback;
-class HostCallbackStatus;
 
-class Host : public GenericHashEntry, public HostAlertableEntity, public Score {
+class Host : public GenericHashEntry, public HostAlertableEntity, public Score, public HostCallbacksStatus {
  protected:
   IpAddress ip;
   Mac *mac;
@@ -88,8 +86,11 @@ class Host : public GenericHashEntry, public HostAlertableEntity, public Score {
   Bitmap disabled_flow_alerts;
   time_t disabled_alerts_tstamp;
 
-  HostCallbackStatus *cb_status[NUM_DEFINED_HOST_CALLBACKS];
   Bitmap alerts_map;
+
+  /* Status related to host callbacks */
+  u_int64_t cb_status_p2p_bytes;  /* Holds the P2P bytes and is used to compute the delta of p2p bytes across consecutive callback calls */
+  u_int64_t cb_status_dns_bytes;  /* Holds the DNS bytes and is used to compute the delta of NDS bytes across consecutive callback calls */
 
   void initialize(Mac *_mac, u_int16_t _vlan_id);
   void inlineSetOS(OSType _os);
@@ -436,11 +437,6 @@ class Host : public GenericHashEntry, public HostAlertableEntity, public Score {
   bool enqueueAlert(HostAlert *alert);
   void alert2JSON(HostAlert *alert, ndpi_serializer *serializer);
 
-  /* Callbacks status */
-  void setCallbackStatus(HostCallbackType t, HostCallbackStatus *s);
-  inline HostCallbackStatus *getCallbackStatus(HostCallbackType t) { return cb_status[t]; };
-  void clearCallbackStatus();
-
   /* Same as flow alerts */
   inline Bitmap getAlertsBitmap() const { return(alerts_map); }
   bool setAlertsBitmap(HostAlertType alert_type, int8_t score_as_cli_inc, int8_t score_as_srv_inc);
@@ -450,6 +446,10 @@ class Host : public GenericHashEntry, public HostAlertableEntity, public Score {
   /* Callbacks API */
   bool triggerAlert(HostAlert *alert);
   void releaseAlert(HostAlert* alert);
+
+  /* Callbacks status API */
+  inline u_int64_t cb_status_delta_p2p_bytes(u_int64_t new_value) { return Utils::uintDiff(&cb_status_p2p_bytes, new_value); };
+  inline u_int64_t cb_status_delta_dns_bytes(u_int64_t new_value) { return Utils::uintDiff(&cb_status_dns_bytes, new_value); };
 };
 
 #endif /* _HOST_H_ */
