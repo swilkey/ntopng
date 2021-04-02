@@ -37,9 +37,6 @@
 
 #include "host_callbacks/P2PTraffic.h"
 #include "host_callbacks/DNSTraffic.h"
-#include "host_callbacks/TrafficHostCallback.h"
-#include "host_callbacks/FlowsHostCallback.h"
-#include "host_callbacks/ThroughputHostCallback.h"
 
 #ifdef NTOPNG_PRO
 #include "host_callbacks/DNSRequestsErrorsRatio.h"

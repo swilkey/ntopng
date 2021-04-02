@@ -34,9 +34,6 @@
 #include "host_alerts/NTPServerContactsAlert.h"
 #include "host_alerts/P2PTrafficAlert.h"
 #include "host_alerts/DNSTrafficAlert.h"
-#include "host_alerts/TrafficAlert.h"
-#include "host_alerts/FlowsAlert.h"
-#include "host_alerts/ThroughputAlert.h"
 #include "host_alerts/ScoreAlert.h"
 
 /* Pro Alerts - do NOT use #ifdef as alerts must always be available */

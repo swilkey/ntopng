@@ -48,9 +48,6 @@ void HostCallbacksLoader::registerCallbacks() {
   if((fcb = new NTPServerContacts()))          cb_all[fcb->getName()] = fcb;
   if((fcb = new P2PTraffic()))                 cb_all[fcb->getName()] = fcb;
   if((fcb = new DNSTraffic()))                 cb_all[fcb->getName()] = fcb;
-  if((fcb = new TrafficHostCallback()))        cb_all[fcb->getName()] = fcb;
-  if((fcb = new FlowsHostCallback()))          cb_all[fcb->getName()] = fcb;
-  if((fcb = new ThroughputHostCallback()))     cb_all[fcb->getName()] = fcb;
 
 #ifdef NTOPNG_PRO
   if((fcb = new DNSRequestsErrorsRatio()))     cb_all[fcb->getName()] = fcb;
