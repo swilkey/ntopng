@@ -35,40 +35,32 @@ end
 -- ##############################################
 
 function host_alert_store:insert(alert)
-   traceError(TRACE_NORMAL, TRACE_CONSOLE, "host_alert_store:insert")
+   local table_name = "host_alerts"
   
    local hostinfo = hostkey2hostinfo(alert.alert_entity_val)
    local ip = hostinfo["host"]
    local vlan_id = hostinfo["vlan"] or 0
    local host_name = alert.symbolic_name or ""
-   local is_attacker = ternary(alert.is_attacker, 1, 0)
-   local is_victim = ternary(alert.is_victim, 1, 0)
+   local is_attacker = ternary(alert.is_attacker, 1, 0) -- TODO
+   local is_victim = ternary(alert.is_victim, 1, 0) -- TODO
    local json = alert.alert_json or ""
 
-   local insert_stmt = "INSERT INTO "..self._table_name.."("..
-        "alert_id, "..
-        "ip, "..
-        "vlan_id, "..
-        "name, "..
-        "is_attacker, "..
-        "is_victim, "..
-        "tstamp, "..
-        "tstamp_end, "..
-        "severity, "..
-        "json"..
-      ") "..
-      "VALUES ("..
-        alert.alert_type..", "..
-        ip..", "..
-        vlan_id..", "..
-        host_name..", "..
-        is_attacker..", "..
-        is_victim..", "..
-        alert.alert_tstamp..", "..
-        alert.alert_tstamp_end..", "..
-        alert.alert_severity..", "..
-        json..
-      "); "
+   local insert_stmt = string.format("INSERT INTO %s "..
+      "(alert_id, ip, vlan_id, name, is_attacker, is_victim, tstamp, tstamp_end, severity, json) "..
+      "VALUES (%u, '%s', %u, '%s', %u, %u, %u, %u, %u, '%s'); ",
+      table_name,
+      alert.alert_type,
+      ip,
+      vlan_id,
+      host_name,
+      is_attacker,
+      is_victim,
+      alert.alert_tstamp,
+      alert.alert_tstamp_end,
+      alert.alert_severity,
+      json)
+
+   traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 
    return interface.alert_store_query(insert_stmt)
 end

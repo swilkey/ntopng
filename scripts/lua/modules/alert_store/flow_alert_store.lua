@@ -35,26 +35,50 @@ end
 
 function flow_alert_store:insert(alert)
    local table_name = "flow_alerts"
-
-   traceError(TRACE_NORMAL, TRACE_CONSOLE, "flow_alert_store:insert")
  
-   -- TODO
+   local insert_stmt = string.format("INSERT INTO %s "..
+      "(alert_id, tstamp, tstamp_end, severity, cli_ip, srv_ip, cli_port, srv_port, vlan_id, "..
+      "is_attacker_to_victim, is_victim_to_attacker, proto, l7_proto, l7_master_proto, l7_cat, "..
+      "cli_name, srv_name, cli_country, srv_country, cli_blacklisted, srv_blacklisted, "..
+      "cli2srv_bytes, srv2cli_bytes, cli2srv_pkts, srv2cli_pkts, first_seen, community_id, score, "..
+      "flow_risk_bitmap, json) "..
+      "VALUES (%u, %u, %u, %u, '%s', '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, '%s', '%s', '%s', "..
+      "'%s', %u, %u, %u, %u, %u, %u, %u, '%s', %u, %u, '%s'); ",
+      table_name, 
+      alert.alert_type,
+      alert.first_seen, -- TODO
+      alert.alert_tstamp,
+      alert.alert_severity,
+      alert.cli_addr,
+      alert.srv_addr,
+      alert.cli_port,
+      alert.srv_port,
+      alert.vlan_id,
+      ternary(alert.is_attacker_to_victim, 1, 0), -- TODO
+      ternary(alert.is_victim_to_attacker, 1, 0), -- TODO
+      alert.proto,
+      alert.l7_proto,
+      alert.l7_master_proto,
+      alert.l7_cat,
+      alert.cli_name,
+      alert.srv_name,
+      alert.cli_country_name,
+      alert.srv_country_name,
+      ternary(alert.cli_blacklisted, 1, 0),
+      ternary(alert.srv_blacklisted, 1, 0),
+      alert.cli2srv_bytes,
+      alert.srv2cli_bytes,
+      alert.cli2srv_packets,
+      alert.srv2cli_packets,
+      alert.first_seen,
+      alert.community_id,
+      alert.score,
+      0, -- TODO flow_risk_bitmap
+      alert.alert_json or "")
 
-   tprint(alert)
+   traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 
-   local json = alert.alert_json or ""
-
-   local insert_stmt = "INSERT INTO "..table_name.."("..
-        "alert_id, "..
-
-      ") "..
-      "VALUES ("..
-        alert.alert_type..", "..
-
-        json..
-      "); "
-
-   --return interface.alert_store_query(insert_stmt)
+   return interface.alert_store_query(insert_stmt)
 end
 
 -- ##############################################
