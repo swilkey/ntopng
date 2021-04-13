@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `flow_alerts` (
 `l7_cat` INTEGER NULL DEFAULT 0 CHECK(`l7_cat` >= 0),
 `cli_name` TEXT NULL,
 `srv_name` TEXT NULL,
-`cli_country` TEXT NULL CHECK(LENGTH(`cli_country`) == 2),
-`srv_country` TEXT NULL CHECK(LENGTH(`srv_country`) == 2),
+`cli_country` TEXT NULL,
+`srv_country` TEXT NULL,
 `cli_blacklisted` INTEGER NULL DEFAULT 0 CHECK(`cli_blacklisted` IN (0,1)),
 `srv_blacklisted` INTEGER NULL DEFAULT 0 CHECK(`srv_blacklisted` IN (0,1)),
 `cli2srv_bytes` INTEGER NULL DEFAULT 0 CHECK(`cli2srv_bytes` >= 0),
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `flow_alerts` (
 `srv2cli_pkts` INTEGER NULL DEFAULT 0 CHECK(`srv2cli_pkts` >= 0),
 `first_seen` DATETIME NULL DEFAULT 0,
 `community_id` TEXT NULL,
-`score` INTEGER UNSIGNED NULL DEFAULT 0 CHECK(`score` >= 0),
+`score` INTEGER NULL DEFAULT 0 CHECK(`score` >= 0),
 `flow_risk_bitmap` INTEGER NOT NULL DEFAULT 0);
 
 CREATE INDEX IF NOT EXISTS `i_id` ON `flow_alerts`(alert_id);

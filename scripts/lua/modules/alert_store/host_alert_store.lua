@@ -52,7 +52,7 @@ function host_alert_store:insert(alert)
       alert.alert_type,
       ip,
       vlan_id,
-      host_name,
+      self:_escape(host_name),
       is_attacker,
       is_victim,
       alert.alert_tstamp,

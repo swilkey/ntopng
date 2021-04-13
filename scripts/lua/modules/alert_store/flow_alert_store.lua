@@ -22,6 +22,7 @@ function flow_alert_store:new(args)
 
    -- Subclass using the base class instance
    self.key = "flow"
+   self._table_name = "flow_alerts"
 
    -- self is passed as argument so it will be set as base class metatable
    -- and this will actually make it possible to override functions
@@ -34,8 +35,6 @@ end
 -- ##############################################
 
 function flow_alert_store:insert(alert)
-   local table_name = "flow_alerts"
- 
    local insert_stmt = string.format("INSERT INTO %s "..
       "(alert_id, tstamp, tstamp_end, severity, cli_ip, srv_ip, cli_port, srv_port, vlan_id, "..
       "is_attacker_to_victim, is_victim_to_attacker, proto, l7_proto, l7_master_proto, l7_cat, "..
@@ -44,9 +43,9 @@ function flow_alert_store:insert(alert)
       "flow_risk_bitmap, json) "..
       "VALUES (%u, %u, %u, %u, '%s', '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, '%s', '%s', '%s', "..
       "'%s', %u, %u, %u, %u, %u, %u, %u, '%s', %u, %u, '%s'); ",
-      table_name, 
+      self._table_name, 
       alert.alert_type,
-      alert.first_seen, -- TODO
+      alert.alert_tstamp,
       alert.alert_tstamp,
       alert.alert_severity,
       alert.cli_addr,
@@ -60,8 +59,8 @@ function flow_alert_store:insert(alert)
       alert.l7_proto,
       alert.l7_master_proto,
       alert.l7_cat,
-      alert.cli_name,
-      alert.srv_name,
+      self:_escape(alert.cli_name),
+      self:_escape(alert.srv_name),
       alert.cli_country_name,
       alert.srv_country_name,
       ternary(alert.cli_blacklisted, 1, 0),

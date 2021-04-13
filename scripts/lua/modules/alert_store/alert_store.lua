@@ -44,6 +44,12 @@ end
 
 -- ##############################################
 
+function alert_store:_escape(str)
+   return str:gsub("'", "''")
+end
+
+-- ##############################################
+
 function alert_store:add_time_filter(tstamp, tstamp_end)
    if tonumber(tstamp) then
       self._where[#self._where + 1] = string.format("tstamp = %u", tstamp) 
@@ -74,10 +80,10 @@ end
 
 -- ##############################################
 
-function alert_store:select(fields)
+function alert_store:select()
    local where_clause = table.concat(self._where, " AND ")
 
-   local q = string.format("SELECT %s FROM `%s` WHERE %s ", fields or '*', self._table_name, where_clause)
+   local q = string.format("SELECT *, count(*) FROM `%s` WHERE %s ", self._table_name, where_clause)
 
    if self._group_by then
       q = q..self._group_by
