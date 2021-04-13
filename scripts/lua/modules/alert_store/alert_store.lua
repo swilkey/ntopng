@@ -42,24 +42,15 @@ end
 
 -- ##############################################
 
-function alert_store:init()
-
-end
-
--- ##############################################
-
-function host_alert_store:insert()
-
+function alert_store:insert(alert)
+   traceError(TRACE_DEBUG,TRACE_CONSOLE, "alert_store:insert")
+   tprint(alert)
 end
 
 -- ##############################################
 --
-function pools:_get_pool_lock_key()
-    local key = string.format("ntopng.cache.alert_store.%s.alert_store_lock", self.key)
-    -- e.g.:
-    --  ntopng.pools.interface_pools.pool_lock
-
-    return key
+function alert_store:_get_store_lock_key()
+   return string.format("ntopng.cache.alert_store.%s.alert_store_lock", self.key)
 end
 
 -- ##############################################
@@ -67,7 +58,7 @@ end
 function alert_store:_lock()
    local max_lock_duration = 5 -- seconds
    local max_lock_attempts = 5 -- give up after at most this number of attempts
-   local lock_key = self:_get_pool_lock_key()
+   local lock_key = self:_get_store_lock_key()
 
    for i = 1, max_lock_attempts do
       local value_set = ntop.setnxCache(lock_key, "1", max_lock_duration)
@@ -85,7 +76,7 @@ end
 -- ##############################################
 
 function alert_store:_unlock()
-   ntop.delCache(self:_get_pool_lock_key())
+   ntop.delCache(self:_get_store_lock_key())
 end
 
 -- ##############################################

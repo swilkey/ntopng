@@ -7,6 +7,7 @@ package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. p
 
 require "lua_utils"
 local alert_store = require "alert_store"
+local alert_consts = require "alert_consts"
 local json = require "dkjson"
 
 -- ##############################################
@@ -32,14 +33,45 @@ end
 
 -- ##############################################
 
-function host_alert_store:init()
-   -- TODO
-end
+function host_alert_store:insert(alert)
+   local table_name = "host_alerts"
 
--- ##############################################
+   traceError(TRACE_DEBUG,TRACE_CONSOLE, "host_alert_store:insert")
+  
+   local hostinfo = hostkey2hostinfo(alert.alert_entity_val)
+   local ip = hostinfo["host"]
+   local vlan_id = hostinfo["vlan"] or 0
+   local host_name = alert.symbolic_name or ""
+   local is_attacker = ternary(alert.is_attacker, 1, 0)
+   local is_victim = ternary(alert.is_victim, 1, 0)
+   local json = alert.alert_json or ""
 
-function host_alert_store:insert()
-   -- TODO
+   local insert_stmt = "INSERT INTO "..table_name.."("..
+        "alert_id, "..
+        "ip, "..
+        "vlan_id, "..
+        "name, "..
+        "is_attacker, "..
+        "is_victim, "..
+        "tstamp, "..
+        "tstamp_end, "..
+        "severity, "..
+        "json"..
+      ") "..
+      "VALUES ("..
+        alert.alert_type..", "..
+        ip..", "..
+        vlan_id..", "..
+        host_name..", "..
+        is_attacker...", "..
+        is_victim...", "..
+        alert.alert_tstamp..", "..
+        alert.alert_tstamp_end..", "..
+        alert.alert_severity..", "..
+        json..
+      "); "
+
+   return interface.alert_store_query(insert_stmt)
 end
 
 -- ##############################################
