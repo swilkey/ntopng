@@ -19,30 +19,24 @@
  *
  */
 
-#ifndef _STORE_MANAGER_H_
-#define _STORE_MANAGER_H_
+#ifndef _ALERT_STORE_H_
+#define _ALERT_STORE_H_
 
 #include "ntop_includes.h"
 
-class StoreManager {
+class Flow;
+
+class AlertStore : public StoreManager {
  private:
- protected:
-  int ifid;
-  NetworkInterface *iface;
-  Mutex m;
-  sqlite3 *db;
+  bool store_opened, store_initialized;
+  int openStore();
 
-  int init(const char *db_file_full_path);
-  int exec_query(const char * const db_query,
-		 int (*callback)(void *, int, char **, char **),
-		 void *payload);
-  int exec_statement(sqlite3_stmt *stmt);
  public:
-  StoreManager(int interface_id);
-  virtual ~StoreManager();
+  AlertStore(int interface_id, const char *db_filename);
+  ~AlertStore();
 
-  NetworkInterface* getNetworkInterface(); 
-  int optimizeStore();
+  bool alert_store_query(lua_State *vm, const char * const query);
+
 };
 
-#endif /* _STORE_MANAGER_H_ */
+#endif /* _ALERT_STORE_H_ */

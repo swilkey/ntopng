@@ -184,7 +184,7 @@ NetworkInterface::NetworkInterface(const char *name,
 
   loadScalingFactorPrefs();
 
-  statsManager = NULL, alertsManager = NULL, alertsQueue = NULL;
+  statsManager = NULL, alertsManager = NULL, alertStore = NULL, alertsQueue = NULL;
   ndpiStats = NULL;
   dscpStats = NULL;
 
@@ -313,7 +313,7 @@ void NetworkInterface::init() {
 #endif
   ndpiStats = NULL;
   dscpStats = NULL;
-  statsManager = NULL, alertsManager = NULL, ifSpeed = 0;
+  statsManager = NULL, alertsManager = NULL, alertStore = NULL, ifSpeed = 0;
   host_pools = NULL;
   bcast_domains = NULL;
   checkIdle();
@@ -571,6 +571,7 @@ NetworkInterface::~NetworkInterface() {
   if(discovery)      delete discovery;
   if(statsManager)   delete statsManager;
   if(alertsManager)  delete alertsManager;
+  if(alertStore)     delete alertStore;
   if(alertsQueue)    delete alertsQueue;
   if(ndpiStats)      delete ndpiStats;
   if(dscpStats)      delete dscpStats;
@@ -6405,6 +6406,15 @@ static bool virtual_http_hosts_walker(GenericHashEntry *node, void *data, bool *
 
 /* **************************************** */
 
+bool NetworkInterface::alert_store_query(lua_State *vm, const char * const sql) {
+  if(!alertStore)
+    return false;
+
+  return alertStore->alert_store_query(vm, sql);
+}
+
+/* **************************************** */
+
 void NetworkInterface::listHTTPHosts(lua_State *vm, char *key) {
   struct virtual_host_valk_info info;
   u_int32_t begin_slot = 0;
@@ -6524,6 +6534,7 @@ void NetworkInterface::allocateStructures() {
 
     if(!isViewed()) {
       alertsManager = new AlertsManager(id, ALERTS_MANAGER_STORE_NAME);
+      alertStore    = new AlertStore(id, ALERTS_STORE_DB_FILE_NAME);
       alertsQueue   = new AlertsQueue(this);
     }
 

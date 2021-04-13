@@ -1,0 +1,165 @@
+-- -----------------------------------------------------
+-- Table `active_monitoring_alerts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `active_monitoring_alerts` (
+`rowid` INTEGER PRIMARY KEY AUTOINCREMENT,
+`alert_id` INTEGER NOT NULL CHECK(`alert_id` >= 0),
+`resolved_ip_version` INTEGER NOT NULL CHECK(`resolved_ip_version` IN (4,6)),
+`resolved_ip` BLOB DEFAULT 0,
+`resolved_name` TEXT NULL,
+`interface_id` INTEGER NULL,
+`measure_threshold` INTEGER NULL DEFAULT 0,
+`measure_value` INTEGER NULL DEFAULT 0,
+`tstamp` DATETIME NOT NULL,
+`tstamp_end` DATETIME NULL DEFAULT 0,
+`severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
+`description` TEXT NULL,
+`json` TEXT NULL);
+
+CREATE INDEX IF NOT EXISTS `i_id` ON `active_monitoring_alerts`(alert_id);
+CREATE INDEX IF NOT EXISTS `i_severity` ON `active_monitoring_alerts`(severity);
+CREATE INDEX IF NOT EXISTS `i_tstamp` ON `active_monitoring_alerts`(tstamp);
+
+-- -----------------------------------------------------
+-- Table `flow_alerts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `flow_alerts` (
+`rowid` INTEGER PRIMARY KEY AUTOINCREMENT,
+`alert_id` INTEGER NOT NULL CHECK(`alert_id` >= 0),
+`tstamp` DATETIME NOT NULL,
+`tstamp_end` DATETIME NULL DEFAULT 0,
+`severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
+`json` TEXT NULL,
+`cli_ip` BLOB DEFAULT 0,
+`srv_ip` BLOB DEFAULT 0,
+`ip_version` INTEGER NOT NULL CHECK(`ip_version` IN (4,6)),
+`cli_port` INTEGER NULL DEFAULT 0 CHECK(`cli_port` IN (0,65535)),
+`srv_port` INTEGER NULL DEFAULT 0 CHECK(`srv_port` IN (0,65535)),
+`vlan_id` INTEGER NULL DEFAULT 0 CHECK(`vlan_id` >= 0),
+`is_attacker_to_victim` INTEGER NULL CHECK(`is_attacker_to_victim` IN (0,1)),
+`is_victim_to_attacker` INTEGER NULL CHECK(`is_victim_to_attacker` IN (0,1)),
+`proto` INTEGER NULL DEFAULT 0 CHECK(`proto` >= 0),
+`l7_proto` INTEGER NULL DEFAULT 0 CHECK(`l7_proto` >= 0),
+`l7_master_proto` INTEGER NULL DEFAULT 0 CHECK(`l7_master_proto` >= 0),
+`l7_cat` INTEGER NULL DEFAULT 0 CHECK(`l7_cat` >= 0),
+`cli_name` TEXT NULL,
+`srv_name` TEXT NULL,
+`cli_country` TEXT NULL CHECK(LENGTH(`cli_country`) == 2),
+`srv_country` TEXT NULL CHECK(LENGTH(`srv_country`) == 2),
+`cli_blacklisted` INTEGER NULL DEFAULT 0 CHECK(`cli_blacklisted` IN (0,1)),
+`srv_blacklisted` INTEGER NULL DEFAULT 0 CHECK(`srv_blacklisted` IN (0,1)),
+`cli2srv_bytes` INTEGER NULL DEFAULT 0 CHECK(`cli2srv_bytes` >= 0),
+`srv2cli_bytes` INTEGER NULL DEFAULT 0 CHECK(`srv2cli_bytes` >= 0),
+`cli2srv_pkts` INTEGER NULL DEFAULT 0 CHECK(`cli2srv_pkts` >= 0),
+`srv2cli_pkts` INTEGER NULL DEFAULT 0 CHECK(`srv2cli_pkts` >= 0),
+`first_seen` DATETIME NULL DEFAULT 0,
+`community_id` TEXT NULL,
+`score` INTEGER UNSIGNED NULL DEFAULT 0 CHECK(`score` >= 0),
+`flow_risk_bitmap` BLOB NULL);
+
+CREATE INDEX IF NOT EXISTS `i_id` ON `flow_alerts`(alert_id);
+CREATE INDEX IF NOT EXISTS `i_severity` ON `flow_alerts`(severity);
+CREATE INDEX IF NOT EXISTS `i_tstamp` ON `flow_alerts`(tstamp);
+CREATE INDEX IF NOT EXISTS `i_cli_ip` ON `flow_alerts`(`vlan_id`,`ip_version`,`cli_ip`);
+CREATE INDEX IF NOT EXISTS `i_srv_ip` ON `flow_alerts`(`vlan_id`,`ip_version`,`srv_ip`);
+CREATE INDEX IF NOT EXISTS `i_cli_port` ON `flow_alerts`(`cli_port`);
+CREATE INDEX IF NOT EXISTS `i_srv_port` ON `flow_alerts`(`srv_port`);
+CREATE INDEX IF NOT EXISTS `i_l7_proto` ON `flow_alerts`(`l7_proto`);
+CREATE INDEX IF NOT EXISTS `i_l7_master_proto` ON `flow_alerts`(`l7_master_proto`);
+CREATE INDEX IF NOT EXISTS `i_l7_cat` ON `flow_alerts`(`l7_cat`);
+CREATE INDEX IF NOT EXISTS `i_flow_risk_bitmap` ON `flow_alerts`(`flow_risk_bitmap`);
+
+-- -----------------------------------------------------
+-- Table `host_alerts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `host_alerts` (
+`rowid` INTEGER PRIMARY KEY AUTOINCREMENT,
+`alert_id` INTEGER NOT NULL CHECK(`alert_id` >= 0),
+`ip` BLOB NOT NULL DEFAULT 0,
+`ip_version` INTEGER NOT NULL CHECK(`ip_version` IN (4,6)),
+`vlan_id` INTEGER NULL DEFAULT 0 CHECK(`vlan_id` >= 0),
+`name` TEXT NULL,
+`is_attacker` INTEGER NULL CHECK(`is_attacker` IN (0,1)),
+`is_victim` INTEGER NULL CHECK(`is_victim` IN (0,1)),
+`tstamp` DATETIME NOT NULL,
+`tstamp_end` DATETIME NULL DEFAULT 0,
+`severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
+`description` TEXT NULL,
+`json` TEXT NULL);
+
+CREATE INDEX IF NOT EXISTS `i_id` ON `host_alerts`(`alert_id`);
+CREATE INDEX IF NOT EXISTS `i_severity` ON `host_alerts`(`severity`);
+CREATE INDEX IF NOT EXISTS `i_tstamp` ON `host_alerts`(`tstamp`);
+CREATE INDEX IF NOT EXISTS `i_ip` ON `host_alerts`(`vlan_id`,`ip_version`,`ip`);
+CREATE INDEX IF NOT EXISTS `i_is_attacker` ON `host_alerts`(`is_attacker`);
+CREATE INDEX IF NOT EXISTS `i_is_victim` ON `host_alerts`(`is_victim`);
+
+-- -----------------------------------------------------
+-- Table `mac_alerts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mac_alerts` (
+`rowid` INTEGER PRIMARY KEY AUTOINCREMENT,
+`alert_id` INTEGER NOT NULL CHECK(`alert_id` >= 0),
+`address` BLOB NULL DEFAULT 0,
+`device_type` INTEGER NULL CHECK(`device_type` >= 0),
+`name` TEXT NULL,
+`is_attacker` INTEGER NULL CHECK(`is_attacker` IN (0,1)),
+`is_victim` INTEGER NULL CHECK(`is_victim` IN (0,1)),
+`tstamp` DATETIME NOT NULL,
+`tstamp_end` DATETIME NULL DEFAULT 0,
+`severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
+`description` TEXT NULL,
+`json` TEXT NULL);
+
+CREATE INDEX IF NOT EXISTS `i_id` ON `mac_alerts`(alert_id);
+CREATE INDEX IF NOT EXISTS `i_severity` ON `mac_alerts`(severity);
+CREATE INDEX IF NOT EXISTS `i_tstamp` ON `mac_alerts`(tstamp);
+CREATE INDEX IF NOT EXISTS `i_address` ON `mac_alerts`(`address`);
+CREATE INDEX IF NOT EXISTS `i_is_attacker` ON `mac_alerts`(`is_attacker`);
+CREATE INDEX IF NOT EXISTS `i_is_victim` ON `mac_alerts`(`is_victim`);
+
+-- -----------------------------------------------------
+-- Table `snmp_alerts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `snmp_alerts` (
+`rowid` INTEGER PRIMARY KEY AUTOINCREMENT,
+`alert_id` INTEGER NOT NULL CHECK(`alert_id` >= 0),
+`ip` BLOB NULL DEFAULT 0,
+`ip_version` INTEGER NOT NULL CHECK(`ip_version` IN (4,6)),
+`port` INTEGER NULL,
+`name` TEXT NULL,
+`port_name` TEXT NULL,
+`tstamp` DATETIME NOT NULL,
+`tstamp_end` DATETIME NULL DEFAULT 0,
+`severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
+`description` TEXT NULL,
+`json` TEXT NULL);
+
+CREATE INDEX IF NOT EXISTS `i_id` ON `snmp_alerts`(alert_id);
+CREATE INDEX IF NOT EXISTS `i_severity` ON `snmp_alerts`(severity);
+CREATE INDEX IF NOT EXISTS `i_tstamp` ON `snmp_alerts`(tstamp);
+CREATE INDEX IF NOT EXISTS `i_ip` ON `snmp_alerts`(`ip_version`,`ip`);
+
+-- -----------------------------------------------------
+-- Table `system_alerts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `system_alerts` (
+`rowid` INTEGER PRIMARY KEY AUTOINCREMENT,
+`alert_id` INTEGER NOT NULL CHECK(`alert_id` >= 0),
+`name` TEXT NULL,
+`tstamp` DATETIME NOT NULL,
+`tstamp_end` DATETIME NULL DEFAULT 0,
+`severity` INTEGER NOT NULL CHECK(`severity` >= 0),	
+`counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
+`description` TEXT NULL,
+`json` TEXT NULL);
+
+CREATE INDEX IF NOT EXISTS `i_id` ON `system_alerts`(alert_id);
+CREATE INDEX IF NOT EXISTS `i_severity` ON `system_alerts`(severity);
+CREATE INDEX IF NOT EXISTS `i_tstamp` ON `system_alerts`(tstamp);
+
