@@ -36,7 +36,7 @@ end
 function snmp_alert_store:insert(alert)
    local table_name = "snmp_alerts"
 
-   traceError(TRACE_DEBUG,TRACE_CONSOLE, "snmp_alert_store:insert")
+   traceError(TRACE_NORMAL, TRACE_CONSOLE, "snmp_alert_store:insert")
   
    -- TODO
    

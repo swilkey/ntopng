@@ -36,7 +36,7 @@ end
 function mac_alert_store:insert(alert)
    local table_name = "mac_alerts"
 
-   traceError(TRACE_DEBUG,TRACE_CONSOLE, "mac_alert_store:insert")
+   traceError(TRACE_NORMAL, TRACE_CONSOLE, "mac_alert_store:insert")
   
    -- TODO
 

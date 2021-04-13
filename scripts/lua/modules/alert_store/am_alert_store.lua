@@ -36,7 +36,7 @@ end
 function am_alert_store:insert(alert)
    local table_name = "active_monitoring_alerts"
 
-   traceError(TRACE_DEBUG,TRACE_CONSOLE, "am_alert_store:insert")
+   traceError(TRACE_NORMAL, TRACE_CONSOLE, "am_alert_store:insert")
   
    -- TODO
 

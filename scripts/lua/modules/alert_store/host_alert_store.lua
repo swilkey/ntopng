@@ -36,7 +36,7 @@ end
 function host_alert_store:insert(alert)
    local table_name = "host_alerts"
 
-   traceError(TRACE_DEBUG,TRACE_CONSOLE, "host_alert_store:insert")
+   traceError(TRACE_NORMAL, TRACE_CONSOLE, "host_alert_store:insert")
   
    local hostinfo = hostkey2hostinfo(alert.alert_entity_val)
    local ip = hostinfo["host"]
@@ -63,8 +63,8 @@ function host_alert_store:insert(alert)
         ip..", "..
         vlan_id..", "..
         host_name..", "..
-        is_attacker...", "..
-        is_victim...", "..
+        is_attacker..", "..
+        is_victim..", "..
         alert.alert_tstamp..", "..
         alert.alert_tstamp_end..", "..
         alert.alert_severity..", "..

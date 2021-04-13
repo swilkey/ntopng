@@ -43,8 +43,9 @@ end
 -- ##############################################
 
 function alert_store:insert(alert)
-   traceError(TRACE_DEBUG,TRACE_CONSOLE, "alert_store:insert")
+   traceError(TRACE_NORMAL, TRACE_CONSOLE, "alert_store:insert")
    tprint(alert)
+   return false
 end
 
 -- ##############################################

@@ -36,9 +36,11 @@ end
 function flow_alert_store:insert(alert)
    local table_name = "flow_alerts"
 
-   traceError(TRACE_DEBUG,TRACE_CONSOLE, "flow_alert_store:insert")
+   traceError(TRACE_NORMAL, TRACE_CONSOLE, "flow_alert_store:insert")
  
    -- TODO
+
+   tprint(alert)
 
    local json = alert.alert_json or ""
 
