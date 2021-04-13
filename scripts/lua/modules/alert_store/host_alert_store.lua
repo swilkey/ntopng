@@ -22,6 +22,7 @@ function host_alert_store:new(args)
 
    -- Subclass using the base class instance
    self.key = "host"
+   self._table_name = "host_alerts"
 
    -- self is passed as argument so it will be set as base class metatable
    -- and this will actually make it possible to override functions
@@ -34,8 +35,6 @@ end
 -- ##############################################
 
 function host_alert_store:insert(alert)
-   local table_name = "host_alerts"
-
    traceError(TRACE_NORMAL, TRACE_CONSOLE, "host_alert_store:insert")
   
    local hostinfo = hostkey2hostinfo(alert.alert_entity_val)
@@ -46,7 +45,7 @@ function host_alert_store:insert(alert)
    local is_victim = ternary(alert.is_victim, 1, 0)
    local json = alert.alert_json or ""
 
-   local insert_stmt = "INSERT INTO "..table_name.."("..
+   local insert_stmt = "INSERT INTO "..self._table_name.."("..
         "alert_id, "..
         "ip, "..
         "vlan_id, "..
@@ -72,6 +71,28 @@ function host_alert_store:insert(alert)
       "); "
 
    return interface.alert_store_query(insert_stmt)
+end
+
+-- ##############################################
+
+function host_alert_store:add_host_filter(host)
+   if isIPv4(host) or isIPv6(host) then
+      self._where[#self._where + 1] = string.format("ip = '%s'", host)
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
+function host_alert_store:add_vlan_filter(vlan_id)
+   if tonumber(vlan_id) then
+      self._where[#self._where + 1] = string.format("vlan_id = %u", vlan_id) 
+      return true
+   end
+
+   return false
 end
 
 -- ##############################################

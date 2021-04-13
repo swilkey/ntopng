@@ -22,6 +22,9 @@ function alert_store:new(args)
 
    local this = args or {key = "base"}
 
+   self._where = { "1 = 1" }
+   self._group_by = nil
+
    setmetatable(this, self)
    self.__index = self
 
@@ -37,7 +40,28 @@ end
 -- ##############################################
 
 function alert_store:_initialize()
+end
 
+-- ##############################################
+
+function alert_store:add_time_filter(tstamp, tstamp_end)
+   if tonumber(tstamp) then
+      self._where[#self._where + 1] = string.format("tstamp = %u", tstamp) 
+
+      if tonumber(tstamp_end) then
+	 self._where[#self._where + 1] = string.format("tstamp_end = %u", tstamp_end)
+      end
+
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
+function alert_store:group_by(fields)
+   self._group_by = fields
 end
 
 -- ##############################################
@@ -49,7 +73,23 @@ function alert_store:insert(alert)
 end
 
 -- ##############################################
---
+
+function alert_store:select(fields)
+   local where_clause = table.concat(self._where, " AND ")
+
+   local q = string.format("SELECT %s FROM `%s` WHERE %s ", fields or '*', self._table_name, where_clause)
+
+   if self._group_by then
+      q = q..self._group_by
+   end
+
+   local res = interface.alert_store_query(q)
+
+   return res
+end
+
+-- ##############################################
+
 function alert_store:_get_store_lock_key()
    return string.format("ntopng.cache.alert_store.%s.alert_store_lock", self.key)
 end
