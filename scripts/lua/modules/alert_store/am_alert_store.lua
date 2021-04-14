@@ -22,6 +22,7 @@ function am_alert_store:new(args)
 
    -- Subclass using the base class instance
    self.key = "am"
+   self._table_name = "active_monitoring_alerts"
 
    -- self is passed as argument so it will be set as base class metatable
    -- and this will actually make it possible to override functions
@@ -34,25 +35,42 @@ end
 -- ##############################################
 
 function am_alert_store:insert(alert)
-   local table_name = "active_monitoring_alerts"
+   local resolved_ip
+   local resolved_name
+   local measure_threshold
+   local measure_value
 
-   traceError(TRACE_NORMAL, TRACE_CONSOLE, "am_alert_store:insert")
-  
-   -- TODO
+   if not isEmptyString(alert.alert_json) then
+      local am_json = json.decode(alert.alert_json)
+      if am_json then
+         resolved_ip = am_json.ip
+         if am_json.host then
+            resolved_name = am_json.host.host
+         end
+         measure_threshold = am_json.threshold
+         measure_value = am_json.value
+      end
+   end
 
-   local json = alert.alert_json or ""
+   local insert_stmt = string.format("INSERT INTO %s "..
+      "(alert_id, tstamp, tstamp_end, severity, interface_id, resolved_ip, resolved_name, "..
+      "measure_threshold, measure_value, json) "..
+      "VALUES (%u, %u, %u, %u, %d, '%s', '%s', %u, %f, '%s'); ",
+      self._table_name, 
+      alert.alert_type,
+      alert.alert_tstamp,
+      alert.alert_tstamp_end,
+      alert.alert_severity,
+      getSystemInterfaceId(),
+      self:_escape(resolved_ip),
+      self:_escape(resolved_name),
+      measure_threshold or 0,
+      measure_value or 0,
+      self:_escape(alert.alert_json))
 
-   local insert_stmt = "INSERT INTO "..table_name.."("..
-        "alert_id, "..
+   -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 
-      ") "..
-      "VALUES ("..
-        alert.alert_type..", "..
-
-        json..
-      "); "
-
-   --return interface.alert_store_query(insert_stmt)
+   return interface.alert_store_query(insert_stmt)
 end
 
 -- ##############################################

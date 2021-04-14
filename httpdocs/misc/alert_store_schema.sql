@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `active_monitoring_alerts` (
 `resolved_name` TEXT NULL,
 `interface_id` INTEGER NULL,
 `measure_threshold` INTEGER NULL DEFAULT 0,
-`measure_value` INTEGER NULL DEFAULT 0,
+`measure_value` REAL NULL DEFAULT 0,
 `tstamp` DATETIME NOT NULL,
 `tstamp_end` DATETIME NULL DEFAULT 0,
 `severity` INTEGER NOT NULL CHECK(`severity` >= 0),

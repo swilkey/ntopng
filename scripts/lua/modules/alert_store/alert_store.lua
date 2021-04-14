@@ -45,6 +45,10 @@ end
 -- ##############################################
 
 function alert_store:_escape(str)
+   if not str then
+      return ""
+   end
+
    return str:gsub("'", "''")
 end
 
