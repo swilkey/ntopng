@@ -14,6 +14,7 @@ sendHTTPContentTypeHeader('text/plain')
 assert(host_alert_store:add_host_filter("192.168.2.1"))
 assert(host_alert_store:add_vlan_filter(0))
 assert(host_alert_store:add_time_filter(os.time() - 60, os.time()))
+assert(host_alert_store:add_limit(20, 60))
 
 assert(not host_alert_store:add_host_filter("foobar"))
 assert(not host_alert_store:add_vlan_filter("foobar"))

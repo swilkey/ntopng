@@ -83,6 +83,23 @@ end
 
 -- ##############################################
 
+--@brief Pagination options to fetch partial results
+function alert_store:add_limit(limit, offset)
+   if tonumber(limit) then
+      self._limit = limit
+
+      if tonumber(offset) then
+	 self._offset = offset
+      end
+
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
 function alert_store:group_by(fields)
    if self:_valid_fields(fields) then
       self._group_by = fields
@@ -104,18 +121,36 @@ end
 
 function alert_store:select(fields)
    local res = {}
+   local where_clause = ''
+   local group_by_clause = ''
+   local limit_clause = ''
+   local offset_clause = ''
    fields = fields or '*'
 
    if not self:_valid_fields(fields) then
       return res
    end
 
-   local where_clause = table.concat(self._where, " AND ")
-   local q = string.format("SELECT %s FROM `%s` WHERE %s ", fields, self._table_name, where_clause)
+   where_clause = table.concat(self._where, " AND ")
 
+   -- [OPTIONAL] Add the group by
    if self._group_by then
-      q = q..self._group_by
+      group_by_clause = string.format("GROUP BY %s", self._group_by)
    end
+
+   -- [OPTIONAL] Add limit for pagination
+   if self._limit then
+      limit_clause = string.format("LIMIT %u", self._limit)
+   end
+
+   -- [OPTIONAL] Add offset for pagination
+   if self._offset then
+      offset_clause = string.format("OFFSET %u", self._offset)
+   end
+
+   -- Prepare the final query
+   local q = string.format(" SELECT %s FROM `%s` WHERE %s %s %s %s",
+			   fields, self._table_name, where_clause, group_by_clause, limit_clause, offset_clause)
 
    res = interface.alert_store_query(q)
 
