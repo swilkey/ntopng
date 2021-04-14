@@ -160,7 +160,7 @@ local function performAlertsQuery(statement, what, opts, force_query, group_by)
    end
 
    if tonumber(opts.alert_severity) ~= nil then
-      wargs[#wargs+1] = "AND alert_severity = "..(opts.alert_severity)
+      wargs[#wargs+1] = "AND severity = "..(opts.alert_severity)
    end
 
    if what == "historical-flows" then
@@ -177,7 +177,7 @@ local function performAlertsQuery(statement, what, opts, force_query, group_by)
       elseif opts.sortColumn == "column_key" then
          order_by = "rowid"
       elseif opts.sortColumn == "column_severity" then
-         order_by = "alert_severity"
+         order_by = "severity"
       elseif opts.sortColumn == "column_type" then
          order_by = "alert_type"
       elseif opts.sortColumn == "column_count" and what ~= "engaged" then
@@ -405,7 +405,7 @@ function alert_utils.getNumAlertsPerSeverity(what, epoch_begin, epoch_end)
      epoch_end = epoch_end,
    }
 
-   return performAlertsQuery("select alert_severity severity, count(*) count", what, opts, nil, "alert_severity" --[[ group by ]])
+   return performAlertsQuery("select severity, count(*) count", what, opts, nil, "severity" --[[ group by ]])
 end
 
 -- #################################
@@ -679,8 +679,8 @@ local function getMenuEntries(status, selection_name, get_params)
    end
 
    if selection_name == "severity" then
-      select_clause[#select_clause + 1] = "alert_severity id"
-      group_by_clause[#group_by_clause + 1] = "alert_severity"
+      select_clause[#select_clause + 1] = "severity id"
+      group_by_clause[#group_by_clause + 1] = "severity"
    elseif selection_name == "type" then
       select_clause[#select_clause + 1] = "alert_type id"
       group_by_clause[#group_by_clause + 1] = "alert_type"
@@ -2076,7 +2076,7 @@ end
 -- #################################
 
 function alert_utils.getAlertInfo(alert)
-  local alert_json = alert["alert_json"]
+  local alert_json = alert["json"]
 
   if isEmptyString(alert_json) then
     alert_json = {}
@@ -2164,7 +2164,7 @@ function alert_utils.formatAlertNotification(notif, options)
    if(options.show_severity == false) then
       severity = ""
    else
-      severity =  " [" .. alert_consts.alertSeverityLabel(notif.alert_severity, options.nohtml, options.emoji) .. "]"
+      severity =  " [" .. alert_consts.alertSeverityLabel(notif.severity, options.nohtml, options.emoji) .. "]"
    end
 
    if(options.nodate == true) then
