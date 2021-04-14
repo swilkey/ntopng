@@ -22,6 +22,7 @@ function snmp_alert_store:new(args)
 
    -- Subclass using the base class instance
    self.key = "snmp"
+   self._table_name = "snmp_alerts"
 
    -- self is passed as argument so it will be set as base class metatable
    -- and this will actually make it possible to override functions
@@ -34,25 +35,36 @@ end
 -- ##############################################
 
 function snmp_alert_store:insert(alert)
-   local table_name = "snmp_alerts"
+   local ip
+   local port
+   local port_name
 
-   traceError(TRACE_NORMAL, TRACE_CONSOLE, "snmp_alert_store:insert")
-  
-   -- TODO
-   
-   local json = alert.alert_json or ""
+   if not isEmptyString(alert.alert_json) then
+      local snmp_json = json.decode(alert.alert_json)
+      if snmp_json then
+         ip = snmp_json.device
+         port = snmp_json.interface
+         port_name = snmp_json.interface_name
+      end
+   end
 
-   local insert_stmt = "INSERT INTO "..table_name.."("..
-        "alert_id, "..
+   local insert_stmt = string.format("INSERT INTO %s "..
+      "(alert_id, tstamp, tstamp_end, severity, ip, name, port, port_name, json) "..
+      "VALUES (%u, %u, %u, %u, '%s', '%s', %u, '%s', '%s'); ",
+      self._table_name, 
+      alert.alert_type,
+      alert.alert_tstamp,
+      alert.alert_tstamp_end,
+      alert.alert_severity,
+      self:_escape(""), -- TODO
+      self:_escape(ip or alert.alert_entity_val),
+      port or 0,
+      self:_escape(port_name),
+      self:_escape(alert.alert_json))
 
-      ") "..
-      "VALUES ("..
-        alert.alert_type..", "..
+   -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 
-        json..
-      "); "
-
-   --return interface.alert_store_query(insert_stmt)
+   return interface.alert_store_query(insert_stmt)
 end
 
 -- ##############################################
