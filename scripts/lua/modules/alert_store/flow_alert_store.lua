@@ -73,7 +73,8 @@ function flow_alert_store:insert(alert)
       alert.community_id,
       alert.score,
       0, -- TODO flow_risk_bitmap
-      alert.alert_json or "")
+      self:_escape(alert.alert_json)
+   )
 
    traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 

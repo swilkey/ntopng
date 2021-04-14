@@ -58,7 +58,7 @@ function host_alert_store:insert(alert)
       alert.alert_tstamp,
       alert.alert_tstamp_end,
       alert.alert_severity,
-      json)
+      self._escape(json))
 
    traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 
