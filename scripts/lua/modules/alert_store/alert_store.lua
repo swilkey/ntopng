@@ -50,6 +50,23 @@ end
 
 -- ##############################################
 
+--@brief Check if the submitted fields are avalid (i.e., they are not injection attempts)
+function alert_store:_valid_fields(fields)
+   local f = fields:split(",") or { fields }
+
+   for _, field in pairs(f) do
+      -- only allow alphanumeric characters and underscores
+      if not string.match(field, "^[%w_%(*%)]+$") then
+	 traceError(TRACE_ERROR, TRACE_CONSOLE, string.format("Invalid field found in query [%s]", field:gsub('%W','') --[[ prevent stored injections --]]))
+	 return false
+      end
+   end
+
+   return true
+end
+
+-- ##############################################
+
 function alert_store:add_time_filter(tstamp, tstamp_end)
    if tonumber(tstamp) then
       self._where[#self._where + 1] = string.format("tstamp = %u", tstamp) 
@@ -67,7 +84,12 @@ end
 -- ##############################################
 
 function alert_store:group_by(fields)
-   self._group_by = fields
+   if self:_valid_fields(fields) then
+      self._group_by = fields
+      return true
+   end
+
+   return false
 end
 
 -- ##############################################
@@ -80,16 +102,22 @@ end
 
 -- ##############################################
 
-function alert_store:select()
-   local where_clause = table.concat(self._where, " AND ")
+function alert_store:select(fields)
+   local res = {}
+   fields = fields or '*'
 
-   local q = string.format("SELECT *, count(*) FROM `%s` WHERE %s ", self._table_name, where_clause)
+   if not self:_valid_fields(fields) then
+      return res
+   end
+
+   local where_clause = table.concat(self._where, " AND ")
+   local q = string.format("SELECT %s FROM `%s` WHERE %s ", fields, self._table_name, where_clause)
 
    if self._group_by then
       q = q..self._group_by
    end
 
-   local res = interface.alert_store_query(q)
+   res = interface.alert_store_query(q)
 
    return res
 end

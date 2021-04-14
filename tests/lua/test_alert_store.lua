@@ -18,7 +18,7 @@ assert(host_alert_store:add_time_filter(os.time() - 60, os.time()))
 assert(not host_alert_store:add_host_filter("foobar"))
 assert(not host_alert_store:add_vlan_filter("foobar"))
 
-local res = host_alert_store:select()
+local res = host_alert_store:select("count(*)")
 
 print("OK")
 
