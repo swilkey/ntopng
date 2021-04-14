@@ -1604,6 +1604,8 @@ void Host::alert2JSON(HostAlert *alert, bool released, ndpi_serializer *s) {
   ndpi_serialize_string_string(s, "alert_entity_val", getEntityValue().c_str());
   ndpi_serialize_string_uint32(s, "alert_tstamp", alert->getEngageTime());
   ndpi_serialize_string_uint32(s, "alert_tstamp_end", alert->getReleaseTime());
+  ndpi_serialize_string_boolean(s, "is_attacker", alert->isAttacker());
+  ndpi_serialize_string_boolean(s, "is_victim", alert->isVictim());
 
   HostCallback *cb = getInterface()->getCallback(alert->getCallbackType());
   ndpi_serialize_string_int32(s, "alert_granularity", cb ? cb->getPeriod() : 0);

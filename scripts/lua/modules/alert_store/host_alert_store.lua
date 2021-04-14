@@ -35,20 +35,18 @@ end
 -- ##############################################
 
 function host_alert_store:insert(alert)
-   local table_name = "host_alerts"
-  
    local hostinfo = hostkey2hostinfo(alert.alert_entity_val)
    local ip = hostinfo["host"]
    local vlan_id = hostinfo["vlan"] or 0
    local host_name = alert.symbolic_name or ""
-   local is_attacker = ternary(alert.is_attacker, 1, 0) -- TODO
-   local is_victim = ternary(alert.is_victim, 1, 0) -- TODO
+   local is_attacker = ternary(alert.is_attacker, 1, 0)
+   local is_victim = ternary(alert.is_victim, 1, 0)
    local json = alert.alert_json or ""
 
    local insert_stmt = string.format("INSERT INTO %s "..
       "(alert_id, ip, vlan_id, name, is_attacker, is_victim, tstamp, tstamp_end, severity, json) "..
       "VALUES (%u, '%s', %u, '%s', %u, %u, %u, %u, %u, '%s'); ",
-      table_name,
+      self._table_name, 
       alert.alert_type,
       ip,
       vlan_id,
