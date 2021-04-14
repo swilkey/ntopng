@@ -37,7 +37,7 @@ AlertsQueue::AlertsQueue(NetworkInterface *_iface) {
 void AlertsQueue::pushAlertJson(ndpi_serializer *alert, const char *atype, const char *a_subtype) {
   /* These are mandatory fields, present in all the pushed alerts */
   ndpi_serialize_string_uint32(alert, "ifid", iface->get_id());
-  ndpi_serialize_string_string(alert, "alert_type", atype);
+  ndpi_serialize_string_string(alert, "alert_id", atype);
   if(a_subtype && a_subtype[0] != '\0')
     ndpi_serialize_string_string(alert, "alert_subtype", a_subtype);
   ndpi_serialize_string_uint64(alert, "alert_tstamp", time(NULL));
