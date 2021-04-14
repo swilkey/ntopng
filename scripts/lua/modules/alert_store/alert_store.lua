@@ -56,7 +56,7 @@ function alert_store:_valid_fields(fields)
 
    for _, field in pairs(f) do
       -- only allow alphanumeric characters and underscores
-      if not string.match(field, "^[%w_%(*%)]+$") then
+      if not string.match(field, "^[%w_ %(*%)]+$") then
 	 traceError(TRACE_ERROR, TRACE_CONSOLE, string.format("Invalid field found in query [%s]", field:gsub('%W','') --[[ prevent stored injections --]]))
 	 return false
       end
