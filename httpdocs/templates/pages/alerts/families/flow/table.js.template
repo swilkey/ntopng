@@ -1,0 +1,19 @@
+[
+    /* Date */
+    {name: 'date'},
+    /* Counts */
+    {name: 'counts'},
+    /* Severity */
+    {name: 'severity', data: 'severity'},
+    /* Alert Type */
+    {name: 'type', data: 'type'},
+    /* Score */
+    {name: 'score', data: 'score', className: 'text-center'},
+    /* Application */
+    {name: 'application'},
+    /* Description */
+    {name: 'description', data: 'msg'},
+    {targets: -1, className: 'text-center', data: null, render: (type) => {
+        return '';
+    }}
+]

@@ -2017,6 +2017,8 @@ local known_parameters = {
 
    -- server side Datatables 
    ["start"]              = validateNumber,
+   ["sort"]              = validateSingleWord,
+   ["order"]            = validateSingleWord,
    ["length"]             = validateNumber,
    ["draw"]               = validateNumber,
    ["visible_columns"]          = validateEmptyOr(validateListOfTypeInline(validateSingleWord))

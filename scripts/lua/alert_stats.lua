@@ -9,9 +9,12 @@ local page_utils = require "page_utils"
 local ui_utils = require "ui_utils"
 local json = require "dkjson"
 local template_utils = require "template_utils"
+local Datasource = require "widget_gui_utils".datasource
+
+local ifs = interface.getStats()
 
 -- select the default page
-local page = _GET["page"] or 'host'
+local page = _GET["page"] or 'flow'
 
 sendHTTPContentTypeHeader('text/html')
 
@@ -43,8 +46,8 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
         label = "SNMP Devices",
     },
     {
-        active = page == "flows",
-        page_name = "flows",
+        active = page == "flow",
+        page_name = "flow",
         label = "Flows",
     },
     {
@@ -63,12 +66,25 @@ local context = {
     template_utils = template_utils,
     json = json,
     ui_utils = ui_utils,
+    range_picker = {
+
+    },
+    datatable = {
+        name = page .. "-alerts-table",
+        initialLength = getDefaultTableSize(),
+        table = template_utils.gen(string.format("pages/alerts/families/%s/table.template", page), {}),
+        js_columns = template_utils.gen(string.format("pages/alerts/families/%s/table.js.template", page), {}),
+        datasource = Datasource(string.format("/lua/rest/v1/get/%s/alert/list.lua", "flow"), {
+            ifid = interface.getId(), 
+        }),
+        modals = {},
+    },
     alert_stats = {
         entity = page
     }
 }
 
-template_utils.render("pages/alert_stats.template", context)
+template_utils.render("pages/alerts/alert-stats.template", context)
 
 -- append the menu down below the page
 dofile(dirs.installdir .. "/scripts/lua/inc/footer.lua")
