@@ -156,7 +156,7 @@ local function performAlertsQuery(statement, what, opts, force_query, group_by)
    end
 
    if tonumber(opts.alert_type) ~= nil then
-      wargs[#wargs+1] = "AND alert_type = "..(opts.alert_type)
+      wargs[#wargs+1] = "AND alert_id = "..(opts.alert_type)
    end
 
    if tonumber(opts.alert_severity) ~= nil then
@@ -179,7 +179,7 @@ local function performAlertsQuery(statement, what, opts, force_query, group_by)
       elseif opts.sortColumn == "column_severity" then
          order_by = "severity"
       elseif opts.sortColumn == "column_type" then
-         order_by = "alert_type"
+         order_by = "alert_id"
       elseif opts.sortColumn == "column_count" and what ~= "engaged" then
          order_by = "alert_counter"
       elseif opts.sortColumn == "column_score" and what ~= "engaged" then
@@ -394,7 +394,7 @@ function alert_utils.getNumAlertsPerType(what, epoch_begin, epoch_end)
      epoch_end = epoch_end,
    }
 
-   return performAlertsQuery("select alert_type id, count(*) count", what, opts, nil, "alert_type" --[[ group by ]])
+   return performAlertsQuery("select alert_id id, count(*) count", what, opts, nil, "alert_id" --[[ group by ]])
 end
 
 -- #################################
@@ -453,7 +453,7 @@ function alert_utils.deleteFlowAlertsMatching(host_ip, alert_key)
    -- This is to match elements inside the alert_json
    local where = {
       string.format("(cli_addr = '%s' OR srv_addr = '%s')", host_ip, host_ip),
-      string.format("alert_type = %u", alert_key),
+      string.format("alert_id = %u", alert_key),
    }
 
    where = table.concat(where, " AND ")
@@ -473,7 +473,7 @@ function alert_utils.deleteHostAlertsMatching(host_ip, alert_key)
    local where = {
       string.format("alert_entity = %u", alert_entities.host.entity_id),
       string.format("alert_entity_val LIKE '%s%%'", host_ip), -- Use like to disregard any @<VLAN> after the IP address
-      string.format("alert_type = %u", alert_key),
+      string.format("alert_id = %u", alert_key),
    }
 
    where = table.concat(where, " AND ")
@@ -682,8 +682,8 @@ local function getMenuEntries(status, selection_name, get_params)
       select_clause[#select_clause + 1] = "severity id"
       group_by_clause[#group_by_clause + 1] = "severity"
    elseif selection_name == "type" then
-      select_clause[#select_clause + 1] = "alert_type id"
-      group_by_clause[#group_by_clause + 1] = "alert_type"
+      select_clause[#select_clause + 1] = "alert_id id"
+      group_by_clause[#group_by_clause + 1] = "alert_id"
    elseif selection_name == "l7_proto" then
       select_clause[#select_clause + 1] = "l7_proto id"
       group_by_clause[#group_by_clause + 1] = "l7_proto"
@@ -2097,7 +2097,7 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   msg = alert_json
-  local description = alertTypeDescription(alert.alert_type, alert.alert_entity)
+  local description = alertTypeDescription(alert.alert_id, alert.alert_entity)
 
   if(type(description) == "string") then
      -- localization string
@@ -2120,7 +2120,7 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   if(msg) then
-     if(alert_consts.getAlertType(alert.alert_type, alert.alert_entity) == "alert_am_threshold_cross") then
+     if(alert_consts.getAlertType(alert.alert_id, alert.alert_entity) == "alert_am_threshold_cross") then
       local plugins_utils = require "plugins_utils"
       local active_monitoring_utils = plugins_utils.loadModule("active_monitoring", "am_utils")
       local host = active_monitoring_utils.key2host(alert.alert_entity_val)
@@ -2181,7 +2181,7 @@ function alert_utils.formatAlertNotification(notif, options)
 
    local msg = string.format("%s%s%s [%s]",
 			     when, ifname, severity,
-			     alert_consts.alertTypeLabel(notif.alert_type, options.nohtml))
+			     alert_consts.alertTypeLabel(notif.alert_id, options.nohtml))
 
    -- entity can be hidden for example when one is OK with just the message
    if options.show_entity then
@@ -2226,7 +2226,7 @@ local function processStoreAlertFromQueue(alert)
 
    interface.select(tostring(alert.ifid))
 
-   if(alert.alert_type == "misconfigured_dhcp_range") then
+   if(alert.alert_id == "misconfigured_dhcp_range") then
       local router_info = {host = alert.router_ip, vlan = alert.vlan_id}
       entity_info = alerts_api.hostAlertEntity(alert.client_ip, alert.vlan_id)
       type_info = alert_consts.alert_types.alert_ip_outsite_dhcp_range.new(
@@ -2237,7 +2237,7 @@ local function processStoreAlertFromQueue(alert)
       )
       type_info:set_severity(alert_severities.warning)
       type_info:set_subtype(string.format("%s_%s_%s", hostinfo2hostkey(router_info), alert.client_mac, alert.sender_mac))
-   elseif(alert.alert_type == "mac_ip_association_change") then
+   elseif(alert.alert_id == "mac_ip_association_change") then
       local name = getDeviceName(alert.new_mac)
       entity_info = alerts_api.macEntity(alert.new_mac)
       type_info = alert_consts.alert_types.alert_mac_ip_association_change.new(
@@ -2248,16 +2248,16 @@ local function processStoreAlertFromQueue(alert)
       )
       type_info:set_severity(alert_severities.warning)
       type_info:set_subtype(string.format("%s_%s_%s", alert.ip, alert.old_mac, alert.new_mac))
-   elseif(alert.alert_type == "login_failed") then
+   elseif(alert.alert_id == "login_failed") then
       entity_info = alerts_api.userEntity(alert.user)
       type_info = alert_consts.alert_types.alert_login_failed.new()
       type_info:set_severity(alert_severities.warning)
-   elseif(alert.alert_type == "broadcast_domain_too_large") then
+   elseif(alert.alert_id == "broadcast_domain_too_large") then
       entity_info = alerts_api.macEntity(alert.src_mac)
       type_info = alert_consts.alert_types.alert_broadcast_domain_too_large.new(alert.src_mac, alert.dst_mac, alert.vlan_id, alert.spa, alert.tpa)
       type_info:set_severity(alert_severities.warning)
       type_info:set_subtype(string.format("%u_%s_%s_%s_%s", alert.vlan_id, alert.src_mac, alert.spa, alert.dst_mac, alert.tpa))
-   elseif((alert.alert_type == "user_activity") and (alert.scope == "login")) then
+   elseif((alert.alert_id == "user_activity") and (alert.scope == "login")) then
       entity_info = alerts_api.userEntity(alert.user)
       type_info = alert_consts.alert_types.alert_user_activity.new(
          "login",
@@ -2268,7 +2268,7 @@ local function processStoreAlertFromQueue(alert)
       )
       type_info:set_severity(alert_severities.notice)
       type_info:set_subtype("login//")
-   elseif(alert.alert_type == "nfq_flushed") then
+   elseif(alert.alert_id == "nfq_flushed") then
       entity_info = alerts_api.interfaceAlertEntity(alert.ifid)
       type_info = alert_consts.alert_types.alert_nfq_flushed.new(
          getInterfaceName(alert.ifid),
@@ -2279,7 +2279,7 @@ local function processStoreAlertFromQueue(alert)
 
       type_info:set_severity(alert_severities.error)
    else
-      traceError(TRACE_ERROR, TRACE_CONSOLE, "Unknown alert type " .. (alert.alert_type or ""))
+      traceError(TRACE_ERROR, TRACE_CONSOLE, "Unknown alert type " .. (alert.alert_id or ""))
    end
 
    return entity_info, type_info
