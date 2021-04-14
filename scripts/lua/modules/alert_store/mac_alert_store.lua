@@ -35,9 +35,6 @@ end
 -- ##############################################
 
 function mac_alert_store:insert(alert)
-   local is_attacker = false -- TODO
-   local is_victim = false -- TODO
-
    local insert_stmt = string.format("INSERT INTO %s "..
       "(alert_id, tstamp, tstamp_end, severity, address, device_type, name, "..
       "is_attacker, is_victim, json) "..
@@ -48,10 +45,10 @@ function mac_alert_store:insert(alert)
       alert.alert_tstamp_end,
       alert.alert_severity,
       self:_escape(alert.alert_entity_val),
-      0, -- TODO device_type
-      self:_escape(""), -- TODO name
-      ternary(is_attacker, 1, 0),
-      ternary(is_victim, 1, 0),
+      alert.device_type or 0,
+      self:_escape(alert.device_name),
+      ternary(alert.is_attacker, 1, 0),
+      ternary(alert.is_victim, 1, 0),
       self:_escape(alert.alert_json))
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)

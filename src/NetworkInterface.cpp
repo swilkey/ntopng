@@ -1551,7 +1551,7 @@ bool NetworkInterface::processPacket(u_int32_t bridge_iface_idx,
 	  if(dhcpp->msgType == 0x01) /* Request */
 	    ;//mac->setDhcpHost();
 	  else if(dhcpp->msgType == 0x02) { /* Reply */
-	    checkMacIPAssociation(false, dhcpp->chaddr, dhcpp->yiaddr);
+	    checkMacIPAssociation(false, dhcpp->chaddr, dhcpp->yiaddr, mac);
 	    checkDhcpIPRange(mac, dhcpp, vlan_id);
 	    setDHCPAddressesSeen();
 	  }
@@ -2338,8 +2338,8 @@ datalink_check:
 	  srcMac->incSentArpReplies();
 	  dstMac->incRcvdArpReplies();
 
-	  checkMacIPAssociation(true, arpp->arp_sha, arpp->arp_spa);
-	  checkMacIPAssociation(true, arpp->arp_tha, arpp->arp_tpa);
+	  checkMacIPAssociation(true, arpp->arp_sha, arpp->arp_spa, srcMac);
+	  checkMacIPAssociation(true, arpp->arp_tha, arpp->arp_tpa, dstMac);
 	}
       }
     }
@@ -7358,8 +7358,8 @@ TimeseriesExporter* NetworkInterface::getRRDTSExporter() {
 
 /* *************************************** */
 
-void NetworkInterface::checkMacIPAssociation(bool triggerEvent, u_char *_mac, u_int32_t ipv4) {
-  if(are_ip_reassignment_alerts_enabled())
+void NetworkInterface::checkMacIPAssociation(bool triggerEvent, u_char *_mac, u_int32_t ipv4, Mac *host_mac) {
+  if(!are_ip_reassignment_alerts_enabled())
     return;
 
   u_int64_t mac = Utils::mac2int(_mac);
@@ -7376,7 +7376,7 @@ void NetworkInterface::checkMacIPAssociation(bool triggerEvent, u_char *_mac, u_
 	  u_char tmp[16];
 	  Utils::int2mac(it->second, tmp);
 
-	  getAlertsQueue()->pushMacIpAssociationChangedAlert(ntohl(ipv4), tmp, _mac);
+	  getAlertsQueue()->pushMacIpAssociationChangedAlert(ntohl(ipv4), tmp, _mac, host_mac);
 
 	  ip_mac[ipv4] = mac;
 	}
