@@ -35,14 +35,16 @@ end
 -- ##############################################
 
 function snmp_alert_store:insert(alert)
-   local ip
+   local device_ip
+   local device_name
    local port
    local port_name
 
    if not isEmptyString(alert.alert_json) then
       local snmp_json = json.decode(alert.alert_json)
       if snmp_json then
-         ip = snmp_json.device
+         device_ip = snmp_json.device
+         device_name = snmp_json.device_name
          port = snmp_json.interface
          port_name = snmp_json.interface_name
       end
@@ -56,8 +58,8 @@ function snmp_alert_store:insert(alert)
       alert.alert_tstamp,
       alert.alert_tstamp_end,
       alert.alert_severity,
-      self:_escape(""), -- TODO
-      self:_escape(ip or alert.alert_entity_val),
+      self:_escape(device_ip or alert.alert_entity_val),
+      self:_escape(device_name),
       port or 0,
       self:_escape(port_name),
       self:_escape(alert.alert_json))
