@@ -53,8 +53,8 @@ function flow_alert_store:insert(alert)
       alert.cli_port,
       alert.srv_port,
       alert.vlan_id,
-      ternary(alert.is_attacker_to_victim, 1, 0), -- TODO
-      ternary(alert.is_victim_to_attacker, 1, 0), -- TODO
+      ternary(alert.is_cli_attacker, 1, 0),
+      ternary(alert.is_srv_attacker, 1, 0),
       alert.proto,
       alert.l7_proto,
       alert.l7_master_proto,
@@ -72,7 +72,7 @@ function flow_alert_store:insert(alert)
       alert.first_seen,
       alert.community_id,
       alert.score,
-      0, -- TODO flow_risk_bitmap
+      alert.flow_risk_bitmap or 0,
       self:_escape(alert.alert_json)
    )
 
