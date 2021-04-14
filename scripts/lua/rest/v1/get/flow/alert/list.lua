@@ -63,7 +63,7 @@ for _key,_value in ipairs(alerts or {}) do
    local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), alert_entities.flow.entity_id)
    local score = tonumber(_value["score"])
    local alert_info = alert_utils.getAlertInfo(_value)
-   local msg = alert_utils.formatAlertMessage(ifid, _value, alert_info)
+   local msg = alert_utils.formatFlowAlertMessage(ifid, _value, alert_info)
    local date = tonumber(_value["alert_tstamp"])
 
    record["date"] = date

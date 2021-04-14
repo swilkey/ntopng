@@ -2107,7 +2107,7 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   if(type(msg) == "table") then
-   return("")
+     return("")
   end
 
   -- Append flow information to the alert message
@@ -2135,6 +2135,28 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   return(msg or "")
+end
+
+-- #################################
+
+function alert_utils.formatFlowAlertMessage(ifid, alert, alert_json, skip_live_data)
+  local msg
+
+  if(alert_json == nil) then
+   alert_json = alert_utils.getAlertInfo(alert)
+  end
+
+  msg = alert_json
+  local description = alertTypeDescription(alert.alert_id, alert_entities.flow.entity_id)
+
+  if(type(description) == "string") then
+     -- localization string
+     msg = i18n(description, msg)
+  elseif(type(description) == "function") then
+     msg = description(ifid, alert, msg)
+  end
+
+  return msg or ""
 end
 
 -- #################################
