@@ -46,7 +46,9 @@ local count_query = flow_alert_store:select("count(*) as count")
 local recordsTotal = tonumber(count_query[1]["count"])
 local recordsFiltered = 0
 
+-- Add limits and sort criteria only after the count has been done
 flow_alert_store:add_limit(NUM_RECORDS, NUM_RECORDS * draw)
+-- flow_alert_store:order_by("severity desc")
 
 local alerts = flow_alert_store:select()
 
