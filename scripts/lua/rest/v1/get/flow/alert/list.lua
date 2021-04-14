@@ -31,6 +31,8 @@ local epoch_end = _GET["epoch_end"]
 local alert_type = _GET["alert_type"]
 local alert_severity = _GET["alert_severity"]
 local draw = tonumber(_GET["draw"]) or 0
+local start = tonumber(_GET["start"])   --[[ The OFFSET --]]
+local length = tonumber(_GET["length"]) --[[ The LIMIT  --]]
 
 local NUM_RECORDS = 5
 
@@ -42,22 +44,16 @@ end
 
 interface.select(ifid)
 
-local count_query = flow_alert_store:select("count(*) as count")
-local recordsTotal = tonumber(count_query[1]["count"])
-local recordsFiltered = 0
+local recordsTotal = flow_alert_store:count()
 
 -- Add limits and sort criteria only after the count has been done
-flow_alert_store:add_limit(NUM_RECORDS, NUM_RECORDS * draw)
+flow_alert_store:add_limit(length --[[ LIMIT --]], start --[[ OFFSET --]])
 -- flow_alert_store:order_by("severity desc")
 
 local alerts = flow_alert_store:select()
 
 for _key,_value in ipairs(alerts or {}) do
    local record = {}
-   local alert_entity
-   local alert_entity_val
-
-   recordsFiltered = recordsFiltered + 1
 
    local severity = alert_consts.alertSeverityRaw(tonumber(_value["severity"]))
    local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), alert_entities.flow.entity_id)
@@ -77,9 +73,10 @@ for _key,_value in ipairs(alerts or {}) do
    res[#res + 1] = record
 end -- for
 
+local recordsFiltered = #res
+
 rest_utils.extended_answer(rc, {records = res}, {
 			      ["draw"] = tonumber(_GET["draw"]),
 			      ["recordsFiltered"] = recordsFiltered,
 			      ["recordsTotal"] = recordsTotal
 })
-

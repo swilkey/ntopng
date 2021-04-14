@@ -192,6 +192,16 @@ end
 
 -- ##############################################
 
+--@brief Performs a query and counts the number of records
+function alert_store:count()
+   local count_query = self:select("count(*) as count")
+   local num_results = tonumber(count_query[1]["count"])
+
+   return num_results
+end
+
+-- ##############################################
+
 function alert_store:_get_store_lock_key()
    return string.format("ntopng.cache.alert_store.%s.alert_store_lock", self.key)
 end
