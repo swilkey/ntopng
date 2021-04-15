@@ -175,13 +175,16 @@
                     const orderColumnIndex = data.order[0].column;
                     const orderColumnName = tableApi.column(orderColumnIndex).name() || "NotSet";
                     
-                    data.sort = orderColumnName;
-                    data.order = data.order[0].dir;
+                    if (data.order) {
+                        const order = data.order[0].dir;
+                        delete data.order;
+                        data.sort = orderColumnName;
+                        data.order = order;
+                    }
 
                     delete data.columns;
                     delete data.search;
-                    delete data.order;
-
+                   
                     // create visibleColumns field
                     const visibleColumns = [];
                     tableApi.columns().every(function(idx) {

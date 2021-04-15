@@ -28,37 +28,37 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
     {
         active = page == "host",
         page_name = "host",
-        label = "Hosts",
+        label = i18n("hosts"),
     },
     {
         active = page == "interfaces",
         page_name = "interfaces",
-        label = "Interfaces",
+        label = i18n("interfaces"),
     },
     {
         active = page == "network",
         page_name = "network",
-        label = "Local Networks",
+        label = i18n("report.local_networks"),
     },
     {
         active = page == "snmp_device",
         page_name = "snmp_device",
-        label = "SNMP Devices",
+        label = i18n("snmp.snmp_devices"),
     },
     {
         active = page == "flow",
         page_name = "flow",
-        label = "Flows",
+        label = i18n("flows"),
     },
     {
         active = page == "system",
         page_name = "system",
-        label = "System",
+        label = i18n("system"),
     },
     {
         active = page == "syslog",
         page_name = "syslog",
-        label = "Syslog",
+        label = i18n("syslog.syslog"),
     },
 })
 
