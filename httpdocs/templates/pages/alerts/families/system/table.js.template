@@ -1,0 +1,16 @@
+[
+    /* Date */
+    {name: 'date'},
+    /* Severity */
+    {name: 'severity'},
+    /* Counts */
+    {name: 'counter'},
+    /* Name */
+    {name: 'name'},
+    /* Description */
+    {name: 'description'},
+    /* Actions */
+    {targets: -1, className: 'text-center', data: null, render: (type) => {
+        return '';
+    }}
+]

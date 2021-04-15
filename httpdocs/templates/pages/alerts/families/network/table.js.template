@@ -1,0 +1,20 @@
+[
+    /* Date */
+    {name: 'date'},
+    /* Severity */
+    {name: 'severity'},
+    /* Counts */
+    {name: 'counters'},
+    /* IP Address */
+    {name: 'address'},
+    /* Device Type */
+    {name: 'device_type'},
+    /* Name */
+    {name: 'name'},
+    /* Description */
+    {},
+    /* Actions */
+    {targets: -1, className: 'text-center', data: null, render: (type) => {
+        return '';
+    }}
+]

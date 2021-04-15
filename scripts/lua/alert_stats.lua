@@ -31,11 +31,6 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
         label = i18n("hosts"),
     },
     {
-        active = page == "interfaces",
-        page_name = "interfaces",
-        label = i18n("interfaces"),
-    },
-    {
         active = page == "network",
         page_name = "network",
         label = i18n("report.local_networks"),
@@ -56,9 +51,9 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
         label = i18n("system"),
     },
     {
-        active = page == "syslog",
-        page_name = "syslog",
-        label = i18n("syslog.syslog"),
+        active = page == "active_monitoring",
+        page_name = "active_monitoring",
+        label = i18n("active_monitoring_stats.active_monitoring"),
     },
 })
 
@@ -74,7 +69,7 @@ local context = {
         initialLength = getDefaultTableSize(),
         table = template_utils.gen(string.format("pages/alerts/families/%s/table.template", page), {}),
         js_columns = template_utils.gen(string.format("pages/alerts/families/%s/table.js.template", page), {}),
-        datasource = Datasource(string.format("/lua/rest/v1/get/%s/alert/list.lua", "flow"), {
+        datasource = Datasource(string.format("/lua/rest/v1/get/%s/alert/list.lua", page), {
             ifid = interface.getId(), 
         }),
         modals = {},

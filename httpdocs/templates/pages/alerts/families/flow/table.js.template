@@ -13,6 +13,7 @@
     {name: 'application'},
     /* Description */
     {name: 'description', data: 'msg'},
+    /* Actions */
     {targets: -1, className: 'text-center', data: null, render: (type) => {
         return '';
     }}

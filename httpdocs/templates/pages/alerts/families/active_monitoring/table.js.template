@@ -1,0 +1,20 @@
+[
+    /* Date */
+    {name: 'date'},
+    /* Severity */
+    {name: 'severity'},
+    /* Counts */
+    {name: 'counter', className: 'text-center'},
+    /* Name */
+    {name: 'resolved_name'},
+    /* Threshold */
+    {name: 'measure_threshold'},
+    /* Value */
+    {name: 'measure_value'},
+    /* Description */
+    {name: 'description'},
+    /* Actions */
+    {targets: -1, className: 'text-center', data: null, render: (type) => {
+        return '';
+    }}
+]
