@@ -351,6 +351,12 @@ end
 
 -- ##############################################
 
+--@brief Possibly overridden in subclasses to add additional filters from the request
+function alert_store:_add_additional_request_filters()
+end
+
+-- ##############################################
+
 --@brief Add filters according to what is specified inside the REST API
 function alert_store:add_request_filters()
    local epoch_begin = tonumber(_GET["epoch_begin"])
@@ -363,6 +369,7 @@ function alert_store:add_request_filters()
    self:add_alert_id_filter(alert_type)
    self:add_alert_severity_filter(alert_severity)
    self:add_status_filter(status and status == 'engaged')
+   self:_add_additional_request_filters()
 end
 
 -- ##############################################
