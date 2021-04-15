@@ -55,12 +55,12 @@ end
 --@param epoch_end The end timestamp
 --@return True if set is successful, false otherwise
 function alert_store:add_time_filter(epoch_begin, epoch_end)
-   if tonumber(epoch_begin) then
+   if not self._epoch_begin and tonumber(epoch_begin) then
       self._epoch_begin = tonumber(epoch_begin)
       self._where[#self._where + 1] = string.format("tstamp >= %u", epoch_begin)
    end
 
-   if tonumber(epoch_end) then
+   if not self._epoch_end and tonumber(epoch_end) then
       self._epoch_end = tonumber(epoch_end)
       self._where[#self._where + 1] = string.format("tstamp <= %u", epoch_end)
    end
@@ -70,15 +70,47 @@ end
 
 -- ##############################################
 
+--@brief Add filters on alert id
+--@param alert_id The id of an alert to be filtered
+--@return True if set is successful, false otherwise
+function alert_store:add_alert_id_filter(alert_id)
+   if not self._alert_id and tonumber(alert_id) then
+      self._alert_id = tonumber(alert_id)
+      self._where[#self._where + 1] = string.format("alert_id = %u", alert_id)
+
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
+--@brief Add filters on alert severity
+--@param alert_severity The severity of an alert to be filtered
+--@return True if set is successful, false otherwise
+function alert_store:add_alert_severity_filter(alert_severity)
+   if not self._alert_severity and tonumber(alert_severity) then
+      self._alert_severity = tonumber(alert_severity)
+      self._where[#self._where + 1] = string.format("severity = %u", alert_severity)
+
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
 --@brief Pagination options to fetch partial results
 --@param limit The number of results to be returned
 --@param offset The number of records to skip before returning results
 --@return True if set is successful, false otherwise
 function alert_store:add_limit(limit, offset)
-   if tonumber(limit) then
+   if not self._limit and tonumber(limit) then
       self._limit = limit
 
-      if tonumber(offset) then
+      if not self._offset and tonumber(offset) then
 	 self._offset = offset
       end
 
@@ -94,7 +126,7 @@ end
 --@param fields Results will be returned sorted according to these fields
 --@return True if set is successful, false otherwise
 function alert_store:order_by(fields)
-   if self:_valid_fields(fields) then
+   if not self._order_by and self:_valid_fields(fields) then
       self._order_by = fields
       return true
    end
@@ -105,7 +137,7 @@ end
 -- ##############################################
 
 function alert_store:group_by(fields)
-   if self:_valid_fields(fields) then
+   if not self._group_by and self:_valid_fields(fields) then
       self._group_by = fields
       return true
    end
@@ -171,6 +203,56 @@ end
 
 -- ##############################################
 
+--@brief Selects engaged alerts from memory
+--@return Selected engaged alerts, and the total number of engaged alerts
+function alert_store:select_engaged(filter)
+   local alert_id_filter = tonumber(self._alert_id)
+   local severity_filter = tonumber(self._alert_severity)
+   local entity_id_filter = tonumber(self._alert_entity and self._alert_entity.entity_id) -- Possibly set in subclasses constructor
+   local entity_value_filter = filter
+
+   -- tprint(string.format("id=%s sev=%s entity=%s val=%s", alert_id_filter, severity_filter, entity_id_filter, entity_value_filter))
+   local alerts = interface.getEngagedAlerts(entity_id_filter, entity_value_filter, alert_id_filter, severity_filter)
+   local total_rows = #alerts
+   local sort_2_col = {}
+
+   -- Sort
+   for idx, alert in pairs(alerts) do
+      if sortColumn == "alert_id" then
+	 sort_2_col[idx] = alert.alert_type
+      elseif sortColumn == "severity" then
+	 sort_2_col[idx] = alert.alert_severity
+      elseif sortColumn == "column_duration" then
+	 sort_2_col[idx] = os.time() - alert.alert_tstamp
+      else -- column_date
+	 sort_2_col[idx] = alert.alert_tstamp
+      end
+   end
+
+   -- Pagination
+   local offset = self._offset or 0        -- The offset, or zero (start from the beginning) if no offset is set
+   local limit = self._limit or total_rows -- The limit, or the actual number of records, ie., no limit
+
+   local res = {}
+   local i = 0
+
+   for idx in pairsByValues(sort_2_col, asc --[[ TODO --]]) do
+      if i >= offset + limit then
+	 break
+      end
+
+      if i >= offset then
+	 res[#res + 1] = alerts[idx]
+      end
+
+      i = i + 1
+   end
+
+   return res, total_row
+end
+
+-- ##############################################
+
 --@brief Performs a query and counts the number of records
 function alert_store:count()
    local count_query = self:select("count(*) as count")
@@ -230,10 +312,12 @@ end
 function alert_store:add_request_filters()
    local epoch_begin = tonumber(_GET["epoch_begin"])
    local epoch_end = tonumber(_GET["epoch_end"])
-   local alert_type = _GET["alert_type"] -- TODO: add type filter
-   local alert_severity = _GET["alert_severity"] -- TODO: add severity filter
+   local alert_type = _GET["alert_type"]
+   local alert_severity = _GET["alert_severity"]
 
    self:add_time_filter(epoch_begin, epoch_end)
+   self:add_alert_id_filter(alert_type)
+   self:add_alert_severity_filter(alert_severity)
 end
 
 -- ##############################################

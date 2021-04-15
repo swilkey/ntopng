@@ -3,6 +3,7 @@
 --
 
 local dirs = ntop.getDirs()
+package.path = dirs.installdir .. "/scripts/lua/modules/?.lua;" .. package.path
 package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. package.path
 
 -- Import the classes library.
@@ -11,6 +12,7 @@ local classes = require "classes"
 require "lua_utils"
 local alert_store = require "alert_store"
 local alert_consts = require "alert_consts"
+local alert_entities = require "alert_entities"
 local json = require "dkjson"
 
 -- ##############################################
@@ -23,6 +25,7 @@ function host_alert_store:init(args)
    self.super:init()
 
    self._table_name = "host_alerts"
+   self._alert_entity = alert_entities.host
 end
 
 -- ##############################################

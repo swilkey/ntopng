@@ -2076,7 +2076,7 @@ end
 -- #################################
 
 function alert_utils.getAlertInfo(alert)
-  local alert_json = alert["json"]
+  local alert_json = alert["json"] or alert["alert_json"]
 
   if isEmptyString(alert_json) then
     alert_json = {}
@@ -2097,7 +2097,7 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   msg = alert_json
-  local description = alertTypeDescription(alert.alert_id, alert.alert_entity)
+  local description = alertTypeDescription(alert.alert_id or alert.alert_type --[[ Compatibility --]], alert.alert_entity)
 
   if(type(description) == "string") then
      -- localization string
