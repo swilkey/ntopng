@@ -46,4 +46,14 @@ end
 
 -- ##############################################
 
+--@brief Add filters according to what is specified inside the REST API
+function system_alert_store:add_request_filters()
+   -- Parse common params of the base class
+   self.super:add_request_filters()
+
+   -- Add filters specific to the system family
+end
+
+-- ##############################################
+
 return system_alert_store

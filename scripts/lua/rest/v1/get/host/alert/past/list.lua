@@ -14,7 +14,7 @@ local host_alert_store = require "host_alert_store".new()
 
 --
 -- Read alerts data
--- Example: curl -u admin:admin -H "Content-Type: application/json" -d '{"ifid": "1"}' http://localhost:3000/lua/rest/v1/get/host/alert/list.lua
+-- Example: curl -u admin:admin -H "Content-Type: application/json" -d '{"ifid": "1"}' http://localhost:3000/lua/rest/v1/get/host/alert/past/list.lua
 --
 -- NOTE: in case of invalid login, no error is returned but redirected to login
 --
