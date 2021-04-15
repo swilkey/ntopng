@@ -51,21 +51,21 @@ end
 -- ##############################################
 
 --@brief Add filters on time
---@param tstamp The start timestamp
---@param tstamp_end The end timestamp
+--@param epoch_begin The start timestamp
+--@param epoch_end The end timestamp
 --@return True if set is successful, false otherwise
-function alert_store:add_time_filter(tstamp, tstamp_end)
-   if tonumber(tstamp) then
-      self._where[#self._where + 1] = string.format("tstamp = %u", tstamp) 
-
-      if tonumber(tstamp_end) then
-	 self._where[#self._where + 1] = string.format("tstamp_end = %u", tstamp_end)
-      end
-
-      return true
+function alert_store:add_time_filter(epoch_begin, epoch_end)
+   if tonumber(epoch_begin) then
+      self._epoch_begin = tonumber(epoch_begin)
+      self._where[#self._where + 1] = string.format("tstamp >= %u", epoch_begin)
    end
 
-   return false
+   if tonumber(epoch_end) then
+      self._epoch_end = tonumber(epoch_end)
+      self._where[#self._where + 1] = string.format("tstamp <= %u", epoch_end)
+   end
+
+   return true
 end
 
 -- ##############################################
@@ -177,6 +177,51 @@ function alert_store:count()
    local num_results = tonumber(count_query[1]["count"])
 
    return num_results
+end
+
+-- ##############################################
+
+--@brief Performs a query and counts the number of records in multiple time slots
+function alert_store:count_by_time()
+   local time_slot_width = 600 -- 5-minute slots
+   -- Preserve all the filters currently set
+   local where_clause = table.concat(self._where, " AND ")
+
+   -- Group by according to the timeslot, that is, the alert timestamp MODULO the slot width
+   local q = string.format("SELECT (tstamp - tstamp %% %u) as slot, count(*) count FROM %s WHERE %s GROUP BY slot ORDER BY slot ASC",
+			   time_slot_width, self._table_name, where_clause)
+
+   local q_res = interface.alert_store_query(q)
+
+   -- Calculate minimum and maximum slots to make sure the response always returns consecutive time slots, possibly filled with zeroes
+   local now = os.time()
+
+   -- Minimum slot is, in order, the specified begin epoch, or the oldest time read in the query, or one hour ago as fallback
+   local min_slot = self._epoch_begin or tonumber(q_res and q_res[1] and q_res[1]["slot"]) or now - 3600
+
+   -- Minimum slot is, in order, the specified begin epoch, or the oldest time read in the query, or the current time as fallback
+   local max_slot = self._epoch_end or tonumber(q_res and q_res[#q_res] and q_res[#q_res]["slot"]) or now
+
+   local all_slots = {}
+   -- Read points from the query
+   for _, p in ipairs(q_res) do
+      all_slots[tonumber(p.slot)] = tonumber(p.count)
+   end
+
+   -- Pad missing points with zeroes
+   for slot = min_slot, max_slot + 1, time_slot_width do
+      if not all_slots[slot] then
+	 all_slots[slot] = 0
+      end
+   end
+
+   -- Prepare the result as a Lua array ordered by time slot
+   local res = {}
+   for slot, count in pairsByKeys(all_slots, asc) do
+      res[#res + 1] = {slot, count}
+   end
+
+   return res
 end
 
 -- ##############################################
