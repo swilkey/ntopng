@@ -75,7 +75,7 @@ function widget_gui_utils.register_timeseries_bar_chart(name, update_time, datas
         apex = {
             chart = {
                 type = "bar",
-                height = 200,
+                height = "100%",
                 foreColor = "#999",
                 stacked = true,
             },

@@ -18,6 +18,8 @@ local CHART_NAME = "alert-timeseries"
 
 -- select the default page
 local page = _GET["page"] or 'flow'
+local begin_epoch = _GET["begin_epoch"]
+local end_epoch = _GET["end_epoch"]
 
 sendHTTPContentTypeHeader('text/html')
 
