@@ -112,6 +112,21 @@ end
 
 -- ##############################################
 
+--@brief Add filters on alert rowid
+--@param rowid The rowid of an alert to be filtered
+--@return True if set is successful, false otherwise
+function alert_store:add_alert_rowid_filter(rowid)
+   if tonumber(rowid) then
+      self._where[#self._where + 1] = string.format("rowid = %u", rowid)
+
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
 --@brief Pagination options to fetch partial results
 --@param limit The number of results to be returned
 --@param offset The number of records to skip before returning results
@@ -161,6 +176,20 @@ function alert_store:insert(alert)
    traceError(TRACE_NORMAL, TRACE_CONSOLE, "alert_store:insert")
    tprint(alert)
    return false
+end
+
+-- ##############################################
+
+--@brief Deletes data according to specified filters
+function alert_store:delete()
+   local where_clause = table.concat(self._where, " AND ")
+
+   -- Prepare the final query
+   local q = string.format(" DELETE FROM `%s` WHERE %s ", self._table_name, where_clause)
+
+   res = interface.alert_store_query(q)
+
+   return res and table.len(res) == 0
 end
 
 -- ##############################################
@@ -363,12 +392,14 @@ function alert_store:add_request_filters()
    local epoch_end = tonumber(_GET["epoch_end"])
    local alert_type = _GET["alert_type"]
    local alert_severity = _GET["alert_severity"]
+   local rowid = _GET["row_id"]
    local status = _GET["status"]
 
    self:add_time_filter(epoch_begin, epoch_end)
    self:add_alert_id_filter(alert_type)
    self:add_alert_severity_filter(alert_severity)
    self:add_status_filter(status and status == 'engaged')
+   self:add_alert_rowid_filter(rowid)
    self:_add_additional_request_filters()
 end
 
