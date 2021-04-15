@@ -5,41 +5,20 @@
 
 local dirs = ntop.getDirs()
 
+-- Import the classes library.
+local classes = require "classes"
 require "lua_utils"
 local json = require "dkjson"
 
 -- ##############################################
 
-local alert_store = {}
+local alert_store = classes.class()
 
 -- ##############################################
 
-function alert_store:new(args)
-   if args then
-      -- We're being sub-classed
-      if not args.key then return nil end
-   end
-
-   local this = args or {key = "base"}
-
+function alert_store:init(args)
    self._where = { "1 = 1" }
    self._group_by = nil
-
-   setmetatable(this, self)
-   self.__index = self
-
-   if args then
-      -- Initialization is only run if a subclass is being instanced, that is,
-      -- when args is not nil
-      this:_initialize()
-   end
-
-   return this
-end
-
--- ##############################################
-
-function alert_store:_initialize()
 end
 
 -- ##############################################
@@ -202,34 +181,25 @@ end
 
 -- ##############################################
 
-function alert_store:_get_store_lock_key()
-   return string.format("ntopng.cache.alert_store.%s.alert_store_lock", self.key)
+--@brief Add filters according to what is specified inside the REST API
+function alert_store:add_request_filters()
+   local epoch_begin = tonumber(_GET["epoch_begin"])
+   local epoch_end = tonumber(_GET["epoch_end"])
+   local alert_type = _GET["alert_type"] -- TODO: add type filter
+   local alert_severity = _GET["alert_severity"] -- TODO: add severity filter
+
+   self:add_time_filter(epoch_begin, epoch_end)
 end
 
 -- ##############################################
 
-function alert_store:_lock()
-   local max_lock_duration = 5 -- seconds
-   local max_lock_attempts = 5 -- give up after at most this number of attempts
-   local lock_key = self:_get_store_lock_key()
+--@brief Add offset, limit, and group by filters according to what is specified inside the REST API
+function alert_store:add_request_ranges()
+   local start = tonumber(_GET["start"])   --[[ The OFFSET: default no offset --]]
+   local length = tonumber(_GET["length"]) --[[ The LIMIT: default no limit   --]]
 
-   for i = 1, max_lock_attempts do
-      local value_set = ntop.setnxCache(lock_key, "1", max_lock_duration)
-
-      if value_set then
-         return true -- lock acquired
-      end
-
-      ntop.msleep(1000)
-   end
-
-   return false -- lock not acquired
-end
-
--- ##############################################
-
-function alert_store:_unlock()
-   ntop.delCache(self:_get_store_lock_key())
+   -- TODO: add sort
+   self:add_limit(length, start)
 end
 
 -- ##############################################

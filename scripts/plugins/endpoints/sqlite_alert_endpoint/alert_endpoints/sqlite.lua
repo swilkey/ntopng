@@ -55,7 +55,7 @@ local function get_alert_store(entity_id)
 
    local alert_store_name = alert_entity.alert_store_name
    if not cached_alert_store[alert_store_name] then
-      local alert_store = require(alert_store_name.."_alert_store"):new()
+      local alert_store = require(alert_store_name.."_alert_store").new()
       cached_alert_store[alert_store_name] = alert_store
    end
 

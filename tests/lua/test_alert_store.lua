@@ -7,7 +7,7 @@ package.path = dirs.installdir .. "/scripts/lua/modules/?.lua;" .. package.path
 package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. package.path
 
 require "lua_utils"
-local host_alert_store = require("host_alert_store"):new()
+local host_alert_store = require("host_alert_store").new()
 
 sendHTTPContentTypeHeader('text/plain')
 

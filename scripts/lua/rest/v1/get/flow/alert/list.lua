@@ -6,18 +6,15 @@ local dirs = ntop.getDirs()
 package.path = dirs.installdir .. "/scripts/lua/modules/?.lua;" .. package.path
 package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. package.path
 
-require "lua_utils"
 local alert_utils = require "alert_utils"
-require "flow_utils"
 local alert_consts = require "alert_consts"
 local alert_entities = require "alert_entities"
-local json = require "dkjson"
 local rest_utils = require("rest_utils")
-local flow_alert_store = require "flow_alert_store":new()
+local flow_alert_store = require "flow_alert_store".new()
 
 --
 -- Read alerts data
--- Example: curl -u admin:admin -H "Content-Type: application/json" -d '{"ifid": "1"}' http://localhost:3000/lua/rest/v1/get/flow/alert/data.lua
+-- Example: curl -u admin:admin -H "Content-Type: application/json" -d '{"ifid": "1"}' http://localhost:3000/lua/rest/v1/get/flow/alert/list.lua
 --
 -- NOTE: in case of invalid login, no error is returned but redirected to login
 --
@@ -26,15 +23,6 @@ local rc = rest_utils.consts.success.ok
 local res = {}
 
 local ifid = _GET["ifid"]
-local epoch_begin = _GET["epoch_begin"]
-local epoch_end = _GET["epoch_end"]
-local alert_type = _GET["alert_type"]
-local alert_severity = _GET["alert_severity"]
-local draw = tonumber(_GET["draw"]) or 0
-local start = tonumber(_GET["start"])   --[[ The OFFSET --]]
-local length = tonumber(_GET["length"]) --[[ The LIMIT  --]]
-
-local NUM_RECORDS = 5
 
 if isEmptyString(ifid) then
    rc = rest_utils.consts.err.invalid_interface
@@ -44,12 +32,15 @@ end
 
 interface.select(ifid)
 
+-- Add filters
+flow_alert_store:add_request_filters()
+
 local recordsTotal = flow_alert_store:count()
 
 -- Add limits and sort criteria only after the count has been done
-flow_alert_store:add_limit(length --[[ LIMIT --]], start --[[ OFFSET --]])
--- flow_alert_store:order_by("severity desc")
+flow_alert_store:add_request_ranges()
 
+-- Fetch the results
 local alerts = flow_alert_store:select()
 
 for _key,_value in ipairs(alerts or {}) do

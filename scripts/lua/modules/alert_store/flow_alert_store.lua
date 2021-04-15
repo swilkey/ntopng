@@ -5,6 +5,9 @@
 local dirs = ntop.getDirs()
 package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. package.path
 
+-- Import the classes library.
+local classes = require "classes"
+
 require "lua_utils"
 local alert_store = require "alert_store"
 local alert_consts = require "alert_consts"
@@ -12,24 +15,14 @@ local json = require "dkjson"
 
 -- ##############################################
 
-local flow_alert_store = {}
+local flow_alert_store = classes.class(alert_store)
 
 -- ##############################################
 
-function flow_alert_store:new(args)
-   -- Instance of the base class
-   local _flow_alert_store = alert_store:new()
+function flow_alert_store:init(args)
+   self.super:init()
 
-   -- Subclass using the base class instance
-   self.key = "flow"
    self._table_name = "flow_alerts"
-
-   -- self is passed as argument so it will be set as base class metatable
-   -- and this will actually make it possible to override functions
-   local _flow_alert_store_instance = _flow_alert_store:new(self)
-
-   -- Return the instance
-   return _flow_alert_store_instance
 end
 
 -- ##############################################
@@ -79,6 +72,16 @@ function flow_alert_store:insert(alert)
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 
    return interface.alert_store_query(insert_stmt)
+end
+
+-- ##############################################
+
+--@brief Add filters according to what is specified inside the REST API
+function flow_alert_store:add_request_filters()
+   -- Parse common params of the base class
+   self.super:add_request_filters()
+
+   -- Add filters specific to the flow family
 end
 
 -- ##############################################

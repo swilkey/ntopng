@@ -5,6 +5,9 @@
 local dirs = ntop.getDirs()
 package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. package.path
 
+-- Import the classes library.
+local classes = require "classes"
+
 require "lua_utils"
 local alert_store = require "alert_store"
 local alert_consts = require "alert_consts"
@@ -12,24 +15,14 @@ local json = require "dkjson"
 
 -- ##############################################
 
-local am_alert_store = {}
+local am_alert_store = classes.class(alert_store)
 
 -- ##############################################
 
-function am_alert_store:new(args)
-   -- Instance of the base class
-   local _am_alert_store = alert_store:new()
+function am_alert_store:init(args)
+   self.super:init()
 
-   -- Subclass using the base class instance
-   self.key = "am"
    self._table_name = "active_monitoring_alerts"
-
-   -- self is passed as argument so it will be set as base class metatable
-   -- and this will actually make it possible to override functions
-   local _am_alert_store_instance = _am_alert_store:new(self)
-
-   -- Return the instance
-   return _am_alert_store_instance
 end
 
 -- ##############################################
