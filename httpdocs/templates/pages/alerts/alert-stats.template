@@ -8,7 +8,16 @@
             {* ui_utils.render_datetime_range_picker(range_picker) *}
         </div>
     </div>
-    <div class='col-12 mt-2'>
+    <div class="col-12 mb-2">
+        <div class="card">
+            <div class="card-body bg-light">
+                {* widget_gui_utils.render_chart(chart.name, {
+                    displaying_label = ""
+                }) *}
+            </div>
+        </div>
+    </div>
+    <div class='col-12'>
         <div class="card card-shadow">
 	    <div class="overlay justify-content-center align-items-center position-absolute h-100 w-100">
                     <div class="text-center">

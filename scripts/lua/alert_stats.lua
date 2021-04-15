@@ -9,9 +9,12 @@ local page_utils = require "page_utils"
 local ui_utils = require "ui_utils"
 local json = require "dkjson"
 local template_utils = require "template_utils"
-local Datasource = require "widget_gui_utils".datasource
+local widget_gui_utils = require "widget_gui_utils"
+local Datasource = widget_gui_utils.datasource
 
-local ifs = interface.getStats()
+local ifid = interface.getId()
+
+local CHART_NAME = "alert-timeseries"
 
 -- select the default page
 local page = _GET["page"] or 'flow'
@@ -57,12 +60,22 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
     },
 })
 
+widget_gui_utils.register_timeseries_bar_chart(CHART_NAME, 0, {
+    Datasource("/lua/rest/v1/get/alert/ts.lua", {
+        ifid = ifid,
+    })
+})
+
 local context = {
     template_utils = template_utils,
     json = json,
     ui_utils = ui_utils,
+    widget_gui_utils = widget_gui_utils,
     range_picker = {
-
+        -- ?
+    },
+    chart = {
+        name = CHART_NAME
     },
     datatable = {
         name = page .. "-alerts-table",
@@ -70,7 +83,7 @@ local context = {
         table = template_utils.gen(string.format("pages/alerts/families/%s/table.template", page), {}),
         js_columns = template_utils.gen(string.format("pages/alerts/families/%s/table.js.template", page), {}),
         datasource = Datasource(string.format("/lua/rest/v1/get/%s/alert/list.lua", page), {
-            ifid = interface.getId(), 
+            ifid = ifid, 
         }),
         modals = {},
     },
