@@ -38,7 +38,7 @@ function host_alert_store:insert(alert)
       self._table_name, 
       alert.alert_type,
       hostinfo["host"],
-      vlan_id or 0,
+      hostinfo["vlan"] or 0,
       self:_escape(alert.symbolic_name),
       is_attacker,
       is_victim,
