@@ -148,11 +148,12 @@ end
 -- ##############################################
 
 --@brief Specify the sort criteria of the query
---@param fields Results will be returned sorted according to these fields
+--@param sort_column The column to be used for sorting
+--@param sort_order Order, either `asc` or `desc`
 --@return True if set is successful, false otherwise
-function alert_store:order_by(fields)
-   if not self._order_by and self:_valid_fields(fields) then
-      self._order_by = fields
+function alert_store:add_order_by(sort_column, sort_order)
+   if not self._order_by and self:_valid_fields(sort_column)  and (sort_order == "asc" or sort_order == "desc") then
+      self._order_by = {sort_column = sort_column, sort_order = sort_order}
       return true
    end
 
@@ -220,7 +221,7 @@ function alert_store:select_historical(filter, fields)
 
    -- [OPTIONAL] Add sort criteria
    if self._order_by then
-      order_by_clause = string.format("ORDER BY %s", self._order_by)
+      order_by_clause = string.format("ORDER BY %s %s", self._order_by.sort_column, self._order_by.sort_order)
    end
 
    -- [OPTIONAL] Add limit for pagination
@@ -409,9 +410,11 @@ end
 function alert_store:add_request_ranges()
    local start = tonumber(_GET["start"])   --[[ The OFFSET: default no offset --]]
    local length = tonumber(_GET["length"]) --[[ The LIMIT: default no limit   --]]
+   local sort_column = _GET["sort"]
+   local sort_order = _GET["order"]
 
-   -- TODO: add sort
    self:add_limit(length, start)
+   self:add_order_by(sort_column, sort_order)
 end
 
 -- ##############################################
