@@ -2,6 +2,12 @@
     (C) 2021 - ntop.org    
     Base template for the alert tables.
 #}
+
+<link rel="stylesheet" href='{{ ntop.getHttpPrefix() }}/css/apexcharts.css'/>
+
+<script type='text/javascript' src='{{ ntop.getHttpPrefix() }}/js/apexchart/apexcharts.min.js?{{ ntop.getStaticFileEpoch() }}'></script>
+<script type='text/javascript' src='{{ ntop.getHttpPrefix() }}/js/widgets/widgets.js?{{ ntop.getStaticFileEpoch() }}'></script>
+
 <div class='row'>
     <div class='col-12'>
         <div class="d-flex p-2 mb-2 navbar-shadow border-radius navbar-light bg-light align-items-center">
@@ -10,7 +16,7 @@
     </div>
     <div class="col-12 mb-2">
         <div class="card">
-            <div class="card-body bg-light">
+            <div class="card-body">
                 {* widget_gui_utils.render_chart(chart.name, {
                     displaying_label = ""
                 }) *}

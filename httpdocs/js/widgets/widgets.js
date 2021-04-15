@@ -152,8 +152,9 @@
 
          // check if the additionalParams field contains an apex property,
          // then merge the two configurations giving priority to the custom one
-         // TODO
-         console.log(this._additionalParams)
+         if (this._additionalParams && this._additionalParams.apex) {
+             return Object.assign(this._additionalParams.apex, config);
+         }
 
          return config;
      }
@@ -161,6 +162,7 @@
      _buildAxisFormatter(config, axisName) {
  
          const axis = config[axisName];
+         if (axis === undefined || axis.labels === undefined) return;
  
          // enable formatters
          if (axis.labels.ntop_utils_formatter !== undefined && axis.labels.ntop_utils_formatter !== 'none') {
@@ -179,6 +181,7 @@
      _buildConfig() {
  
          const config = this._generateConfig();
+         console.log(config)
          const rsp = this._fetchedData.rsp;
  
          // add additional params fetched from the datasource
