@@ -148,6 +148,7 @@ CREATE INDEX IF NOT EXISTS `i_ip` ON `snmp_alerts`(`ip`);
 CREATE TABLE IF NOT EXISTS `system_alerts` (
 `rowid` INTEGER PRIMARY KEY AUTOINCREMENT,
 `alert_id` INTEGER NOT NULL CHECK(`alert_id` >= 0),
+`entity_id` INTEGER NOT NULL CHECK(`entity_id` >= 0),
 `name` TEXT NULL,
 `tstamp` DATETIME NOT NULL,
 `tstamp_end` DATETIME NULL DEFAULT 0,

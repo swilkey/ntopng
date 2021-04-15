@@ -30,9 +30,10 @@ end
 function system_alert_store:insert(alert)
    local insert_stmt = string.format("INSERT INTO %s "..
       "(alert_id, tstamp, tstamp_end, severity, name, json) "..
-      "VALUES (%u, %u, %u, %u, '%s', '%s'); ",
+      "VALUES (%u, %u, %u, %u, %u, '%s', '%s'); ",
       self._table_name, 
       alert.alert_type,
+      alert.alert_entity,
       alert.alert_tstamp,
       alert.alert_tstamp_end,
       alert.alert_severity,
