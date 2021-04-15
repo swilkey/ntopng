@@ -51,7 +51,7 @@ for _key,_value in ipairs(alerts or {}) do
    local score = tonumber(_value["score"])
    local alert_info = alert_utils.getAlertInfo(_value)
    local msg = alert_utils.formatFlowAlertMessage(ifid, _value, alert_info)
-   local date = tonumber(_value["alert_tstamp"])
+   local date = tonumber(_value["tstamp"])
 
    record["date"] = date
    record["duration"] = duration
