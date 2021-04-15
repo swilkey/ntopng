@@ -298,7 +298,7 @@ end
 
 --@brief Performs a query and counts the number of records
 function alert_store:count()
-   local count_query = self:select_historical("count(*) as count")
+   local count_query = self:select_historical(nil, "count(*) as count")
    local num_results = tonumber(count_query[1]["count"])
 
    return num_results
