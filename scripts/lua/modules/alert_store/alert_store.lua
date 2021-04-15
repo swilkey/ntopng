@@ -50,6 +50,16 @@ end
 
 -- ##############################################
 
+--@brief Add filters on status (engaged or historical)
+--@param engaged true to select engaged alerts
+--@return True if set is successful, false otherwise
+function alert_store:add_status_filter(engaged)
+   self._engaged = engaged
+   return true
+end
+
+-- ##############################################
+
 --@brief Add filters on time
 --@param epoch_begin The start timestamp
 --@param epoch_end The end timestamp
@@ -155,13 +165,15 @@ end
 
 -- ##############################################
 
-function alert_store:select(fields)
+function alert_store:select_historical(filter, fields)
    local res = {}
    local where_clause = ''
    local group_by_clause = ''
    local order_by_clause = ''
    local limit_clause = ''
    local offset_clause = ''
+
+   -- TODO handle fields (e.g. add entity value to WHERE)
 
    -- Select everything by defaul
    fields = fields or '*'
@@ -253,6 +265,37 @@ end
 
 -- ##############################################
 
+--@brief Handle alerts select request (GET) from memory (engaged) or database (historical)
+--@param filter A filter on the entity value (no filter by default)
+--@param select_fields The fields to be returned (all by default or in any case for engaged)
+--@return Selected alerts, and the total number of alerts
+function alert_store:select_request(filter, select_fields)
+
+   -- Add filters
+   self:add_request_filters()
+
+   if self.engaged then -- Engaged
+
+      -- Add limits and sort criteria
+      self:add_request_ranges()
+
+      return self:select_engaged(filter)
+
+   else -- Historical
+      
+      -- Count
+      local total_row = self:count()
+
+      -- Add limits and sort criteria only after the count has been done
+      self:add_request_ranges()
+
+      local res = self:select_historical(filter, select_fields)
+      return res, total_row
+   end
+end
+
+-- ##############################################
+
 --@brief Performs a query and counts the number of records
 function alert_store:count()
    local count_query = self:select("count(*) as count")
@@ -314,10 +357,12 @@ function alert_store:add_request_filters()
    local epoch_end = tonumber(_GET["epoch_end"])
    local alert_type = _GET["alert_type"]
    local alert_severity = _GET["alert_severity"]
+   local status = _GET["status"]
 
    self:add_time_filter(epoch_begin, epoch_end)
    self:add_alert_id_filter(alert_type)
    self:add_alert_severity_filter(alert_severity)
+   self:add_status_filter(status and status == 'engaged')
 end
 
 -- ##############################################

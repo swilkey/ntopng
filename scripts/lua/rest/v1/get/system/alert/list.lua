@@ -14,7 +14,7 @@ local system_alert_store = require "system_alert_store".new()
 
 --
 -- Read alerts data
--- Example: curl -u admin:admin -H "Content-Type: application/json" -d '{"ifid": "1"}' http://localhost:3000/lua/rest/v1/get/system/alert/past/list.lua
+-- Example: curl -u admin:admin -H "Content-Type: application/json" -d '{"ifid": "1"}' http://localhost:3000/lua/rest/v1/get/system/alert/list.lua
 --
 -- NOTE: in case of invalid login, no error is returned but redirected to login
 --
@@ -32,16 +32,8 @@ end
 
 interface.select(ifid)
 
--- Add filters
-system_alert_store:add_request_filters()
-
-local recordsTotal = system_alert_store:count()
-
--- Add limits and sort criteria only after the count has been done
-system_alert_store:add_request_ranges()
-
 -- Fetch the results
-local alerts = system_alert_store:select()
+local alerts, recordsTotal = system_alert_store:select_request()
 
 for _key,_value in ipairs(alerts or {}) do
    local record = {}
@@ -56,7 +48,7 @@ for _key,_value in ipairs(alerts or {}) do
    record["duration"] = duration
    record["severity"] = severity
    record["type"] = atype
-   record["count"] = count
+   record["count"] = count -- historical only
    record["msg"] = msg
 
    res[#res + 1] = record
