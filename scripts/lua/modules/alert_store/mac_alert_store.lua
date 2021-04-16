@@ -35,7 +35,7 @@ function mac_alert_store:insert(alert)
       "is_attacker, is_victim, json) "..
       "VALUES (%u, %u, %u, %u, '%s', %u, '%s', %u, %u, '%s'); ",
       self._table_name, 
-      alert.alert_type,
+      alert.alert_type, -- TODO rename to alert_id
       alert.alert_tstamp,
       alert.alert_tstamp_end,
       alert.alert_severity,

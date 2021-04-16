@@ -264,7 +264,7 @@ function alert_store:select_engaged(filter)
    -- Sort
    for idx, alert in pairs(alerts) do
       if sortColumn == "alert_id" then
-	 sort_2_col[idx] = alert.alert_type
+	 sort_2_col[idx] = alert.alert_id or alert.alert_type --[[ compatibility ]]--
       elseif sortColumn == "severity" then
 	 sort_2_col[idx] = alert.alert_severity
       elseif sortColumn == "column_duration" then
@@ -394,13 +394,13 @@ end
 function alert_store:add_request_filters()
    local epoch_begin = tonumber(_GET["epoch_begin"])
    local epoch_end = tonumber(_GET["epoch_end"])
-   local alert_type = _GET["alert_type"]
+   local alert_id = _GET["alert_id"] or _GET["alert_type"] --[[ compatibility ]]--
    local alert_severity = _GET["alert_severity"]
    local rowid = _GET["row_id"]
    local status = _GET["status"]
 
    self:add_time_filter(epoch_begin, epoch_end)
-   self:add_alert_id_filter(alert_type)
+   self:add_alert_id_filter(alert_id)
    self:add_alert_severity_filter(alert_severity)
    self:add_status_filter(status and status == 'engaged')
    self:add_alert_rowid_filter(rowid)

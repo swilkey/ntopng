@@ -39,7 +39,7 @@ function flow_alert_store:insert(alert)
       "VALUES (%u, %u, %u, %u, '%s', '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, '%s', '%s', '%s', "..
       "'%s', %u, %u, %u, %u, %u, %u, %u, '%s', %u, %u, '%s'); ",
       self._table_name, 
-      alert.alert_type,
+      alert.alert_id,
       alert.alert_tstamp,
       alert.alert_tstamp,
       alert.alert_severity,

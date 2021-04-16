@@ -39,7 +39,7 @@ function host_alert_store:insert(alert)
       "(alert_id, ip, vlan_id, name, is_attacker, is_victim, tstamp, tstamp_end, severity, json) "..
       "VALUES (%u, '%s', %u, '%s', %u, %u, %u, %u, %u, '%s'); ",
       self._table_name, 
-      alert.alert_type,
+      alert.alert_id,
       hostinfo["host"],
       hostinfo["vlan"] or 0,
       self:_escape(alert.symbolic_name),

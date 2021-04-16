@@ -1597,7 +1597,7 @@ void Host::alert2JSON(HostAlert *alert, bool released, ndpi_serializer *s) {
 
   /* See AlertableEntity::luaAlert */
   ndpi_serialize_string_string(s, "action", released ? "release" : "engage");
-  ndpi_serialize_string_int32(s, "alert_type", alert->getAlertType().id);
+  ndpi_serialize_string_int32(s, "alert_id", alert->getAlertType().id);
   ndpi_serialize_string_string(s, "alert_subtype", "" /* No subtype for hosts */);
   ndpi_serialize_string_int32(s, "alert_severity", alert->getSeverity());
   ndpi_serialize_string_int32(s, "alert_entity", alert_entity_host);

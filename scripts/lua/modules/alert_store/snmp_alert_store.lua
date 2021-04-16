@@ -49,7 +49,7 @@ function snmp_alert_store:insert(alert)
       "(alert_id, tstamp, tstamp_end, severity, ip, name, port, port_name, json) "..
       "VALUES (%u, %u, %u, %u, '%s', '%s', %u, '%s', '%s'); ",
       self._table_name, 
-      alert.alert_type,
+      alert.alert_type, -- TODO rename to alert_id
       alert.alert_tstamp,
       alert.alert_tstamp_end,
       alert.alert_severity,

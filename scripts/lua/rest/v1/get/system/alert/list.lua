@@ -39,16 +39,18 @@ for _key,_value in ipairs(alerts or {}) do
    local record = {}
 
    local severity = alert_consts.alertSeverityRaw(tonumber(_value["severity"]))
-   local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), tonumber(_value["entity_id"]))
+   --local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), tonumber(_value["entity_id"]))
    local alert_info = alert_utils.getAlertInfo(_value)
+   local name = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), true --[[ no html --]], tonumber(_value["entity_id"]))
    local msg = alert_utils.formatAlertMessage(ifid, _value, alert_info)
    local date = tonumber(_value["tstamp"])
 
    record["date"] = date
    record["duration"] = duration
    record["severity"] = severity
-   record["type"] = atype
+   record["alert_id"] = _value["alert_id"]
    record["count"] = count -- historical only
+   record["name"] = name
    record["msg"] = msg
 
    res[#res + 1] = record

@@ -32,7 +32,7 @@ function system_alert_store:insert(alert)
       "(alert_id, entity_id, tstamp, tstamp_end, severity, name, json) "..
       "VALUES (%u, %u, %u, %u, %u, '%s', '%s'); ",
       self._table_name, 
-      alert.alert_type,
+      alert.alert_type, -- TODO rename to alert_id
       alert.alert_entity,
       alert.alert_tstamp,
       alert.alert_tstamp_end,

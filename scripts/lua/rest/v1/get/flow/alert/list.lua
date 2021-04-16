@@ -39,19 +39,30 @@ for _key,_value in ipairs(alerts or {}) do
    local record = {}
 
    local severity = alert_consts.alertSeverityRaw(tonumber(_value["severity"]))
-   local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), alert_entities.flow.entity_id)
+   --local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), alert_entities.flow.entity_id)
    local score = tonumber(_value["score"])
    local alert_info = alert_utils.getAlertInfo(_value)
+   local name = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), true --[[ no html --]], alert_entities.flow.entity_id)
    local msg = alert_utils.formatFlowAlertMessage(ifid, _value, alert_info)
    local date = tonumber(_value["tstamp"])
 
    record["date"] = date
    record["duration"] = duration
    record["severity"] = severity
-   record["type"] = atype
+   record["alert_id"] = _value["alert_id"]
    record["count"] = count
    record["score"] = score
+   record["name"] = name
    record["msg"] = msg
+   record["cli_name"] = _value["cli_name"]
+   record["srv_name"] = _value["srv_name"]
+   record["cli_ip"] = _value["cli_ip"]
+   record["srv_ip"] = _value["srv_ip"]
+   record["cli_port"] = _value["cli_port"]
+   record["srv_port"] = _value["srv_port"]
+   record["vlan_id"] = _value["vlan_id"]
+   record["proto"] = _value["proto"]
+   record["l7_proto"] = _value["l7_proto"]
 
    res[#res + 1] = record
 end -- for
