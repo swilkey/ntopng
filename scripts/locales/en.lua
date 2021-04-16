@@ -771,6 +771,7 @@ local lang = {
     ["tcp_syn_scan_attacker"] = "TCP SYN Scan Attacker",
     ["tcp_syn_scan_victim"] = "TCP SYN Scan Victim",
     ["threashold_cross"] = "Threshold Cross",
+    ["tls_protocol_version"] = "TLS Version: %{version}",
     ["too_many_drops"] = "Packet Drops",
     ["too_many_flows"] = "Too Many Flows Alert",
     ["too_many_flows_description"] = "Trigger an alert when the number of active flows is too high",

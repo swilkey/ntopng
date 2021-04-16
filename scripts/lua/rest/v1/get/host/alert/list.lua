@@ -52,6 +52,9 @@ for _key,_value in ipairs(alerts or {}) do
    record["count"] = count -- historical only
    record["name"] = name
    record["msg"] = msg
+   record["ip"] = _value["ip"]
+   record["vlan_id"] = _value["vlan_id"]
+   record["name"] = _value["name"]
 
    res[#res + 1] = record
 end -- for
