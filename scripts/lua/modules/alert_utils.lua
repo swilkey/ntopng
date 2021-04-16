@@ -2110,15 +2110,6 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
      return("")
   end
 
-  -- Append flow information to the alert message
-  if(alert.alert_entity == alert_consts.alertEntity("flow") or not alert.alert_entity) and not skip_live_data then
-      if msg == nil then 
-         msg = formatRawFlow(ifid, alert, alert_json, true --[[ skip alert description, description already set --]])
-      else
-         msg = msg.. " "..formatRawFlow(ifid, alert, alert_json, true --[[ skip alert description, description already set --]])
-      end
-  end
-
   if(msg) then
      if(alert_consts.getAlertType(alert.alert_id, alert.alert_entity) == "alert_am_threshold_cross") then
       local plugins_utils = require "plugins_utils"
