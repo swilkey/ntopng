@@ -152,7 +152,9 @@ end
 --@param sort_order Order, either `asc` or `desc`
 --@return True if set is successful, false otherwise
 function alert_store:add_order_by(sort_column, sort_order)
-   if not self._order_by and self:_valid_fields(sort_column)  and (sort_order == "asc" or sort_order == "desc") then
+   if not self._order_by 
+      and sort_column and self:_valid_fields(sort_column)
+      and (sort_order == "asc" or sort_order == "desc") then
       self._order_by = {sort_column = sort_column, sort_order = sort_order}
       return true
    end
@@ -163,7 +165,8 @@ end
 -- ##############################################
 
 function alert_store:group_by(fields)
-   if not self._group_by and self:_valid_fields(fields) then
+   if not self._group_by 
+      and fields and self:_valid_fields(fields) then
       self._group_by = fields
       return true
    end
