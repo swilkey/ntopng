@@ -307,7 +307,7 @@ function alert_store:select_request(filter, select_fields)
    -- Add filters
    self:add_request_filters()
 
-   if self.engaged then -- Engaged
+   if self._engaged then -- Engaged
 
       -- Add limits and sort criteria
       self:add_request_ranges()
