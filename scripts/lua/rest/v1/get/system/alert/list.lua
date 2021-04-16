@@ -45,6 +45,7 @@ for _key,_value in ipairs(alerts or {}) do
    local msg = alert_utils.formatAlertMessage(ifid, _value, alert_info)
    local date = tonumber(_value["tstamp"])
 
+   record["row_id"] = _value["rowid"]
    record["date"] = date
    record["duration"] = duration
    record["severity"] = severity
