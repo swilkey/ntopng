@@ -1,2 +1,2 @@
 {"success":true}
-{"rc":0,"rc_str":"OK","rc_str_hr":"Success","recordsFiltered":1,"recordsTotal":1,"rsp":{"records":[{"date":1618579276,"msg":"","score":240,"severity":"error","type":"alert_ndpi_tls_missing_sni"}]}}
+{"rc":0,"rc_str":"OK","rc_str_hr":"Success","recordsFiltered":1,"recordsTotal":1,"rsp":{"records":[{"alert_id":"54","cli_ip":"10.206.131.18","cli_name":"","cli_port":"58657","date":1618591982,"l7_proto":"91","msg":"","name":"Missing TLS SNI","proto":"6","row_id":"1","score":240,"severity":"error","srv_ip":"10.206.65.249","srv_name":"","srv_port":"443","vlan_id":"258"}]}}

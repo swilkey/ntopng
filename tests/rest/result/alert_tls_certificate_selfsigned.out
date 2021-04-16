@@ -1,2 +1,2 @@
 {"success":true}
-{"rc":0,"rc_str":"OK","rc_str_hr":"Success","recordsFiltered":1,"recordsTotal":1,"rsp":{"records":[{"date":1618579407,"msg":"[10/10/2015 17:55:47 - 09/10/2016 17:55:47]","score":200,"severity":"error","type":"alert_tls_certificate_expired"}]}}
+{"rc":0,"rc_str":"OK","rc_str_hr":"Success","recordsFiltered":1,"recordsTotal":1,"rsp":{"records":[{"alert_id":"22","cli_ip":"127.0.0.1","cli_name":"localhost","cli_port":"51607","date":1618592124,"l7_proto":"91","msg":"[10/10/2015 17:55:47 - 09/10/2016 17:55:47]","name":"TLS Certificate Expired","proto":"6","row_id":"1","score":200,"severity":"error","srv_ip":"127.0.0.1","srv_name":"localhost","srv_port":"3001","vlan_id":"0"}]}}

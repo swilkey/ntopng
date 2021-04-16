@@ -1,2 +1,2 @@
 {"success":true}
-{"rc":0,"rc_str":"OK","rc_str_hr":"Success","recordsFiltered":1,"recordsTotal":1,"rsp":{"records":[{"date":1618579375,"msg":"","score":20,"severity":"notice","type":"alert_remote_to_remote"}]}}
+{"rc":0,"rc_str":"OK","rc_str_hr":"Success","recordsFiltered":1,"recordsTotal":1,"rsp":{"records":[{"alert_id":"16","cli_ip":"192.168.2.126","cli_name":"","cli_port":"60174","date":1618592090,"l7_proto":"91","msg":"","name":"Remote to Remote","proto":"6","row_id":"1","score":20,"severity":"notice","srv_ip":"104.111.215.93","srv_name":"","srv_port":"443","vlan_id":"0"}]}}

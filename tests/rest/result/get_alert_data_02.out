@@ -1,2 +1,2 @@
 {"success":true}
-{"rc":0,"rc_str":"OK","rc_str_hr":"Success","recordsFiltered":1,"recordsTotal":1,"rsp":{"records":[{"date":1618579554,"msg":"","score":120,"severity":"error","type":"alert_ndpi_malformed_packet"}]}}
+{"rc":0,"rc_str":"OK","rc_str_hr":"Success","recordsFiltered":1,"recordsTotal":1,"rsp":{"records":[{"alert_id":"48","cli_ip":"127.0.0.1","cli_name":"localhost","cli_port":"50435","date":1618592193,"l7_proto":"5","msg":"","name":"Malformed packet","proto":"17","row_id":"1","score":120,"severity":"error","srv_ip":"127.0.0.1","srv_name":"localhost","srv_port":"53","vlan_id":"0"}]}}
