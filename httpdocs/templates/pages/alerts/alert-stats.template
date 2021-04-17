@@ -361,5 +361,18 @@
                 .tooltip()
                 .tooltip("show");
         });
-});
+
+        ChartWidget.registerEventCallback("{{ chart.name }}", 'zoomed', async (chartContext, { xaxis, yaxis }) => {
+           
+            // the timestamps are in milliseconds, convert them into seconds
+            const begin = Math.floor(xaxis.min / 1000);
+            const end = Math.floor(xaxis.max / 1000);
+            
+            $inputBeginEpoch.datetimepicker('date', moment(begin, 'X'));
+            $inputEndEpoch.datetimepicker('date', moment(end, 'X'));
+
+            await onRangePickerChange(true);
+
+        });
+    });
 </script>

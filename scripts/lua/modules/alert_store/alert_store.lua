@@ -376,7 +376,7 @@ function alert_store:count_by_time()
    -- Prepare the result as a Lua array ordered by time slot
    local res = {}
    for slot, count in pairsByKeys(all_slots, asc) do
-      res[#res + 1] = {slot, count}
+      res[#res + 1] = {slot * 1000, count}
    end
 
    return res
