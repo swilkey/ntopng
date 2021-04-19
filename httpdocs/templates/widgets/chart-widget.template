@@ -3,7 +3,6 @@
     Each widget contained inside the widgets folder has this following field:
     * widget
 #}
-{% tprint(widget) %}
 <div class="widget chart-widget" id="widget-{{ widget_name }}" style="{* css_styles *}">
     <div class="widget-error text-center text-danger" style="display: none; height: 100%; margin-top: 2rem">
         Something went wrong when loading this chart.

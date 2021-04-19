@@ -19,8 +19,8 @@ local CHART_NAME = "alert-timeseries"
 -- select the default page
 local page = _GET["page"] or 'flow'
 local time = os.time()
-local begin_epoch = _GET["begin_epoch"] or time - 3600
-local end_epoch = _GET["end_epoch"] or time
+local epoch_begin = _GET["epoch_begin"] or time - 3600
+local epoch_end = _GET["epoch_end"] or time
 
 sendHTTPContentTypeHeader('text/html')
 
@@ -37,7 +37,7 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
         label = i18n("hosts"),
     },
     {
-        active = page == "network",
+        active = page == "mac",
         page_name = "mac",
         label = i18n("report.local_networks"),
     },
@@ -66,8 +66,8 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
 widget_gui_utils.register_timeseries_bar_chart(CHART_NAME, 0, {
     Datasource(string.format("/lua/rest/v1/get/%s/alert/ts.lua", page), {
         ifid = ifid,
-        begin_epoch = begin_epoch,
-        end_epoch = end_epoch
+        epoch_begin = epoch_begin,
+        epoch_end = epoch_end
     })
 })
 
@@ -89,8 +89,8 @@ local context = {
         js_columns = template_utils.gen(string.format("pages/alerts/families/%s/table.js.template", page), {}),
         datasource = Datasource(string.format("/lua/rest/v1/get/%s/alert/list.lua", page), {
             ifid = ifid,
-            begin_epoch = begin_epoch,
-            end_epoch = end_epoch
+            epoch_begin = epoch_begin,
+            epoch_end = epoch_end
         }),
         modals = {},
     },

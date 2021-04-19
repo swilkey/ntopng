@@ -94,19 +94,20 @@
             const copyParams = Object.assign(datasourceParams, {});
 
             // override the existing timestamps 
-            if (copyParams.begin_epoch) {
-                copyParams.begin_epoch = begin.unix();
+            if (copyParams.epoch_begin) {
+                copyParams.epoch_begin = begin.unix();
             }
-            if (copyParams.end_epoch) {
-                copyParams.end_epoch = end.unix();
+            if (copyParams.epoch_end) {
+                copyParams.epoch_end = end.unix();
             }
 
             const searchParams = new URLSearchParams(Object.entries(copyParams));
-
 	        toggleOverlays();
 	    
             // reload the table
             $table.ajax.url(`{* datatable.datasource.name *}?${searchParams.toString()}`).load();
+
+            WidgetUtils.getWidgetByName("{{ chart.name }}").update(copyParams);
         }
 
         function printQueryTime($table) {
@@ -130,8 +131,8 @@
             const url = new URL(location);
             const searchParams = new URLSearchParams();
 
-            searchParams.set('begin_epoch', begin.unix());
-            searchParams.set('end_epoch', end.unix());
+            searchParams.set('epoch_begin', begin.unix());
+            searchParams.set('epoch_end', end.unix());
 
             // get all filters tags
             const tags = tagify.getTagElms();
@@ -147,7 +148,7 @@
             }
 
             url.search = searchParams.toString();
-            window.history.pushState({begin_epoch: begin.unix(), end_epoch: end.unix()}, '', url);
+            window.history.pushState({epoch_begin: begin.unix(), epoch_end: end.unix()}, '', url);
         }
 
         async function onRangePickerChange(pushHistroy = false) {
@@ -179,7 +180,6 @@
         config = DataTableUtils.extendConfig(config, {
 	        serverSide: true,
             searching: false,
-            pagingType: 'full',
             ajax: {
                 method: 'get',
                 url: '{* datatable.datasource.endpoint *}',
@@ -188,7 +188,7 @@
 
                     const tableApi = settings.oInstance.api();
                     const orderColumnIndex = data.order[0].column;
-                    const orderColumnName = tableApi.column(orderColumnIndex).name() || "NotSet";
+                    const orderColumnName = tableApi.column(orderColumnIndex).name() || undefined;
                     
                     if (data.order) {
                         const order = data.order[0].dir;
@@ -338,9 +338,9 @@
         // set the input boxes with their respective values
         $(window).on('popstate', function(e) {
             const {state} = e.originalEvent;
-            const {begin_epoch, end_epoch} = state;    
-            $inputBeginEpoch.datetimepicker('date', moment(begin_epoch, 'X'));
-            $inputEndEpoch.datetimepicker('date', moment(end_epoch, 'X'));
+            const {epoch_begin, epoch_end} = state;    
+            $inputBeginEpoch.datetimepicker('date', moment(epoch_begin, 'X'));
+            $inputEndEpoch.datetimepicker('date', moment(epoch_end, 'X'));
         });
 
         $btnGetPermaLink.on('click', function() {
@@ -371,6 +371,7 @@
             $inputBeginEpoch.datetimepicker('date', moment(begin, 'X'));
             $inputEndEpoch.datetimepicker('date', moment(end, 'X'));
 
+            // TODO: complete
             await onRangePickerChange(true);
 
         });

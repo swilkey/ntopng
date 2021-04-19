@@ -5,7 +5,9 @@
 {%
     -- if there are set the _GET["begin_epoch"] && _GET["end_epoch"]
     -- then select the `Custom` Label 
-    local presetSelected = (isEmptyString(_GET['begin_epoch']) and isEmptyString(_GET['end_epoch']))   
+    local presetSelected = not (isEmptyString(_GET['begin_epoch']) or isEmptyString(_GET['epoch_begin'])) 
+        and (isEmptyString(_GET['epoch_end']) or isEmptyString(_GET['end_epoch']))   
+
 %}
 
 <div class="d-flex flex-wrap flex-sm-column flex-md-row w-100">
@@ -159,8 +161,8 @@ $(document).ready(function() {
 </script>
 {% end %}
 <script type="text/javascript">
-const beginEpoch = {{ (_GET['begin_epoch'] or 'undefined') }};
-const endEpoch = {{ (_GET['end_epoch'] or 'undefined') }};
+const beginEpoch = {{ (_GET['begin_epoch'] or _GET['epoch_begin'] or 'undefined') }};
+const endEpoch = {{ (_GET['end_epoch'] or _GET['epoch_end'] or 'undefined') }};
 </script>
 <script type='text/javascript'>
     $(document).ready(function() {

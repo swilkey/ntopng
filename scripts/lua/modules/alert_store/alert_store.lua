@@ -240,7 +240,7 @@ function alert_store:select_historical(filter, fields)
    -- Prepare the final query
    local q = string.format(" SELECT %s FROM `%s` WHERE %s %s %s %s %s",
 			   fields, self._table_name, where_clause, group_by_clause, order_by_clause, limit_clause, offset_clause)
-   tprint(q)
+
    res = interface.alert_store_query(q)
 
    return res

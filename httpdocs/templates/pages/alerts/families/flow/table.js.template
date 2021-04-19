@@ -1,16 +1,16 @@
 [
     /* Date */
-    {name: 'date'},
+    {className: 'text-center', data: 'date'},
     /* Counts */
-    {name: 'counts'},
+    {name: 'count', className: 'text-center', data: 'count'},
     /* Severity */
-    {name: 'severity', data: 'severity'},
+    {name: 'severity', className: 'text-center', data: 'severity'},
     /* Alert Type */
-    {name: 'type', data: 'type'},
+    {name: 'type', className: 'text-center', data: 'name'},
     /* Score */
     {name: 'score', data: 'score', className: 'text-center'},
     /* Application */
-    {name: 'application'},
+    {name: 'application', data: 'l7_proto', className: 'text-center'},
     /* Description */
     {name: 'description', data: 'msg'},
     /* Actions */
