@@ -37,6 +37,7 @@ for _key,_value in ipairs(alerts or {}) do
    local name = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), true --[[ no html --]], alert_entities.am_host.entity_id)
    local msg = alert_utils.formatAlertMessage(ifid, _value, alert_info)
    local date = tonumber(_value["tstamp"])
+   local count = 1 -- TODO (not yet supported)
 
    record["row_id"] = _value["rowid"]
    record["date"] = date
