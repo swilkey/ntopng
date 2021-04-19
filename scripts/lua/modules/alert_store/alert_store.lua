@@ -360,6 +360,10 @@ function alert_store:count_by_time()
    -- Minimum slot is, in order, the specified begin epoch, or the oldest time read in the query, or the current time as fallback
    local max_slot = self._epoch_end or tonumber(q_res and q_res[#q_res] and q_res[#q_res]["slot"]) or now
 
+   -- Align the range using the width of the time slot to always return aligned data
+   min_slot = min_slot - (min_slot % time_slot_width)
+   max_slot = max_slot - (max_slot % time_slot_width)
+
    local all_slots = {}
    -- Read points from the query
    for _, p in ipairs(q_res) do
@@ -376,9 +380,9 @@ function alert_store:count_by_time()
    -- Prepare the result as a Lua array ordered by time slot
    local res = {}
    for slot, count in pairsByKeys(all_slots, asc) do
-      res[#res + 1] = {slot * 1000, count}
+      res[#res + 1] = {slot * 1000 --[[ In milliseconds --]], count}
    end
-
+   
    return res
 end
 
