@@ -41,7 +41,7 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
     {
         active = page == "mac",
         page_name = "mac",
-        label = i18n("report.local_networks"),
+        label = i18n("discover.device"),
     },
     {
         active = page == "snmp_device",
