@@ -100,7 +100,6 @@ class ChartWidget extends Widget {
     }
 
     static registerEventCallback(widgetName, eventName, callback) {
-        // TODO: why use set timeout?
         setTimeout(async () => {
             const widget = WidgetUtils.getWidgetByName(widgetName);
             const updatedOptions = {
@@ -210,6 +209,11 @@ class ChartWidget extends Widget {
             else {
                 config[additional] = rsp[additional];
             }
+        }
+
+        if (config.xaxis.type === "datetime") {
+            config.xaxis.labels = config.xaxis.labels || {};
+            config.xaxis.labels.datetimeUTC = false;
         }
 
         this._buildAxisFormatter(config, 'xaxis');
