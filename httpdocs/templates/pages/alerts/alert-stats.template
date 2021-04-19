@@ -196,7 +196,7 @@
             {% end %}
 
             /* Actions Column */
-            columns.push({width: '5%', targets: -1, className: 'text-center', data: null, render: (type) => {
+            columns.push({width: '5%', targets: -1, className: 'text-center', orderable: false, data: null, render: (type) => {
                 return DataTableUtils.createActionButtons([
                     {icon: 'fa fa-trash', label: "{{ i18n('remove') }}", modal: '#delete_alert_dialog' },
                 ]);

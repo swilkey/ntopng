@@ -632,6 +632,11 @@ class DataTableRenders {
         return value;
     }
 
+    static secondsToTime(seconds, type, row) {
+        if (type === "display") return NtopUtils.secondsToTime(seconds);
+        return seconds;
+    }
+
     static filterize(value, label) {
         return `<a class='tag-filter' data-tag-value='${value}' href='#'>${label || value}</a>`;
     }

@@ -39,23 +39,31 @@ local alerts, recordsFiltered = host_alert_store:select_request()
 for _key,_value in ipairs(alerts or {}) do
    local record = {}
 
-   local severity = alert_consts.alertSeverityLabel(tonumber(_value["severity"]))
    --local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), alert_entities.host.entity_id)
    local alert_info = alert_utils.getAlertInfo(_value)
-   local name = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), false --[[ no html --]], alert_entities.host.entity_id)
    local msg = alert_utils.formatAlertMessage(ifid, _value, alert_info)
-   local date = format_utils.formatPastEpochShort(tonumber(_value["alert_tstamp"] or _value["tstamp"]))
+   local tstamp = format_utils.formatPastEpochShort(tonumber(_value["alert_tstamp"] or _value["tstamp"]))
    local count = 1 -- TODO (not yet supported)
 
+   record["alert_id"] = {
+      label = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), false, alert_entities.host.entity_id),
+      value = _value["alert_id"]
+   }
+   record["severity"] = {
+      label = alert_consts.alertSeverityLabel(tonumber(_value["severity"])),
+      value = _value["severity"]
+   }
+
+   record["duration"] = tonumber(_value["tstamp_end"]) - tonumber(_value["tstamp"]) 
+
    record["row_id"] = _value["rowid"]
-   record["date"] = date
-   record["duration"] = duration
-   record["severity"] = severity
-   record["alert_id"] = _value["alert_id"]
+   record["tstamp"] = tstamp
    record["count"] = count -- historical only
-   record["name"] = name
    record["msg"] = msg
-   record["ip"] = _value["ip"]
+   record["ip"] = _value["ip"] .. (ternary(tonumber(_value["vlan_id"]) > 0, "@".._value["vlan_id"], ""))
+   record["hostname"] = _value["name"]
+   record["is_attacker"] = _value["is_attacker"] == "1"
+   record["is_victim"] = _value["is_victim"] == "1"
    record["vlan_id"] = _value["vlan_id"] or 0
 
    res[#res + 1] = record

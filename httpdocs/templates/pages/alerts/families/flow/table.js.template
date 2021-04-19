@@ -24,8 +24,8 @@
     {name: 'srv_ip', data: 'srv_ip', orderable: false, render: (srvIp, type, row) => {
         return DataTableRenders.filterize(srvIp, `${srvIp} ${row.is_victim_to_attacker ? "<i class='fas fa-skull-crossbones'></i>" : ""}`);
     }},
-    /* Client Name */
+    /* Server Name */
     {name: 'srv_name', data: 'srv_name'},
     /* Description */
-    {name: 'description', data: 'msg'},
+    {name: 'description', data: 'msg', orderable: false,},
 ]
