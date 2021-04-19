@@ -17,7 +17,9 @@ local ifid = interface.getId()
 local CHART_NAME = "alert-timeseries"
 
 -- select the default page
-local page = _GET["page"] or 'flow'
+local page = _GET["page"] or 'host'
+local status = _GET["status"] or "historical"
+
 local time = os.time()
 local epoch_begin = _GET["epoch_begin"] or time - 3600
 local epoch_end = _GET["epoch_end"] or time
@@ -67,7 +69,8 @@ widget_gui_utils.register_timeseries_bar_chart(CHART_NAME, 0, {
     Datasource(string.format("/lua/rest/v1/get/%s/alert/ts.lua", page), {
         ifid = ifid,
         epoch_begin = epoch_begin,
-        epoch_end = epoch_end
+        epoch_end = epoch_end,
+        status = status
     })
 })
 
@@ -90,7 +93,8 @@ local context = {
         datasource = Datasource(string.format("/lua/rest/v1/get/%s/alert/list.lua", page), {
             ifid = ifid,
             epoch_begin = epoch_begin,
-            epoch_end = epoch_end
+            epoch_end = epoch_end,
+            status = status
         }),
         modals = {},
     },

@@ -23,7 +23,7 @@ jQuery.fn.dataTableExt.sortBytes = (byte, type, row) => {
     return byte;
 };
 jQuery.fn.dataTableExt.hideIfZero = (value, type, row) => {
-    if (type === "display" && value === 0) return "";
+    if (type === "display" && parseInt(value) === 0) return "";
     return value;
 };
 jQuery.fn.dataTableExt.showProgress = (percentage, type, row) => {
@@ -622,4 +622,11 @@ class DataTableUtils {
         return $.get(`${http_prefix}/lua/datatable_columns.lua?table=${tableID}&action=load`);
     }
 
+}
+
+class DataTableRenders {
+    static hideIfZero(value, type, row) {
+        if (type === "display" && parseInt(value) === 0) return "";
+        return value;
+    }
 }

@@ -16,6 +16,13 @@
     </div>
     <div class="col-12 mb-2">
         <div class="card" >
+            <div class="overlay justify-content-center align-items-center position-absolute h-100 w-100">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
             <div class="card-body">
                 {* widget_gui_utils.render_chart(chart.name, {
                     displaying_label = ""
@@ -25,12 +32,23 @@
     </div>
     <div class='col-12'>
         <div class="card card-shadow">
-	    <div class="overlay justify-content-center align-items-center position-absolute h-100 w-100">
+	        <div class="overlay justify-content-center align-items-center position-absolute h-100 w-100">
                     <div class="text-center">
                         <div class="spinner-border text-primary" role="status">
                           <span class="sr-only">Loading...</span>
                     </div>
                 </div>
+            </div>
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="#">{{ i18n("show_alerts.past_alerts") }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">{{ i18n("show_alerts.engaged_alerts") }}</a>
+                    </li>
+                   
+                  </ul>
             </div>
             <div class="card-body">
                 <table id='{{ datatable.name }}' class='table table-striped table-bordered w-100'> 
@@ -87,27 +105,28 @@
             $(`.overlay`).fadeOut(time);
         }
 
-        async function reloadChartAndTable($table, begin, end) {
+        function copyDatasourceParams() {
 
-            if (begin == null && end == null) return;
+            const [begin, end] = getTimestampRange();
+            if (begin == null && end == null) return {};
 
             const copyParams = Object.assign(datasourceParams, {});
 
             // override the existing timestamps 
-            if (copyParams.epoch_begin) {
-                copyParams.epoch_begin = begin.unix();
-            }
-            if (copyParams.epoch_end) {
-                copyParams.epoch_end = end.unix();
-            }
+            if (copyParams.epoch_begin) copyParams.epoch_begin = begin.unix();
+            if (copyParams.epoch_end) copyParams.epoch_end = end.unix();
 
+            return copyParams;
+        }
+
+        async function reloadTable($table, ) {
+
+            const copyParams = copyDatasourceParams();
             const searchParams = new URLSearchParams(Object.entries(copyParams));
 	        toggleOverlays();
 	    
             // reload the table
             $table.ajax.url(`{* datatable.datasource.name *}?${searchParams.toString()}`).load();
-
-            WidgetUtils.getWidgetByName("{{ chart.name }}").update(copyParams);
         }
 
         function printQueryTime($table) {
@@ -147,14 +166,14 @@
                 searchParams.set(key, `${value},${selectedOperator}`);
             }
 
-            url.search = searchParams.toString();
+            url.search = searchParams.toString() + "&page=" + url.searchParams.get('page');
             window.history.pushState({epoch_begin: begin.unix(), epoch_end: end.unix()}, '', url);
         }
 
         async function onRangePickerChange(pushHistroy = false) {
             
             const [begin, end] = getTimestampRange();
-            await reloadChartAndTable($table, begin, end);
+            await reloadTable($table);
 
             // update the link of the download button
             const href = $(`#btn-download-records`).attr('href');
@@ -235,6 +254,7 @@
         // on apply button click
         $(`#btn-apply`).on('click', async function() {
             await onRangePickerChange(true);
+            WidgetUtils.getWidgetByName("{{ chart.name }}").update(copyDatasourceParams());
         });
 
         $(`#select-len`).on('change', async function() {

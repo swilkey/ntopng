@@ -1,18 +1,18 @@
 [
     /* Date */
-    {name: 'date'},
-    /* Severity */
-    {name: 'severity'},
+    {className: 'text-center', data: 'date'},
     /* Counts */
-    {name: 'counter', className: 'text-center'},
-    /* Name */
-    {name: 'resolved_name'},
+    {name: 'count', className: 'text-center', data: 'count'},
+    /* Severity */
+    {name: 'severity', className: 'text-center', data: 'severity'},
+    /* Alert Type */
+    {name: 'type', className: 'text-center', data: 'name'},
     /* Threshold */
-    {name: 'measure_threshold'},
+    {name: 'measure_threshold', className: 'text-center'},
     /* Value */
-    {name: 'measure_value'},
+    {name: 'measure_value', className: 'text-center'},
     /* Description */
-    {name: 'description'},
+    {name: 'description', data: 'msg'},
     /* Actions */
     {targets: -1, className: 'text-center', data: null, render: (type) => {
         return '';

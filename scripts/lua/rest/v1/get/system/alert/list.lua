@@ -6,6 +6,7 @@ local dirs = ntop.getDirs()
 package.path = dirs.installdir .. "/scripts/lua/modules/?.lua;" .. package.path
 package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. package.path
 
+local format_utils = require "format_utils"
 local alert_utils = require "alert_utils"
 local alert_consts = require "alert_consts"
 local alert_entities = require "alert_entities"
@@ -33,17 +34,17 @@ end
 interface.select(ifid)
 
 -- Fetch the results
-local alerts, recordsTotal = system_alert_store:select_request()
+local alerts, recordsFiltered = system_alert_store:select_request()
 
 for _key,_value in ipairs(alerts or {}) do
    local record = {}
 
-   local severity = alert_consts.alertSeverityRaw(tonumber(_value["severity"]))
+   local severity = alert_consts.alertSeverityLabel(tonumber(_value["severity"]))
    --local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), tonumber(_value["entity_id"]))
    local alert_info = alert_utils.getAlertInfo(_value)
-   local name = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), true --[[ no html --]], tonumber(_value["entity_id"]))
+   local name = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), false, tonumber(_value["entity_id"]))
    local msg = alert_utils.formatAlertMessage(ifid, _value, alert_info)
-   local date = tonumber(_value["tstamp"])
+   local date = format_utils.formatPastEpochShort(tonumber(_value["tstamp"]))
    local count = 1 -- TODO (not yet supported)
 
    record["row_id"] = _value["rowid"]
@@ -58,10 +59,9 @@ for _key,_value in ipairs(alerts or {}) do
    res[#res + 1] = record
 end -- for
 
-local recordsFiltered = #res
 
 rest_utils.extended_answer(rc, {records = res}, {
 			      ["draw"] = tonumber(_GET["draw"]),
 			      ["recordsFiltered"] = recordsFiltered,
-			      ["recordsTotal"] = recordsTotal
+			      ["recordsTotal"] = #res
 })
