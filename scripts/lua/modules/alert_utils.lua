@@ -996,12 +996,12 @@ function alert_utils.drawAlertTables(has_past_alerts, has_engaged_alerts, has_fl
    print(
       template.gen("modal_confirm_dialog.html", {
 		      dialog={
-			 id      = "delete_alert_dialog",
-			 action  = "deleteAlertById(delete_alert_id)",
-			 title   = i18n("show_alerts.delete_alert"),
-			 message = i18n("show_alerts.confirm_delete_alert"),
-			 confirm = i18n("delete"),
-			 confirm_button = "btn-danger",
+               id      = "delete_alert_dialog",
+               action  = "deleteAlertById(delete_alert_id)",
+               title   = i18n("show_alerts.delete_alert"),
+               message = i18n("show_alerts.confirm_delete_alert"),
+               confirm = i18n("delete"),
+               confirm_button = "btn-danger",
 		      }
       })
    )

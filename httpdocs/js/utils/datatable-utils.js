@@ -369,24 +369,25 @@ class DataTableUtils {
                     ${(action.onclick) ? `onclick='${action.onclick}'` : ``}
                     data-placement='bottom'
                     ${action.modal ? "data-toggle='modal'" : ``}
-                    class='btn btn-sm ${action.class}'
+                    class='dropdown-item ${action.class}'
                     ${action.hidden ? "style='display: none'" : ``}
                     ${action.external ? "target='_about'" : ``}
                     ${action.title ? `title='${action.title}'` : ``}
                     >
-                    <i class='fas ${action.icon}'></i>
+                    <i class='fas ${action.icon}'></i> ${(action.label || "")}
                 </a>
             `);
-
-            // add a wrapper for the disabled button to show a tooltip
-            // if (action.class.contains("disabled")) {
-            //    button = `<span class='d-inline-block' data-placement='bottom' ${action.title ? `title='${action.title}'` : ""}>${button}</span>`;
-            //}
 
             buttons.push(button);
         });
 
-        return (`<div class='actions-group' role='group'>${buttons.join('')}</div>`);
+        const hamburgerButton = (`
+            <a class="btn btn-light btn-sm" href="#" role="button" data-toggle="dropdown">
+                <i class="fas fa-bars"></i>
+            </a>
+        `);
+
+        return (`<div class='actions-group dropdown'>${hamburgerButton}<div class='dropdown-menu dropdown-menu-right'>${buttons.join('')}</div></div>`);
     }
 
     static setAjaxConfig(config, url, dataSrc = '', method = "get", params = {}) {
@@ -625,8 +626,19 @@ class DataTableUtils {
 }
 
 class DataTableRenders {
+
     static hideIfZero(value, type, row) {
         if (type === "display" && parseInt(value) === 0) return "";
         return value;
     }
+
+    static filterize(value, label) {
+        return `<a class='tag-filter' data-tag-value='${value}' href='#'>${label || value}</a>`;
+    }
+
+    static formatValueLabel(obj, type, row) {
+        if (type !== "display") return obj.value;
+        return obj.label;
+    }
+
 }

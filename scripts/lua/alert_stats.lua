@@ -74,6 +74,19 @@ widget_gui_utils.register_timeseries_bar_chart(CHART_NAME, 0, {
     })
 })
 
+local modals = {
+    ["delete_alert_dialog"] = template_utils.gen("modal_confirm_dialog.html", {
+        dialog = {
+         id      = "delete_alert_dialog",
+         title   = i18n("show_alerts.delete_alert"),
+         message = i18n("show_alerts.confirm_delete_alert") .. '?',
+         confirm = i18n("delete"),
+         confirm_button = "btn-danger",
+         custom_alert_class = "alert alert-danger"
+        }
+    })
+}
+
 local context = {
     template_utils = template_utils,
     json = json,
@@ -96,10 +109,11 @@ local context = {
             epoch_end = epoch_end,
             status = status
         }),
-        modals = {},
+        modals = modals,
     },
     alert_stats = {
-        entity = page
+        entity = page,
+        status = status
     }
 }
 

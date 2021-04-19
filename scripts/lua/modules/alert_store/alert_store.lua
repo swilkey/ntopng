@@ -309,10 +309,13 @@ function alert_store:select_request(filter, select_fields)
 
    if self._engaged then -- Engaged
 
+      local total_row = self:count()
+      tprint(total_row)
+
       -- Add limits and sort criteria
       self:add_request_ranges()
 
-      return self:select_engaged(filter)
+      return self:select_engaged(filter), total_row
 
    else -- Historical
       

@@ -33,7 +33,7 @@ end
 interface.select(ifid)
 
 -- Fetch the results
-local alerts, recordsTotal = mac_alert_store:select_request()
+local alerts, recordsFiltered = mac_alert_store:select_request()
 
 for _key,_value in ipairs(alerts or {}) do
    local record = {}
@@ -58,10 +58,8 @@ for _key,_value in ipairs(alerts or {}) do
    res[#res + 1] = record
 end -- for
 
-local recordsFiltered = #res
-
 rest_utils.extended_answer(rc, {records = res}, {
 			      ["draw"] = tonumber(_GET["draw"]),
-			      ["recordsFiltered"] = recordsFiltered,
-			      ["recordsTotal"] = recordsTotal
+			      ["recordsFiltered"] = #res,
+			      ["recordsTotal"] = recordsFiltered
 })

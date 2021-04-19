@@ -12,9 +12,5 @@
     /* Name */
     {name: 'name'},
     /* Description */
-    {},
-    /* Actions */
-    {targets: -1, className: 'text-center', data: null, render: (type) => {
-        return '';
-    }}
+    {data: 'msg'},
 ]

@@ -39,27 +39,26 @@ local alerts, recordsFilter = flow_alert_store:select_request()
 for _key,_value in ipairs(alerts or {}) do
    local record = {}
 
-   local severity = alert_consts.alertSeverityLabel(tonumber(_value["severity"]))
-
-
    --local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), alert_entities.flow.entity_id)
    local score = tonumber(_value["score"])
    local alert_info = alert_utils.getAlertInfo(_value)
-   local name = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), false, alert_entities.flow.entity_id)
    local msg = alert_utils.formatFlowAlertMessage(ifid, _value, alert_info)
-   local date = format_utils.formatPastEpochShort(tonumber(_value["tstamp"]))
+   local tstamp = format_utils.formatPastEpochShort(tonumber(_value["tstamp"]))
    local application =  interface.getnDPIProtoName(tonumber(_value["l7_proto"]))
    local count = 1 -- TODO (not yet supported)
 
    record["row_id"] = _value["rowid"]
-   record["date"] = date
-   record["duration"] = duration
-   record["severity"] = severity
-   record["alert_id"] = _value["alert_id"]
-
+   record["tsamp"] = tstamp
+   record["severity"] = {
+      value = _value["severity"],
+      label = alert_consts.alertSeverityLabel(_value["severity"], false)
+   }
+   record["alert_id"] = {
+      value = _value["alert_id"],
+      label = alert_consts.alertTypeLabel(_value["alert_id"], false, alert_entities.flow.entity_id)
+   }
    record["count"] = count
    record["score"] = score
-   record["name"] = name
    record["msg"] = msg
    record["cli_name"] = _value["cli_name"]
    record["srv_name"] = _value["srv_name"]
@@ -69,7 +68,12 @@ for _key,_value in ipairs(alerts or {}) do
    record["srv_port"] = _value["srv_port"]
    record["vlan_id"] = _value["vlan_id"]
    record["proto"] = _value["proto"]
-   record["l7_proto"] = application
+   record["is_attacker_to_victim"] = _value["is_attacker_to_victim"] == "1"
+   record["is_victim_to_attacker"] = _value["is_victim_to_attacker"] == "1"
+   record["l7_proto"] = {
+      value = _value["l7_proto"],
+      label = application
+   }
 
    res[#res + 1] = record
 end -- for
