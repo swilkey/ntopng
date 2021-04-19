@@ -1,6 +1,7 @@
 input: bcast_domains.pcap
 
 ignore:
+  - date
 
 pre: |
 
