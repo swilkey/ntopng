@@ -211,11 +211,6 @@ class ChartWidget extends Widget {
             }
         }
 
-        if (config.xaxis.type === "datetime") {
-            config.xaxis.labels = config.xaxis.labels || {};
-            config.xaxis.labels.datetimeUTC = false;
-        }
-
         this._buildAxisFormatter(config, 'xaxis');
         this._buildAxisFormatter(config, 'yaxis');
 

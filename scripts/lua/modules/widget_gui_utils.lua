@@ -84,6 +84,9 @@ function widget_gui_utils.register_timeseries_bar_chart(name, update_time, datas
             },
             xaxis = {
                 type = "datetime",
+                labels = {
+                    datetimeUTC = false
+                },
                 axisBorder = {
                     show = false
                 },
