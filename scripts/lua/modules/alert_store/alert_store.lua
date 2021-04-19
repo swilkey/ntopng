@@ -341,7 +341,7 @@ end
 
 --@brief Performs a query and counts the number of records in multiple time slots
 function alert_store:count_by_time()
-   local time_slot_width = 600 -- 5-minute slots
+   local time_slot_width = 300 -- 5-minute slots
    -- Preserve all the filters currently set
    local where_clause = table.concat(self._where, " AND ")
 
