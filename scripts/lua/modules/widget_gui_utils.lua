@@ -78,6 +78,15 @@ function widget_gui_utils.register_timeseries_bar_chart(name, update_time, datas
                 height = "100%",
                 foreColor = "#999",
                 stacked = true,
+                toolbar = {
+                    tools = {
+                        selection = false,
+                        zoomin = false,
+                        zoomout = false,
+                        reset = false,
+                        pan = false
+                    }
+                }
             },
             dataLabels = {
                 enabled = false

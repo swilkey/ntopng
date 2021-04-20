@@ -10,10 +10,10 @@ local ui_utils = require "ui_utils"
 local json = require "dkjson"
 local template_utils = require "template_utils"
 local widget_gui_utils = require "widget_gui_utils"
+local tag_utils = require "tag_utils"
 local Datasource = widget_gui_utils.datasource
 
-local ifid = interface.getId()
-
+local IFID = interface.getId()
 local CHART_NAME = "alert-timeseries"
 
 -- select the default page
@@ -21,8 +21,19 @@ local page = _GET["page"] or 'host'
 local status = _GET["status"] or "historical"
 
 local time = os.time()
-local epoch_begin = _GET["epoch_begin"] or time - 3600
+
+-- initial epoch_begin is set as now - 30 minutes
+local epoch_begin = _GET["epoch_begin"] or time - 1800
 local epoch_end = _GET["epoch_end"] or time
+
+--------------------------------------------------------------
+
+local l7_proto = _GET["l7_proto"]
+local cli_ip = _GET["cli_ip"]
+local srv_ip = _GET["srv_ip"]
+local host_ip = _GET["ip"]
+
+--------------------------------------------------------------
 
 sendHTTPContentTypeHeader('text/html')
 
@@ -67,7 +78,7 @@ page_utils.print_navbar(i18n("alerts_dashboard.alerts"), url, {
 
 widget_gui_utils.register_timeseries_bar_chart(CHART_NAME, 0, {
     Datasource(string.format("/lua/rest/v1/get/%s/alert/ts.lua", page), {
-        ifid = ifid,
+        ifid = IFID,
         epoch_begin = epoch_begin,
         epoch_end = epoch_end,
         status = status
@@ -87,13 +98,56 @@ local modals = {
     })
 }
 
+local defined_tags = {
+    ["host"] = {
+        ip = {'eq'}
+    },
+    ["mac"] = {
+    },
+    ["snmp_device"] = {
+
+    },
+    ["flow"] = {
+        l7_proto  = {'eq'},
+        cli_ip = {'eq'},
+        srv_ip = {'eq'}
+    },
+    ["system"] = {
+
+    },
+    ["active_monitoring"] = {
+
+    }
+}
+
+local initial_tags = {}
+
+for tag_key, tag in pairs(defined_tags[page]) do
+    tag_utils.add_tag_if_valid(initial_tags, tag_key, tag, {})
+end
+
 local context = {
     template_utils = template_utils,
     json = json,
     ui_utils = ui_utils,
     widget_gui_utils = widget_gui_utils,
     range_picker = {
-        -- ?
+        tags = {
+            tag_operators = {tag_utils.tag_operators.eq},
+            defined_tags = defined_tags[page],
+            values = initial_tags,
+            i18n = {
+                l7_proto = i18n("tags.l7proto"),
+                cli_ip = i18n("tags.cli_ip"),
+                srv_ip = i18n("tags.srv_ip"),
+                ip = i18n("tags.ip")
+            }
+        },
+        presets = {
+            five_mins = false,
+            month = false,
+            year = false
+        }
     },
     chart = {
         name = CHART_NAME
@@ -103,12 +157,20 @@ local context = {
         initialLength = getDefaultTableSize(),
         table = template_utils.gen(string.format("pages/alerts/families/%s/table.template", page), {}),
         js_columns = template_utils.gen(string.format("pages/alerts/families/%s/table.js.template", page), {}),
+        -- TODO: refactor the datasource
         datasource = Datasource(string.format("/lua/rest/v1/get/%s/alert/list.lua", page), {
-            ifid = ifid,
+            ifid = IFID,
             epoch_begin = epoch_begin,
             epoch_end = epoch_end,
-            status = status
+            status = status,
+            cli_ip = cli_ip,
+            srv_ip = srv_ip,
+            l7_proto = l7_proto,
+            ip = host_ip
         }),
+        actions = {
+            disable = (page ~= "host" and page ~= "flow")
+        },
         modals = modals,
     },
     alert_stats = {

@@ -4904,6 +4904,17 @@ local lang = {
       ["tot_calls"] = "Total Calls",
     },
   },
+  ["tags"] = {
+    ["cli_ip"] = "Client IP",
+    ["cli_port"] = "Client Port",
+    ["flow_risk"] = "Flow Risk",
+    ["ip"] = "Host",
+    ["l4proto"] = "L4 Proto",
+    ["l7cat"] = "L7 Cat",
+    ["l7proto"] = "L7 Proto",
+    ["srv_ip"] = "Server IP",
+    ["srv_port"] = "Server Port",
+  },
   ["telemetry_page"] = {
     ["crash_report"] = "Crash Report",
     ["crash_report_descr"] = "A crash report is sent upon %{product} anomalous termination. Crash report contains %{product} information such as version, build architecture, operating system and startup options. Nothing regarding the monitored traffic is ever sent. Following is an example of a crash report:",

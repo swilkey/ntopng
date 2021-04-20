@@ -198,6 +198,9 @@
             /* Actions Column */
             columns.push({width: '5%', targets: -1, className: 'text-center', orderable: false, data: null, render: (type) => {
                 return DataTableUtils.createActionButtons([
+                    /* The disable action button is valid only for hosts and flows */
+                    {icon: 'fa-bell-slash', label: "{{ i18n('disable') }}", modal: '#', class: "{{ (datatable.actions.disable and 'disabled' or '') }}"},
+                    {icon: 'fas fa-unlock', label: "{{ i18n('show_alerts.release_alert_action') }}", modal: '#'},
                     {icon: 'fa fa-trash', label: "{{ i18n('remove') }}", modal: '#delete_alert_dialog' },
                 ]);
             }});
@@ -297,9 +300,12 @@
             }
 
             const tag = detail.data;
+            const $tag = $(`tag[key='${tag.key}']`);
 
             // add/update datasource params, default operator `=`
             datasourceParams[tag.key] = `${tag.value},eq`;
+            // set the selected operator to '='
+            $tag.attr("selectedoperator", "eq");
 
             // trigger request
             await onRangePickerChange(true);
@@ -336,7 +342,6 @@
 
         $table.on('click', `a.tag-filter`, async function (e) {
             e.preventDefault();
-
             // the tag key is contained inside the column's name
             const colIndex = $table.cell($(this).parent()).index().column;
             const data = $table.cell($(this).parent()).data();
@@ -348,11 +353,16 @@
             // does the tag exist?
             const existingTag = tagify.getTagElms().find(htmlTag => htmlTag.getAttribute('key') === tag.key);
             if (existingTag !== undefined && existingTag.getAttribute('value') !== tag.value) {
-                
+
+                const prevSelectedOperator = $(`tag[key='${tag.key}']`).attr("selectedoperator") || 'eq';
+
                 // replace the tag!
                 tagify.replaceTag(existingTag, tag);
+
                 // update the datasource params
-                datasourceParams[tag.key] = `${tag.value},${selectedOperator}`;
+                datasourceParams[tag.key] = `${tag.value},${prevSelectedOperator}`;
+                $(`tag[key='${tag.key}']`).attr("selectedoperator", prevSelectedOperator);
+
                 await onRangePickerChange(true);
 
                 return;
