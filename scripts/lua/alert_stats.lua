@@ -88,12 +88,37 @@ widget_gui_utils.register_timeseries_bar_chart(CHART_NAME, 0, {
 local modals = {
     ["delete_alert_dialog"] = template_utils.gen("modal_confirm_dialog.html", {
         dialog = {
-         id      = "delete_alert_dialog",
-         title   = i18n("show_alerts.delete_alert"),
-         message = i18n("show_alerts.confirm_delete_alert") .. '?',
-         confirm = i18n("delete"),
-         confirm_button = "btn-danger",
-         custom_alert_class = "alert alert-danger"
+            id      = "delete_alert_dialog",
+            title   = i18n("show_alerts.delete_alert"),
+            message = i18n("show_alerts.confirm_delete_alert") .. '?',
+            confirm = i18n("delete"),
+            confirm_button = "btn-danger",
+            custom_alert_class = "alert alert-danger",
+            no_confirm_id = true
+        }
+    }),
+    ["host_alerts_filter_dialog"] = template_utils.gen("modal_host_alerts_filter_dialog.html", {
+        dialog = {
+            id = "host_alerts_filter_dialog",
+            title = i18n("show_alerts.filter_alert"),
+            message	= i18n("show_alerts.confirm_filter_alert"),
+            delete_message = i18n("show_alerts.confirm_delete_filtered_alerts"),
+            delete_alerts = i18n("delete_disabled_alerts"),
+            alert_filter = "default_filter",
+            confirm = i18n("filter"),
+            confirm_button = "btn-warning",
+            custom_alert_class = "alert alert-warning"
+        }
+    }),
+    ["release_single_alert"] = template_utils.gen("modal_confirm_dialog.html", {
+        dialog = {
+            id      = "release_single_alert",
+            action  = "releaseAlert(alert_to_release)",
+            title   = i18n("show_alerts.release_alert"),
+            message = i18n("show_alerts.confirm_release_alert"),
+            confirm = i18n("show_alerts.release_alert_action"),
+            confirm_button = "btn-primary",
+            custom_alert_class = "alert alert-primary"
         }
     })
 }
@@ -131,6 +156,7 @@ local context = {
     json = json,
     ui_utils = ui_utils,
     widget_gui_utils = widget_gui_utils,
+    ifid = IFID,
     range_picker = {
         tags = {
             tag_operators = {tag_utils.tag_operators.eq},

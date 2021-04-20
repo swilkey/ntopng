@@ -178,7 +178,6 @@ end
 
 function alert_store:insert(alert)
    traceError(TRACE_NORMAL, TRACE_CONSOLE, "alert_store:insert")
-   tprint(alert)
    return false
 end
 
@@ -189,10 +188,9 @@ function alert_store:delete()
    local where_clause = table.concat(self._where, " AND ")
 
    -- Prepare the final query
-   local q = string.format(" DELETE FROM `%s` WHERE %s ", self._table_name, where_clause)
+   local q = string.format("DELETE FROM `%s` WHERE %s ", self._table_name, where_clause)
 
-   res = interface.alert_store_query(q)
-
+   local res = interface.alert_store_query(q)
    return res and table.len(res) == 0
 end
 

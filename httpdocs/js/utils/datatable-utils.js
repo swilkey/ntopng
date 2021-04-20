@@ -369,25 +369,24 @@ class DataTableUtils {
                     ${(action.onclick) ? `onclick='${action.onclick}'` : ``}
                     data-placement='bottom'
                     ${action.modal ? "data-toggle='modal'" : ``}
-                    class='dropdown-item ${action.class}'
+                    class='btn btn-sm ${action.class}'
                     ${action.hidden ? "style='display: none'" : ``}
                     ${action.external ? "target='_about'" : ``}
                     ${action.title ? `title='${action.title}'` : ``}
                     >
-                    <i class='fas ${action.icon}'></i> ${(action.label || "")}
+                    <i class='fas ${action.icon}'></i>
                 </a>
             `);
+
+            // add a wrapper for the disabled button to show a tooltip
+            // if (action.class.contains("disabled")) {
+            //    button = `<span class='d-inline-block' data-placement='bottom' ${action.title ? `title='${action.title}'` : ""}>${button}</span>`;
+            //}
 
             buttons.push(button);
         });
 
-        const hamburgerButton = (`
-            <a class="btn btn-light btn-sm" href="#" role="button" data-toggle="dropdown">
-                <i class="fas fa-bars"></i>
-            </a>
-        `);
-
-        return (`<div class='actions-group dropdown'>${hamburgerButton}<div class='dropdown-menu dropdown-menu-right'>${buttons.join('')}</div></div>`);
+        return (`<div class='actions-group' role='group'>${buttons.join('')}</div>`);
     }
 
     static setAjaxConfig(config, url, dataSrc = '', method = "get", params = {}) {
