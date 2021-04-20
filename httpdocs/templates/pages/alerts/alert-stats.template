@@ -416,7 +416,7 @@
 
         });
 
-        $(`#{{ datatable.name }}`).on('click', `a[href='#delete_alert_dialog']`, function (e) {
+        $table.on('click', `a[href='#delete_alert_dialog']`, function (e) {
             const alert = $table.row($(this).parent().parent()).data();
             $deleteAlertModal.invokeModalInit(alert);
         });
@@ -438,6 +438,37 @@
 
                 if (response.rc < 0) {
                     $('#delete_alert_dialog .invalid-feedback').html(i18n.rest[response.rc_str]).show();
+                }
+                else {
+                    onRangePickerChange(false);
+                }
+
+                return (response.rc == 0);
+            }
+        });
+
+        $table.on('click', `a[href='#release_single_alert']`, function (e) {
+            const alert = $table.row($(this).parent().parent()).data();
+            // TODO: implement release modal
+        });
+
+        const $releaseAlertModal = $('#release_single_alert form').modalHandler({
+            method: 'post',
+            csrf: PAGE_CSRF,
+            endpoint: `${http_prefix}/lua/rest/v1/release/{{ alert_stats.entity }}/alerts.lua`,
+            beforeSumbit: function (alert) {
+                return {
+                    ifid: "{{ ifid }}",
+                    row_id: alert.row_id
+                };
+            },
+            onModalInit: function (alert) {
+                $(`#release_single_alert button[type='submit']`).removeAttr("disabled");
+            },
+            onSubmitSuccess: function (response) {
+
+                if (response.rc < 0) {
+                    $('#release_single_alert .invalid-feedback').html(i18n.rest[response.rc_str]).show();
                 }
                 else {
                     onRangePickerChange(false);

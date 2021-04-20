@@ -110,15 +110,28 @@ local modals = {
             custom_alert_class = "alert alert-warning"
         }
     }),
+    ["flow_alerts_filter_dialog"] = template_utils.gen("modal_flow_alerts_filter_dialog.html", {
+        dialog = {
+            id = "flow_alerts_filter_dialog",
+            action = "filterFlowAlerts(alert_key)",
+            title = i18n("show_alerts.filter_alert"),
+            message	= i18n("show_alerts.confirm_filter_alert"),
+            delete_message = i18n("show_alerts.confirm_delete_filtered_alerts"),
+            delete_alerts = i18n("delete_disabled_alerts"),
+            alert_filter = "default_filter",
+            confirm = i18n("filter"),
+            confirm_button = "btn-warning",
+        }
+    }),
     ["release_single_alert"] = template_utils.gen("modal_confirm_dialog.html", {
         dialog = {
             id      = "release_single_alert",
-            action  = "releaseAlert(alert_to_release)",
             title   = i18n("show_alerts.release_alert"),
             message = i18n("show_alerts.confirm_release_alert"),
             confirm = i18n("show_alerts.release_alert_action"),
             confirm_button = "btn-primary",
-            custom_alert_class = "alert alert-primary"
+            custom_alert_class = "alert alert-primary",
+            no_confirm_id = true
         }
     })
 }
