@@ -29,8 +29,8 @@ end
 
 function system_alert_store:insert(alert)
    local insert_stmt = string.format("INSERT INTO %s "..
-      "(alert_id, entity_id, tstamp, tstamp_end, severity, name, json) "..
-      "VALUES (%u, %u, %u, %u, %u, '%s', '%s'); ",
+      "(alert_id, entity_id, tstamp, tstamp_end, severity, name, granularity, json) "..
+      "VALUES (%u, %u, %u, %u, %u, '%s', %u, '%s'); ",
       self._table_name, 
       alert.alert_type, -- TODO rename to alert_id
       alert.alert_entity,
@@ -38,6 +38,7 @@ function system_alert_store:insert(alert)
       alert.alert_tstamp_end,
       alert.alert_severity,
       self:_escape(alert.alert_entity_val),
+      alert.alert_granularity,
       self:_escape(alert.alert_json))
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)

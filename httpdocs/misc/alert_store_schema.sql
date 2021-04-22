@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS `host_alerts` (
 `tstamp` DATETIME NOT NULL,
 `tstamp_end` DATETIME NULL DEFAULT 0,
 `severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`granularity` INTEGER NOT NULL DEFAULT 0 CHECK(`granularity` >= 0),
 `counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
 `description` TEXT NULL,
 `json` TEXT NULL);
@@ -109,6 +110,7 @@ CREATE TABLE IF NOT EXISTS `mac_alerts` (
 `tstamp` DATETIME NOT NULL,
 `tstamp_end` DATETIME NULL DEFAULT 0,
 `severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`granularity` INTEGER NOT NULL DEFAULT 0 CHECK(`granularity` >= 0),
 `counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
 `description` TEXT NULL,
 `json` TEXT NULL);
@@ -133,6 +135,7 @@ CREATE TABLE IF NOT EXISTS `snmp_alerts` (
 `tstamp` DATETIME NOT NULL,
 `tstamp_end` DATETIME NULL DEFAULT 0,
 `severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`granularity` INTEGER NOT NULL DEFAULT 0 CHECK(`granularity` >= 0),
 `counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
 `description` TEXT NULL,
 `json` TEXT NULL);
@@ -152,7 +155,8 @@ CREATE TABLE IF NOT EXISTS `system_alerts` (
 `name` TEXT NULL,
 `tstamp` DATETIME NOT NULL,
 `tstamp_end` DATETIME NULL DEFAULT 0,
-`severity` INTEGER NOT NULL CHECK(`severity` >= 0),	
+`severity` INTEGER NOT NULL CHECK(`severity` >= 0),
+`granularity` INTEGER NOT NULL DEFAULT 0 CHECK(`granularity` >= 0),
 `counter` INTEGER NOT NULL DEFAULT 0 CHECK(`counter` >= 0),
 `description` TEXT NULL,
 `json` TEXT NULL);
@@ -160,4 +164,3 @@ CREATE TABLE IF NOT EXISTS `system_alerts` (
 CREATE INDEX IF NOT EXISTS `i_id` ON `system_alerts`(alert_id);
 CREATE INDEX IF NOT EXISTS `i_severity` ON `system_alerts`(severity);
 CREATE INDEX IF NOT EXISTS `i_tstamp` ON `system_alerts`(tstamp);
-
