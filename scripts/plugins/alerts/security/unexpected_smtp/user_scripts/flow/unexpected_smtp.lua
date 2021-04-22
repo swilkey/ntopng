@@ -6,6 +6,7 @@ local user_scripts = require("user_scripts")
 local alerts_api = require "alerts_api"
 local alert_severities = require "alert_severities"
 local alert_consts = require("alert_consts")
+local flow_alert_keys = require "flow_alert_keys"
 
 local UNEXPECTED_PLUGINS_ENABLED_CACHE_KEY = "ntopng.cache.user_scripts.unexpected_plugins_enabled"
 
@@ -16,7 +17,7 @@ local script = {
    category = user_scripts.script_categories.security,
 
    -- This module is disabled by default
-   default_enabled = false,
+   alert_id = flow_alert_keys.flow_alert_unexpected_smtp_server,
 
    -- This script is only for alerts generation
    is_alert = true,
