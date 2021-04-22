@@ -15,14 +15,8 @@ local script = {
    -- Script category
    category = user_scripts.script_categories.security,
 
-   -- Priority
-   prio = -20, -- Lower priority (executed after) than default 0 priority
-
    -- This module is disabled by default
    default_enabled = false,
-
-   -- use this plugin only with this protocol
-   l7_proto_id = 3, -- 3 == SMTP
 
    -- This script is only for alerts generation
    is_alert = true,
@@ -39,8 +33,8 @@ local script = {
 
       input_builder     = "items_list",
       item_list_type    = "ip_address",
-      input_title       = i18n("unexpected_smtp.title"),
-      input_description = i18n("unexpected_smtp.description"),
+      input_title       = "unexpected_smtp.title",
+      input_description = "unexpected_smtp.description",
    }
 }
 
