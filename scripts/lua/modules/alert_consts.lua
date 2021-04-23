@@ -127,7 +127,7 @@ end
 -- ##############################################
 
 function alert_consts.formatHostAlert(ifid, host, vlan)
-   return hostinfo2label(host_info)
+   return hostinfo2label({host = host, vlan = vlan})
 end
 
 -- ##############################################
