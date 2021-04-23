@@ -33,7 +33,7 @@ function network_alert_store:insert(alert)
 
    local insert_stmt = string.format("INSERT INTO %s "..
       "(alert_id, tstamp, tstamp_end, severity, name, granularity, json) "..
-      "VALUES (%u, %u, %u, %u, %u, '%s', %u, '%s'); ",
+      "VALUES (%u, %u, %u, %u, '%s', %u, '%s'); ",
       self._table_name, 
       alert.alert_type, -- TODO rename to alert_id
       alert.alert_tstamp,

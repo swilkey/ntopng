@@ -28,17 +28,20 @@ end
 -- ##############################################
 
 function interface_alert_store:insert(alert)
-   
-   -- TODO add ifid, name, alias
+   local name = getInterfaceName(alert.ifid)
+   local alias = getHumanReadableInterfaceName(name)
 
    local insert_stmt = string.format("INSERT INTO %s "..
-      "(alert_id, tstamp, tstamp_end, severity, name, granularity, json) "..
-      "VALUES (%u, %u, %u, %u, %u, '%s', %u, '%s'); ",
+      "(alert_id, tstamp, tstamp_end, severity, ifid, name, alias, granularity, json) "..
+      "VALUES (%u, %u, %u, %u, %u, '%s', '%s', %u, '%s'); ",
       self._table_name, 
       alert.alert_type, -- TODO rename to alert_id
       alert.alert_tstamp,
       alert.alert_tstamp_end,
       alert.alert_severity,
+      alert.ifid,
+      name, 
+      alias, 
       self:_escape(alert.alert_entity_val),
       alert.alert_granularity,
       self:_escape(alert.alert_json))
