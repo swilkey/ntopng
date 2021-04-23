@@ -31,7 +31,6 @@ end
 -- ##############################################
 
 function host_alert_store:insert(alert)
-   local hostinfo = hostkey2hostinfo(alert.entity_val)
    local is_attacker = ternary(alert.is_attacker, 1, 0)
    local is_victim = ternary(alert.is_victim, 1, 0)
 
@@ -40,8 +39,8 @@ function host_alert_store:insert(alert)
       "VALUES (%u, '%s', %u, '%s', %u, %u, %u, %u, %u, %u, '%s'); ",
       self._table_name, 
       alert.alert_id,
-      hostinfo["host"],
-      hostinfo["vlan"] or 0,
+      alert.ip,
+      alert.vlan_id,
       self:_escape(alert.symbolic_name),
       is_attacker,
       is_victim,

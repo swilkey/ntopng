@@ -126,6 +126,24 @@ end
 
 -- ##############################################
 
+function alert_consts.formatHostAlert(ifid, host, vlan)
+   local value
+   local epoch_begin, epoch_end = getAlertTimeBounds({alert_tstamp = os.time()})
+   local label = string.lower(alert_entities.host.label)
+
+   local host_info = { host = host, vlan = vlan }
+   local value = resolveAddress(host_info)
+
+   if hostinfo2hostkey(host_info) ~= value then
+      -- Avoid overwriting the IP
+      value = string.format("%s [%s]", hostinfo2hostkey(host_info), value)
+   end
+
+   value = hostinfo2detailshref(host_info, {page = "historical", epoch_begin = epoch_begin, epoch_end = epoch_end}, value, nil, true --[[ check if the link brings to an active page]])
+end
+
+-- ##############################################
+
 function alert_consts.formatAlertEntity(ifid, entity_type, entity_value)
    require "flow_utils"
    local value
