@@ -84,7 +84,9 @@ function widget_gui_utils.register_timeseries_bar_chart(name, update_time, datas
                         zoomin = false,
                         zoomout = false,
                         reset = false,
-                        pan = false
+                        pan = false,
+                        -- set the zoom field to a space to hide the len icon
+                        zoom = " " 
                     }
                 }
             },

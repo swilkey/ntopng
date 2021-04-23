@@ -81,7 +81,7 @@ function tag_utils.add_tag_if_valid(tags, tag_key, tag, formatters)
    end
 
    if formatters[tag_key] ~= nil then
-       value = formatters[tag_key](label)
+       value = formatters[tag_key](value)
    end
 
    table.insert(tags, {

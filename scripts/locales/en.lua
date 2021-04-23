@@ -4905,14 +4905,14 @@ local lang = {
     },
   },
   ["tags"] = {
-    ["cli_ip"] = "Client IP",
+    ["cli_ip"] = "Client",
     ["cli_port"] = "Client Port",
     ["flow_risk"] = "Flow Risk",
     ["ip"] = "Host",
     ["l4proto"] = "L4 Proto",
     ["l7cat"] = "L7 Cat",
     ["l7proto"] = "L7 Proto",
-    ["srv_ip"] = "Server IP",
+    ["srv_ip"] = "Server",
     ["srv_port"] = "Server Port",
   },
   ["telemetry_page"] = {
