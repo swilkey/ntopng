@@ -57,7 +57,6 @@ for _key,_value in ipairs(alerts or {}) do
    record["name"] = name
    record["msg"] = msg
 
-
    res[#res + 1] = record
 end -- for
 
