@@ -75,6 +75,7 @@
     $(document).ready(function(){
 
         const INITIAL_ROWS_LENGTH = {{datatable.initialLength}};
+        const FAMILY = "{{ alert_stats.entity }}"
         const PAGE_CSRF = "{{ ntop.getRandomCSRFValue() }}";
         
         const datasourceParams = {* json.encode(datatable.datasource.params) *};
@@ -443,22 +444,36 @@
 
         $table.on('click', `a[href='#alerts_filter_dialog']`, function (e) {
             const alert = $table.row($(this).parent().parent()).data();
-            console.log(alert)
-
-            $deleteAlertModal.invokeModalInit(alert);
+            $disableAlert.invokeModalInit(alert);
         });
 
         const $disableAlert = $('#alerts_filter_dialog form').modalHandler({
             method: 'post',
             csrf: PAGE_CSRF,
-            endpoint: `${http_prefix}/lua/rest/v1/delete/{{ alert_stats.entity }}/alerts.lua`,
+            endpoint: `${http_prefix}/lua/rest/v1/edit/user_script/filter.lua`,
             beforeSumbit: function (alert) {
-                return { ifid: "{{ ifid }}", alert_key: alert.row_id, delete_alerts: true, subdir: "{{ alert_stats.entity }}"};
+                
+                const deleteAlerts = $(`#delete_host_alerts_switch`).is(":checked");
+                return { 
+                    ifid: "{{ ifid }}", 
+                    alert_key: alert.row_id, 
+                    delete_alerts: deleteAlerts, 
+                    subdir: FAMILY
+                };
             },
             onModalInit: function (alert) {
 
-                $(`#alerts_filter_dialog .alert_label`).html('Nope');
-                $(`#alerts_filter_dialog .alert_addr`).html('Nope');
+                const $type = $(`<span>${alert.alert_id.label}</span>`);
+                $(`#alerts_filter_dialog .alert_label`).text($type.text().trim());
+
+                if (FAMILY === "host") {
+                    $(`#alerts_filter_dialog .alert_addr`).show();
+                    $(`#alerts_filter_dialog .alert_addr`).parents('.form-group').show();
+                }
+                else {
+                    $(`#alerts_filter_dialog .alert_addr`).hide();
+                    $(`#alerts_filter_dialog .alert_addr`).parents('.form-group').hide();
+                }
 
             },
             onSubmitSuccess: function (response) {
@@ -473,11 +488,6 @@
                 return (response.rc == 0);
             }
         });
-
-        // /lua/rest/v1/edit/user_script/filter.lua
-        // subdir: flow|alert
-        // alert_key: string
-        // delete_alerts: boolean
 
         /**
          * Release Button Handler
