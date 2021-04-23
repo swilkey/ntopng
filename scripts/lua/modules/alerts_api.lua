@@ -388,7 +388,7 @@ function alerts_api.trigger(entity_info, type_info, when, cur_alerts)
 
   local params = {
     alert_key_name, granularity_id,
-    type_info.alert_severity.severity_id, type_info.alert_type.alert_key,
+    type_info.severity.severity_id, type_info.alert_type.alert_key,
     subtype, alert_json,
   }
 

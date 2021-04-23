@@ -209,7 +209,7 @@ else
 	 entries = {
 	    {
 	       entry = page_utils.menu_entries.detected_alerts,
-	       url = '/lua/show_alerts.lua',
+	       url = '/lua/alert_stats.lua?page=flow',
 	    },
 	    {
 	       entry = page_utils.menu_entries.alerts_dashboard,
