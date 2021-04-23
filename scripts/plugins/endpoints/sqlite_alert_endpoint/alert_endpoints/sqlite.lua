@@ -97,7 +97,7 @@ function sqlite.dequeueRecipientAlerts(recipient, budget, high_priority)
 	    if(alert) then
 	       interface.select(string.format("%d", alert.ifid))
 
-               local alert_store = get_alert_store(alert.alert_entity)
+               local alert_store = get_alert_store(alert.entity_id)
                if alert_store then
                   alert_store:insert(alert)
                end

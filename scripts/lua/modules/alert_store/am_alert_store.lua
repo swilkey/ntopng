@@ -35,8 +35,8 @@ function am_alert_store:insert(alert)
    local measure_threshold
    local measure_value
 
-   if not isEmptyString(alert.alert_json) then
-      local am_json = json.decode(alert.alert_json)
+   if not isEmptyString(alert.json) then
+      local am_json = json.decode(alert.json)
       if am_json then
          resolved_ip = am_json.ip
          if am_json.host then
@@ -52,16 +52,16 @@ function am_alert_store:insert(alert)
       "measure_threshold, measure_value, json) "..
       "VALUES (%u, %u, %u, %u, %d, '%s', '%s', %u, %f, '%s'); ",
       self._table_name, 
-      alert.alert_type, -- TODO rename to alert_id
-      alert.alert_tstamp,
-      alert.alert_tstamp_end,
-      alert.alert_severity,
+      alert.alert_id,
+      alert.tstamp,
+      alert.tstamp_end,
+      alert.severity,
       getSystemInterfaceId(),
       self:_escape(resolved_ip),
       self:_escape(resolved_name),
       measure_threshold or 0,
       measure_value or 0,
-      self:_escape(alert.alert_json))
+      self:_escape(alert.json))
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 

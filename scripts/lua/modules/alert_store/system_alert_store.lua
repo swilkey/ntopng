@@ -32,13 +32,13 @@ function system_alert_store:insert(alert)
       "(alert_id, tstamp, tstamp_end, severity, name, granularity, json) "..
       "VALUES (%u, %u, %u, %u, '%s', %u, '%s'); ",
       self._table_name, 
-      alert.alert_type, -- TODO rename to alert_id
-      alert.alert_tstamp,
-      alert.alert_tstamp_end,
-      alert.alert_severity,
-      self:_escape(alert.alert_entity_val),
-      alert.alert_granularity,
-      self:_escape(alert.alert_json))
+      alert.alert_id,
+      alert.tstamp,
+      alert.tstamp_end,
+      alert.severity,
+      self:_escape(alert.entity_val),
+      alert.granularity,
+      self:_escape(alert.json))
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 

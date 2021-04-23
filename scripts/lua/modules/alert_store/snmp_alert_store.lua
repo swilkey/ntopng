@@ -35,8 +35,8 @@ function snmp_alert_store:insert(alert)
    local port
    local port_name
 
-   if not isEmptyString(alert.alert_json) then
-      local snmp_json = json.decode(alert.alert_json)
+   if not isEmptyString(alert.json) then
+      local snmp_json = json.decode(alert.json)
       if snmp_json then
          device_ip = snmp_json.device
          device_name = snmp_json.device_name
@@ -49,15 +49,15 @@ function snmp_alert_store:insert(alert)
       "(alert_id, tstamp, tstamp_end, severity, ip, name, port, port_name, json) "..
       "VALUES (%u, %u, %u, %u, '%s', '%s', %u, '%s', '%s'); ",
       self._table_name, 
-      alert.alert_type, -- TODO rename to alert_id
-      alert.alert_tstamp,
-      alert.alert_tstamp_end,
-      alert.alert_severity,
-      self:_escape(device_ip or alert.alert_entity_val),
+      alert.alert_type,
+      alert.tstamp,
+      alert.tstamp_end,
+      alert.severity,
+      self:_escape(device_ip or alert.entity_val),
       self:_escape(device_name),
       port or 0,
       self:_escape(port_name),
-      self:_escape(alert.alert_json))
+      self:_escape(alert.json))
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 

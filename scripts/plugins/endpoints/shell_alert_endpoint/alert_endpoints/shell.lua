@@ -100,7 +100,7 @@ function shell.runScript(alerts, settings)
     local entity_info = alerts_api.processEntity("ntopng")
     local type_info = alert_consts.alert_types.alert_shell_script_executed.new(
       exec_script,
-      alert_consts.alertTypeLabel(alert["alert_type"], true)
+      alert_consts.alertTypeLabel(alert["alert_id"], true)
     )
   
     type_info:set_severity(alert_severities.notice)

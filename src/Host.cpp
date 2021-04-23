@@ -1598,24 +1598,24 @@ void Host::alert2JSON(HostAlert *alert, bool released, ndpi_serializer *s) {
   /* See AlertableEntity::luaAlert */
   ndpi_serialize_string_string(s, "action", released ? "release" : "engage");
   ndpi_serialize_string_int32(s, "alert_id", alert->getAlertType().id);
-  ndpi_serialize_string_string(s, "alert_subtype", "" /* No subtype for hosts */);
-  ndpi_serialize_string_int32(s, "alert_severity", alert->getSeverity());
-  ndpi_serialize_string_int32(s, "alert_entity", alert_entity_host);
-  ndpi_serialize_string_string(s, "alert_entity_val", getEntityValue().c_str());
-  ndpi_serialize_string_uint32(s, "alert_tstamp", alert->getEngageTime());
-  ndpi_serialize_string_uint32(s, "alert_tstamp_end", alert->getReleaseTime());
+  ndpi_serialize_string_string(s, "subtype", "" /* No subtype for hosts */);
+  ndpi_serialize_string_int32(s, "severity", alert->getSeverity());
+  ndpi_serialize_string_int32(s, "entity_id", alert_entity_host);
+  ndpi_serialize_string_string(s, "entity_val", getEntityValue().c_str());
+  ndpi_serialize_string_uint32(s, "tstamp", alert->getEngageTime());
+  ndpi_serialize_string_uint32(s, "tstamp_end", alert->getReleaseTime());
   ndpi_serialize_string_boolean(s, "is_attacker", alert->isAttacker());
   ndpi_serialize_string_boolean(s, "is_victim", alert->isVictim());
 
   HostCallback *cb = getInterface()->getCallback(alert->getCallbackType());
-  ndpi_serialize_string_int32(s, "alert_granularity", cb ? cb->getPeriod() : 0);
+  ndpi_serialize_string_int32(s, "granularity", cb ? cb->getPeriod() : 0);
 
   alert_json_serializer = alert->getSerializedAlert();
 
   if(alert_json_serializer)
     alert_json = ndpi_serializer_get_buffer(alert_json_serializer, &alert_json_len);
 
-  ndpi_serialize_string_string(s, "alert_json", alert_json ? alert_json : "");
+  ndpi_serialize_string_string(s, "json", alert_json ? alert_json : "");
  
   if(alert_json_serializer) {
     ndpi_term_serializer(alert_json_serializer);

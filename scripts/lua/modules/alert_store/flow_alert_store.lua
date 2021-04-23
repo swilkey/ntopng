@@ -40,9 +40,9 @@ function flow_alert_store:insert(alert)
       "'%s', %u, %u, %u, %u, %u, %u, %u, '%s', %u, %u, '%s'); ",
       self._table_name, 
       alert.alert_id,
-      alert.alert_tstamp,
-      alert.alert_tstamp,
-      alert.alert_severity,
+      alert.tstamp,
+      alert.tstamp,
+      alert.severity,
       alert.cli_addr,
       alert.srv_addr,
       alert.cli_port,
@@ -68,7 +68,7 @@ function flow_alert_store:insert(alert)
       alert.community_id,
       alert.score,
       alert.flow_risk_bitmap or 0,
-      self:_escape(alert.alert_json)
+      self:_escape(alert.json)
    )
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)

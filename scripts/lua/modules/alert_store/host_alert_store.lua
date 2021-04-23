@@ -31,7 +31,7 @@ end
 -- ##############################################
 
 function host_alert_store:insert(alert)
-   local hostinfo = hostkey2hostinfo(alert.alert_entity_val)
+   local hostinfo = hostkey2hostinfo(alert.entity_val)
    local is_attacker = ternary(alert.is_attacker, 1, 0)
    local is_victim = ternary(alert.is_victim, 1, 0)
 
@@ -45,11 +45,11 @@ function host_alert_store:insert(alert)
       self:_escape(alert.symbolic_name),
       is_attacker,
       is_victim,
-      alert.alert_tstamp,
-      alert.alert_tstamp_end,
-      alert.alert_severity,
-      alert.alert_granularity,
-      self:_escape(alert.alert_json))
+      alert.tstamp,
+      alert.tstamp_end,
+      alert.severity,
+      alert.granularity,
+      self:_escape(alert.json))
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 

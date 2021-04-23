@@ -45,16 +45,16 @@ end
 
 -- ##############################################
 
-local function alertTypeDescription(v, alert_entity_id)
-   local alert_key = alert_consts.getAlertType(v, alert_entity_id)
+local function alertTypeDescription(v, entity_id)
+   local alert_id = alert_consts.getAlertType(v, entity_id)
 
-   if(alert_key) then
-      if alert_consts.alert_types[alert_key].format then
+   if(alert_id) then
+      if alert_consts.alert_types[alert_id].format then
 	 -- New API
-	 return alert_consts.alert_types[alert_key].format
+	 return alert_consts.alert_types[alert_id].format
       else
 	 -- TODO: Possible removed once migration is done
-	 return(alert_consts.alert_types[alert_key].i18n_description)
+	 return(alert_consts.alert_types[alert_id].i18n_description)
       end
    end
 
@@ -155,12 +155,12 @@ local function performAlertsQuery(statement, what, opts, force_query, group_by)
       end
    end
 
-   if tonumber(opts.alert_type) ~= nil then
-      wargs[#wargs+1] = "AND alert_id = "..(opts.alert_type)
+   if tonumber(opts.alert_id) ~= nil then
+      wargs[#wargs+1] = "AND alert_id = "..(opts.alert_id)
    end
 
-   if tonumber(opts.alert_severity) ~= nil then
-      wargs[#wargs+1] = "AND severity = "..(opts.alert_severity)
+   if tonumber(opts.severity) ~= nil then
+      wargs[#wargs+1] = "AND severity = "..(opts.severity)
    end
 
    if what == "historical-flows" then
@@ -173,7 +173,7 @@ local function performAlertsQuery(statement, what, opts, force_query, group_by)
       local order_by
 
       if opts.sortColumn == "column_date" then
-         order_by = "alert_tstamp"
+         order_by = "tstamp"
       elseif opts.sortColumn == "column_key" then
          order_by = "rowid"
       elseif opts.sortColumn == "column_severity" then
@@ -293,8 +293,8 @@ end
 -- #################################
 
 local function engagedAlertsQuery(params)
-  local type_filter = tonumber(params.alert_type)
-  local severity_filter = tonumber(params.alert_severity)
+  local type_filter = tonumber(params.alert_id)
+  local severity_filter = tonumber(params.severity)
   local entity_type_filter = tonumber(params.entity)
   local entity_value_filter = params.entity_val
 
@@ -312,13 +312,13 @@ local function engagedAlertsQuery(params)
   -- Sort
   for idx, alert in pairs(alerts) do
     if sortColumn == "column_type" then
-      sort_2_col[idx] = alert.alert_type
+      sort_2_col[idx] = alert.alert_id
     elseif sortColumn == "column_severity" then
-      sort_2_col[idx] = alert.alert_severity
+      sort_2_col[idx] = alert.severity
     elseif sortColumn == "column_duration" then
-      sort_2_col[idx] = os.time() - alert.alert_tstamp
+      sort_2_col[idx] = os.time() - alert.tstamp
     else -- column_date
-      sort_2_col[idx] = alert.alert_tstamp
+      sort_2_col[idx] = alert.tstamp
     end
 
     totalRows = totalRows + 1
@@ -369,12 +369,12 @@ end
 
 -- #################################
 
-function alert_utils.getNumAlertsPerHour(what, epoch_begin, epoch_end, alert_type, alert_severity, host_info)
+function alert_utils.getNumAlertsPerHour(what, epoch_begin, epoch_end, alert_id, severity, host_info)
    local opts = {
       epoch_begin = epoch_begin,
       epoch_end = epoch_end,
-      alert_type = alert_type,
-      alert_severity = alert_severity,
+      alert_id = alert_id,
+      severity = severity,
    }
 
    if host_info and host_info.host then
@@ -446,14 +446,14 @@ end
 
 --@brief Deletes all stored alerts matching an host and an IP
 -- @return nil
-function alert_utils.deleteFlowAlertsMatching(host_ip, alert_key)
+function alert_utils.deleteFlowAlertsMatching(host_ip, alert_id)
    local res = {}
    local statement = "DELETE "
 
    -- This is to match elements inside the alert_json
    local where = {
       string.format("(cli_addr = '%s' OR srv_addr = '%s')", host_ip, host_ip),
-      string.format("alert_id = %u", alert_key),
+      string.format("alert_id = %u", alert_id),
    }
 
    where = table.concat(where, " AND ")
@@ -465,7 +465,7 @@ end
 
 --@brief Deletes all stored alerts matching an host and an IP
 -- @return nil
-function alert_utils.deleteHostAlertsMatching(host_ip, alert_key)
+function alert_utils.deleteHostAlertsMatching(host_ip, alert_id)
    local res = {}
    local statement = "DELETE "
 
@@ -473,7 +473,7 @@ function alert_utils.deleteHostAlertsMatching(host_ip, alert_key)
    local where = {
       string.format("alert_entity = %u", alert_entities.host.entity_id),
       string.format("alert_entity_val LIKE '%s%%'", host_ip), -- Use like to disregard any @<VLAN> after the IP address
-      string.format("alert_id = %u", alert_key),
+      string.format("alert_id = %u", alert_id),
    }
 
    where = table.concat(where, " AND ")
@@ -490,8 +490,8 @@ function alert_utils.getTabParameters(_get, what)
 
    -- these options are contextual to the current tab (status)
    if _get.status ~= what then
-      opts.alert_type = nil
-      opts.alert_severity = nil
+      opts.alert_id = nil
+      opts.severity = nil
    end
    if not isEmptyString(what) then opts.status = what end
    opts.ifid = interface.getId()
@@ -535,10 +535,10 @@ function alert_utils.checkDeleteStoredAlerts()
       }
 
       local type_info = {
-         alert_type = (alert_consts.alert_types[alert_consts.getAlertType(_POST["alert_type"])]).meta,
-         alert_severity = alert_severities[alert_consts.alertSeverityRaw(_POST["alert_severity"])],
-         alert_subtype = _POST["alert_subtype"],
-         alert_granularity = alert_consts.alerts_granularities[alert_consts.sec2granularity(_POST["alert_granularity"])],
+         alert_id = (alert_consts.alert_types[alert_consts.getAlertType(_POST["alert_type"])]).meta,
+         severity = alert_severities[alert_consts.alertSeverityRaw(_POST["alert_severity"])],
+         subtype = _POST["alert_subtype"],
+         granularity = alert_consts.alerts_granularities[alert_consts.sec2granularity(_POST["alert_granularity"])],
       }
 
       alerts_api.release(entity_info, type_info)
@@ -1010,7 +1010,7 @@ function alert_utils.drawAlertTables(has_past_alerts, has_engaged_alerts, has_fl
       template.gen("modal_alert_filter_dialog.html", {
       		      dialog={
 			 id		   = "filter_alert_dialog",
-			 action		   = "filterAlertByFilters(subdir, script_key, alert_key)",
+			 action		   = "filterAlertByFilters(subdir, script_key, alert_id)",
           		 title		   = i18n("show_alerts.filter_alert"),
           		 message	   = i18n("show_alerts.confirm_filter_alert"),
 			 delete_message    = i18n("show_alerts.confirm_delete_filtered_alerts"),
@@ -1027,7 +1027,7 @@ function alert_utils.drawAlertTables(has_past_alerts, has_engaged_alerts, has_fl
       template.gen("modal_flow_alerts_filter_dialog.html", {
       		      dialog={
 			 id		   = "flow_alerts_filter_dialog",
-			 action		   = "filterFlowAlerts(alert_key)",
+			 action		   = "filterFlowAlerts(alert_id)",
           		 title		   = i18n("show_alerts.filter_alert"),
           		 message	   = i18n("show_alerts.confirm_filter_alert"),
 			 delete_message    = i18n("show_alerts.confirm_delete_filtered_alerts"),
@@ -1044,7 +1044,7 @@ function alert_utils.drawAlertTables(has_past_alerts, has_engaged_alerts, has_fl
       template.gen("modal_host_alerts_filter_dialog.html", {
       		      dialog={
 			 id		   = "host_alerts_filter_dialog",
-			 action		   = "filterHostAlerts(alert_key)",
+			 action		   = "filterHostAlerts(alert_id)",
           		 title		   = i18n("show_alerts.filter_alert"),
           		 message	   = i18n("show_alerts.confirm_filter_alert"),
 			 delete_message    = i18n("show_alerts.confirm_delete_filtered_alerts"),
@@ -1177,9 +1177,9 @@ function getCurrentStatus() {
    return val;
 }
 
-function deleteAlertById(alert_key) {
+function deleteAlertById(alert_id) {
   var params = {};
-  params.id_to_delete = alert_key;
+  params.id_to_delete = alert_id;
   params.status = getCurrentStatus();
   params.csrf = "]] print(ntop.getRandomCSRFValue()) print[[";
 
@@ -1187,7 +1187,7 @@ function deleteAlertById(alert_key) {
   form.appendTo('body').submit();
 }
 
-function filterAlertByFilters(subdir, script_key, alert_key) {
+function filterAlertByFilters(subdir, script_key, alert_id) {
    $.ajax({
         type: 'POST',
 	contentType: "application/json",
@@ -1197,7 +1197,7 @@ function filterAlertByFilters(subdir, script_key, alert_key) {
 	    filters: document.getElementById("name_input").value,
             subdir: subdir,
             script_key: script_key,
-            alert_key: alert_key,
+            alert_id: alert_id,
             status: getCurrentStatus(),
             delete_alerts: $('#delete_alert_switch').prop('checked'),
             csrf: "]] print(ntop.getRandomCSRFValue()) print[[",
@@ -1214,7 +1214,7 @@ function filterAlertByFilters(subdir, script_key, alert_key) {
     });
 }
 
-function filterFlowAlerts(alert_key) {
+function filterFlowAlerts(alert_id) {
    $.ajax({
         type: 'POST',
 	contentType: "application/json",
@@ -1223,7 +1223,7 @@ function filterFlowAlerts(alert_key) {
 	data: JSON.stringify({
 	    alert_addr:  $("input[name='alert_addr']:checked").val(),
             subdir: "flow",
-            alert_key: alert_key,
+            alert_id: alert_id,
             delete_alerts: $('#delete_flow_alerts_switch').prop('checked'),
             csrf: "]] print(ntop.getRandomCSRFValue()) print[[",
 	}),
@@ -1239,7 +1239,7 @@ function filterFlowAlerts(alert_key) {
     });
 }
 
-function filterHostAlerts(alert_key) {
+function filterHostAlerts(alert_id) {
    $.ajax({
         type: 'POST',
 	contentType: "application/json",
@@ -1248,7 +1248,7 @@ function filterHostAlerts(alert_key) {
 	data: JSON.stringify({
 	    alert_addr:  $("#alert_addr").html(),
             subdir: "host",
-            alert_key: alert_key,
+            alert_id: alert_id,
             delete_alerts: $('#delete_host_alerts_switch').prop('checked'),
             csrf: "]] print(ntop.getRandomCSRFValue()) print[[",
 	}),
@@ -1275,10 +1275,10 @@ function releaseAlert(idx) {
     "action": "release_alert",
     "entity": row.column_entity_id,
     "entity_val": row.column_entity_val,
-    "alert_type": row.column_type_id,
-    "alert_severity": row.column_severity_id,
-    "alert_subtype": row.column_subtype,
-    "alert_granularity": row.column_granularity,
+    "alert_id": row.column_type_id,
+    "severity": row.column_severity_id,
+    "subtype": row.column_subtype,
+    "granularity": row.column_granularity,
     "csrf": "]] print(ntop.getRandomCSRFValue()) print[[",
   };
 
@@ -1530,8 +1530,8 @@ function releaseAlert(idx) {
       ], tableCallback: function() {
             var table_data = $("#]] print(t["div-id"]) print[[").data("datatable").resultset.data;
             datatableForEachRow("#]] print(t["div-id"]) print[[", function(row_id) {
-               var alert_key = $("td:nth(8)", this).html().split("|");
-               var alert_key = alert_key[0];
+               var alert_id = $("td:nth(8)", this).html().split("|");
+               var alert_id = alert_id[0];
                var data = table_data[row_id];
                var explorer_url = data["column_explorer"];
 
@@ -1543,15 +1543,15 @@ function releaseAlert(idx) {
                   const srv_radio = " $('#srv_radio').attr('value', '" + srv_addr + "'); $('#srv_addr').html('" + srv_addr + "'); ";
                   const cli_radio = " $('#cli_radio').attr('value', '" + cli_addr + "'); $('#cli_addr').html('" + cli_addr + "'); ";
                   const alert_label = "$('.alert_label').html('" + data["column_type_str"] + "'); ";
-                  datatableAddFilterButtonCallback.bind(this)(10, "alert_key = '" + data["column_type_id"] + "'; " + alert_label + srv_radio + cli_radio + " $('#flow_alerts_filter_dialog').modal('show');", "<i class='fas fa-bell-slash'></i>", "]] print(i18n("filter")) print[[");
+                  datatableAddFilterButtonCallback.bind(this)(10, "alert_id = '" + data["column_type_id"] + "'; " + alert_label + srv_radio + cli_radio + " $('#flow_alerts_filter_dialog').modal('show');", "<i class='fas fa-bell-slash'></i>", "]] print(i18n("filter")) print[[");
                } else if(data["column_filter"] && data["column_subdir"] == "host") {
                   /* Populate modal data */
                   const alert_label = "$('.alert_label').html('" + data["column_type_str"] + "'); ";
                   const alert_addr = "$('#alert_addr').html('" + data["column_filter"] + "'); ";
 
-                  datatableAddFilterButtonCallback.bind(this)(10, "alert_key = '" + data["column_type_id"] + "'; " + alert_label + alert_addr + " $('#host_alerts_filter_dialog').modal('show');", "<i class='fas fa-bell-slash'></i>", "]] print(i18n("filter")) print[[");
+                  datatableAddFilterButtonCallback.bind(this)(10, "alert_id = '" + data["column_type_id"] + "'; " + alert_label + alert_addr + " $('#host_alerts_filter_dialog').modal('show');", "<i class='fas fa-bell-slash'></i>", "]] print(i18n("filter")) print[[");
                } else if(data["column_filter"]) {
-                  datatableAddFilterButtonCallback.bind(this)(10, "alert_key = '" + data["column_type_id"] + "'; alert_label = $('.alert_label').html('" + data["column_type_str"] + "'); subdir = '" + data["column_subdir"] + "'; script_key = '" + data["column_script_key"] + "'; $('#name_input').attr('value', '" + data["column_filter"] + "'); $('#filter_alert_dialog').modal('show');", "<i class='fas fa-bell-slash'></i>", "]] print(i18n("filter")) print[[");
+                  datatableAddFilterButtonCallback.bind(this)(10, "alert_id = '" + data["column_type_id"] + "'; alert_label = $('.alert_label').html('" + data["column_type_str"] + "'); subdir = '" + data["column_subdir"] + "'; script_key = '" + data["column_script_key"] + "'; $('#name_input').attr('value', '" + data["column_filter"] + "'); $('#filter_alert_dialog').modal('show');", "<i class='fas fa-bell-slash'></i>", "]] print(i18n("filter")) print[[");
                } else if(data["column_filter_disabled"]) {
 	       	  datatableAddFilterButtonCallback.bind(this)(10, "subdir = ''; script_key = '';", "<i class='fas fa-bell-slash'></i>", "]] print(i18n("filter")) print[[", false);                             }
 
@@ -1568,7 +1568,7 @@ function releaseAlert(idx) {
                  datatableAddActionButtonCallback.bind(this)(10, "alert_to_release = "+ row_id +"; $('#release_single_alert').modal('show');", "<i class='fas fa-unlock'></i>", true, "]] print(i18n("show_alerts.release_alert_action")) print[[");
 
                if(]] print(ternary(t["status"] ~= "engaged", "true", "false")) print[[) {
-                 datatableAddDeleteButtonCallback.bind(this)(10, "delete_alert_id ='" + alert_key + "'; $('#delete_alert_dialog').modal('show');", "<i class='fas fa-trash'></i>");
+                 datatableAddDeleteButtonCallback.bind(this)(10, "delete_alert_id ='" + alert_id + "'; $('#delete_alert_dialog').modal('show');", "<i class='fas fa-trash'></i>");
                }
 
                $("form", this).submit(function() {
@@ -2097,7 +2097,7 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   msg = alert_json
-  local description = alertTypeDescription(alert.alert_id or alert.alert_type --[[ Compatibility --]], alert.alert_entity)
+  local description = alertTypeDescription(alert.alert_id, alert.entity_id)
 
   if(type(description) == "string") then
      -- localization string
@@ -2111,7 +2111,7 @@ function alert_utils.formatAlertMessage(ifid, alert, alert_json, skip_live_data)
   end
 
   if(msg) then
-     if(alert_consts.getAlertType(alert.alert_id, alert.alert_entity) == "alert_am_threshold_cross") then
+     if(alert_consts.getAlertType(alert.alert_id, alert.entity_id) == "alert_am_threshold_cross") then
       local plugins_utils = require "plugins_utils"
       local active_monitoring_utils = plugins_utils.loadModule("active_monitoring", "am_utils")
       local host = json.decode(alert.json)["host"]
@@ -2153,7 +2153,7 @@ end
 -- #################################
 
 function alert_utils.notification_timestamp_rev(a, b)
-   return (a.alert_tstamp > b.alert_tstamp)
+   return (a.tstamp > b.tstamp)
 end
 
 -- Returns a summary of the alert as readable text
@@ -2183,7 +2183,7 @@ function alert_utils.formatAlertNotification(notif, options)
    if(options.nodate == true) then
       when = ""
    else
-      when = formatEpoch(notif.alert_tstamp_end or notif.alert_tstamp or 0)
+      when = formatEpoch(notif.tstamp_end or notif.tstamp or 0)
 
       if(not options.no_bracket_around_date) then
 	 when = "[" .. when .. "]"
@@ -2198,13 +2198,13 @@ function alert_utils.formatAlertNotification(notif, options)
 
    -- entity can be hidden for example when one is OK with just the message
    if options.show_entity then
-      msg = msg.."["..alert_consts.alertEntityLabel(notif.alert_entity).."]"
+      msg = msg.."["..alert_consts.alertEntityLabel(notif.entity_id).."]"
 
-      if notif.alert_entity ~= "flow" then
-	 local ev = notif.alert_entity_val
-	 if notif.alert_entity == "host" then
+      if notif.entity_id ~= "flow" then
+	 local ev = notif.entity_val
+	 if notif.entity_id == "host" then
 	    -- suppresses @0 when the vlan is zero
-	    ev = hostinfo2hostkey(hostkey2hostinfo(notif.alert_entity_val))
+	    ev = hostinfo2hostkey(hostkey2hostinfo(notif.entity_val))
 	 end
 
 	 msg = msg.."["..(ev or '').."]"

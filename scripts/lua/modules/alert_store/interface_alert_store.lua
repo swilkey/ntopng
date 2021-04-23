@@ -35,16 +35,16 @@ function interface_alert_store:insert(alert)
       "(alert_id, tstamp, tstamp_end, severity, ifid, name, alias, granularity, json) "..
       "VALUES (%u, %u, %u, %u, %u, '%s', '%s', %u, '%s'); ",
       self._table_name, 
-      alert.alert_type, -- TODO rename to alert_id
-      alert.alert_tstamp,
-      alert.alert_tstamp_end,
-      alert.alert_severity,
+      alert.alert_id,
+      alert.tstamp,
+      alert.tstamp_end,
+      alert.severity,
       alert.ifid,
       self:_escape(name),
       self:_escape(alias),
-      self:_escape(alert.alert_entity_val),
-      alert.alert_granularity,
-      self:_escape(alert.alert_json))
+      self:_escape(alert.entity_val),
+      alert.granularity,
+      self:_escape(alert.json))
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 

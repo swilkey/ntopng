@@ -35,16 +35,16 @@ function mac_alert_store:insert(alert)
       "is_attacker, is_victim, json) "..
       "VALUES (%u, %u, %u, %u, '%s', %u, '%s', %u, %u, '%s'); ",
       self._table_name, 
-      alert.alert_type, -- TODO rename to alert_id
-      alert.alert_tstamp,
-      alert.alert_tstamp_end,
-      alert.alert_severity,
-      self:_escape(alert.alert_entity_val),
+      alert.alert_id,
+      alert.tstamp,
+      alert.tstamp_end,
+      alert.severity,
+      self:_escape(alert.entity_val),
       alert.device_type or 0,
       self:_escape(alert.device_name),
       ternary(alert.is_attacker, 1, 0),
       ternary(alert.is_victim, 1, 0),
-      self:_escape(alert.alert_json))
+      self:_escape(alert.json))
 
    -- traceError(TRACE_NORMAL, TRACE_CONSOLE, insert_stmt)
 
