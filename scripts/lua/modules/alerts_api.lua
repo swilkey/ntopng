@@ -346,8 +346,8 @@ function alerts_api.trigger(entity_info, type_info, when, cur_alerts)
 
   local ifid = interface.getId()
 
-  if(type_info.alert_granularity == nil) then
-    alertErrorTraceback("Missing mandatory 'alert_granularity'")
+  if(type_info.granularity == nil) then
+    alertErrorTraceback("Missing mandatory 'granularity'")
     return(false)
   end
 
