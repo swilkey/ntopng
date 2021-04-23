@@ -89,7 +89,7 @@ end
 
 --@brief Convert an alert coming from the DB (value) to a record returned by the REST API
 function flow_alert_store:format_record(value)
-   local record = self:format_record_common(value, alert_entities.host.entity_id)
+   local record = self:format_record_common(value, alert_entities.flow.entity_id)
 
    local score = tonumber(value["score"])
    local alert_info = alert_utils.getAlertInfo(value)
@@ -115,7 +115,6 @@ function flow_alert_store:format_record(value)
 
    return record
 end
-
 
 -- ##############################################
 
