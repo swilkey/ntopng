@@ -15,19 +15,22 @@ local json = require "dkjson"
 
 -- ##############################################
 
-local system_alert_store = classes.class(alert_store)
+local network_alert_store = classes.class(alert_store)
 
 -- ##############################################
 
-function system_alert_store:init(args)
+function network_alert_store:init(args)
    self.super:init()
 
-   self._table_name = "system_alerts"
+   self._table_name = "network_alerts"
 end
 
 -- ##############################################
 
-function system_alert_store:insert(alert)
+function network_alert_store:insert(alert)
+
+   -- TODO add local_network_id, name, alias
+
    local insert_stmt = string.format("INSERT INTO %s "..
       "(alert_id, tstamp, tstamp_end, severity, name, granularity, json) "..
       "VALUES (%u, %u, %u, %u, %u, '%s', %u, '%s'); ",
@@ -48,10 +51,10 @@ end
 -- ##############################################
 
 --@brief Add filters according to what is specified inside the REST API
-function system_alert_store:_add_additional_request_filters()
+function network_alert_store:_add_additional_request_filters()
    -- Add filters specific to the system family
 end
 
 -- ##############################################
 
-return system_alert_store
+return network_alert_store
