@@ -10,7 +10,9 @@ local classes = require "classes"
 
 require "lua_utils"
 local alert_store = require "alert_store"
+local format_utils = require "format_utils"
 local alert_consts = require "alert_consts"
+local alert_utils = require "alert_utils"
 local alert_entities = require "alert_entities"
 local json = require "dkjson"
 
@@ -69,6 +71,23 @@ end
 --@brief Add filters according to what is specified inside the REST API
 function snmp_alert_store:_add_additional_request_filters()
    -- Add filters specific to the snmp family
+end
+
+-- ##############################################
+
+--@brief Convert an alert coming from the DB (value) to a record returned by the REST API
+function snmp_alert_store:format_record(value)
+   local record = self:format_record_common(value, alert_entities.snmp_device.entity_id)
+
+   local name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false)
+   local alert_info = alert_utils.getAlertInfo(value)
+   local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
+
+   record["duration"] = duration
+   record["name"] = name
+   record["msg"] = msg
+
+   return record
 end
 
 -- ##############################################

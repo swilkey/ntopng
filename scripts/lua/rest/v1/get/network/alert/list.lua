@@ -6,10 +6,6 @@ local dirs = ntop.getDirs()
 package.path = dirs.installdir .. "/scripts/lua/modules/?.lua;" .. package.path
 package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. package.path
 
-local format_utils = require "format_utils"
-local alert_utils = require "alert_utils"
-local alert_consts = require "alert_consts"
-local alert_entities = require "alert_entities"
 local rest_utils = require("rest_utils")
 local network_alert_store = require "network_alert_store".new()
 
@@ -37,26 +33,7 @@ interface.select(ifid)
 local alerts, recordsFiltered = network_alert_store:select_request()
 
 for _key,_value in ipairs(alerts or {}) do
-   local record = {}
-
-   local severity = alert_consts.alertSeverityLabel(tonumber(_value["severity"]))
-   --local atype = alert_consts.getAlertType(tonumber(_value["alert_id"]), tonumber(_value["entity_id"]))
-   local alert_info = alert_utils.getAlertInfo(_value)
-   local msg = alert_utils.formatAlertMessage(ifid, _value, alert_info)
-   local date = format_utils.formatPastEpochShort(tonumber(_value["alert_tstamp"] or _value["tstamp"]))
-   local count = 1 -- TODO (not yet supported)
-
-   local name = alert_consts.alertTypeLabel(tonumber(_value["alert_id"]), false, alert_entities.network.entity_id)
-
-   record["row_id"] = _value["rowid"]
-   record["date"] = date
-   record["duration"] = duration
-   record["severity"] = severity
-   record["alert_id"] = _value["alert_id"]
-   record["count"] = count -- historical only
-   record["name"] = name
-   record["msg"] = msg
-
+   local record = network_alert_store:format_record(_value)
    res[#res + 1] = record
 end -- for
 
