@@ -79,7 +79,7 @@
     {% if tags.enabled then %}
     <div class="w-100 mt-2">
         <div class="d-flex">
-            <input class="form-control w-100" name="tags" placeholder="Filters"> 
+            <input class="form-control w-100" name="tags" placeholder="Filters" > 
             <button data-toggle="tooltip" data-placement="bottom" title="Remove filters." class="btn btn-danger ml-1 btn-remove-tags">
                 <i class="fas fa-times"></i>
             </button>

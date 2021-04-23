@@ -1,6 +1,6 @@
 [
     /* Date */
-    {name: 'date'},
+    {name: 'tstamp', data: 'tstamp'},
     /* Severity */
     {name: 'severity'},
     /* Counts */

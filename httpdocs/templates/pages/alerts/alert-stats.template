@@ -118,8 +118,8 @@
 	    
             // reload the table
             $table.ajax.url(`{* datatable.datasource.name *}?${searchParams.toString()}`).load();
-            WidgetUtils.getWidgetByName("{{ chart.name }}").update(copyDatasourceParams());
 
+            WidgetUtils.getWidgetByName("{{ chart.name }}").update(copyDatasourceParams());
         }
 
         function printQueryTime($table) {
@@ -193,9 +193,11 @@
                 const disableButtonClass = "btn-warning {{ (datatable.actions.disable and 'disabled' or '') }}";
 
                 return DataTableUtils.createActionButtons([
-                    /* The disable action button is valid only for hosts and flows */
-                    {icon: 'fa-bell-slash', label: "{{ i18n('disable') }}", modal: '#host_alerts_filter_dialog', class: disableButtonClass},
-                    {icon: 'fas fa-unlock', label: "{{ i18n('show_alerts.release_alert_action') }}", modal: '#release_single_alert', class: 'btn-info'},
+                    /* Disable */
+                    {icon: 'fa-bell-slash', label: "{{ i18n('disable') }}", modal: '#alerts_filter_dialog', class: disableButtonClass},
+                    /* Release */
+                    // {icon: 'fas fa-unlock', label: "{{ i18n('show_alerts.release_alert_action') }}", modal: '#release_single_alert', class: 'btn-info'},
+                    /* Delete */
                     {icon: 'fa fa-trash', label: "{{ i18n('remove') }}", modal: '#delete_alert_dialog', class: 'btn-danger'},
                 ]);
             }});
@@ -226,10 +228,8 @@
                     const orderColumnName = tableApi.column(orderColumnIndex).name() || undefined;
                     
                     if (data.order) {
-                        const order = data.order[0].dir;
-                        delete data.order;
+                        data.order = data.order[0].dir;
                         data.sort = orderColumnName;
-                        data.order = order;
                     }
 
                     delete data.columns;
@@ -293,7 +293,6 @@
             if (detail.data === undefined) {
                 return;
             }
-
             const tag = detail.data;
             const $tag = $(`tag[key='${tag.key}']`);
 
@@ -411,9 +410,7 @@
             $inputBeginEpoch.datetimepicker('date', begin);
             $inputEndEpoch.datetimepicker('date', end);
 
-            // TODO: complete
             await onRangePickerChange(true);
-
         });
 
         $table.on('click', `a[href='#delete_alert_dialog']`, function (e) {
@@ -424,12 +421,9 @@
         const $deleteAlertModal = $('#delete_alert_dialog form').modalHandler({
             method: 'post',
             csrf: PAGE_CSRF,
-            endpoint: `${http_prefix}/lua/rest/v1/delete/{{ alert_stats.entity  }}/alerts.lua`,
+            endpoint: `${http_prefix}/lua/rest/v1/delete/{{ alert_stats.entity }}/alerts.lua`,
             beforeSumbit: function (alert) {
-                return {
-                    ifid: "{{ ifid }}",
-                    row_id: alert.row_id
-                };
+                return { ifid: "{{ ifid }}", row_id: alert.row_id };
             },
             onModalInit: function (alert) {
                 $(`#delete_alert_dialog button[type='submit']`).removeAttr("disabled");
@@ -447,9 +441,48 @@
             }
         });
 
+        $table.on('click', `a[href='#alerts_filter_dialog']`, function (e) {
+            const alert = $table.row($(this).parent().parent()).data();
+            console.log(alert)
+
+            $deleteAlertModal.invokeModalInit(alert);
+        });
+
+        const $disableAlert = $('#alerts_filter_dialog form').modalHandler({
+            method: 'post',
+            csrf: PAGE_CSRF,
+            endpoint: `${http_prefix}/lua/rest/v1/delete/{{ alert_stats.entity }}/alerts.lua`,
+            beforeSumbit: function (alert) {
+                return { ifid: "{{ ifid }}", alert_key: alert.row_id, delete_alerts: true, subdir: "{{ alert_stats.entity }}"};
+            },
+            onModalInit: function (alert) {
+
+                $(`#alerts_filter_dialog .alert_label`).html('Nope');
+                $(`#alerts_filter_dialog .alert_addr`).html('Nope');
+
+            },
+            onSubmitSuccess: function (response) {
+
+                if (response.rc < 0) {
+                    $('#alerts_filter_dialog .invalid-feedback').html(i18n.rest[response.rc_str]).show();
+                }
+                else {
+                    onRangePickerChange(false);
+                }
+
+                return (response.rc == 0);
+            }
+        });
+
+        // /lua/rest/v1/edit/user_script/filter.lua
+        // subdir: flow|alert
+        // alert_key: string
+        // delete_alerts: boolean
+
+        /**
+         * Release Button Handler
         $table.on('click', `a[href='#release_single_alert']`, function (e) {
             const alert = $table.row($(this).parent().parent()).data();
-            // TODO: implement release modal
         });
 
         const $releaseAlertModal = $('#release_single_alert form').modalHandler({
@@ -477,6 +510,7 @@
                 return (response.rc == 0);
             }
         });
+         */
 
     });
 </script>

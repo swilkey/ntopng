@@ -1,6 +1,6 @@
 [
     /* Date */
-    {name: 'tstamp', data: 'tsamp', className: 'text-center',},
+    {name: 'tstamp', data: 'tstamp', className: 'text-center',},
     /* Counts */
     {name: 'count', className: 'text-center', data: 'count', visible: false},
     /* Severity */
