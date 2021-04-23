@@ -10,7 +10,9 @@ local classes = require "classes"
 
 require "lua_utils"
 local alert_store = require "alert_store"
+local format_utils = require "format_utils"
 local alert_consts = require "alert_consts"
+local alert_utils = require "alert_utils"
 local alert_entities = require "alert_entities"
 local json = require "dkjson"
 
@@ -82,6 +84,38 @@ end
 function flow_alert_store:_add_additional_request_filters()
    -- Add filters specific to the flow family
 end
+
+-- ##############################################
+
+--@brief Convert an alert coming from the DB (value) to a record returned by the REST API
+function flow_alert_store:format_record(value)
+   local record = self:format_record_common(value, alert_entities.host.entity_id)
+
+   local score = tonumber(value["score"])
+   local alert_info = alert_utils.getAlertInfo(value)
+   local msg = alert_utils.formatFlowAlertMessage(ifid, value, alert_info)
+   local application =  interface.getnDPIProtoName(tonumber(value["l7_proto"]))
+
+   record["score"] = score
+   record["msg"] = msg
+   record["cli_name"] = value["cli_name"]
+   record["srv_name"] = value["srv_name"]
+   record["cli_ip"] = value["cli_ip"]
+   record["srv_ip"] = value["srv_ip"]
+   record["cli_port"] = value["cli_port"]
+   record["srv_port"] = value["srv_port"]
+   record["vlan_id"] = value["vlan_id"]
+   record["proto"] = value["proto"]
+   record["is_attacker_to_victim"] = value["is_attacker_to_victim"] == "1"
+   record["is_victim_to_attacker"] = value["is_victim_to_attacker"] == "1"
+   record["l7_proto"] = {
+      value = value["l7_proto"],
+      label = application
+   }
+
+   return record
+end
+
 
 -- ##############################################
 

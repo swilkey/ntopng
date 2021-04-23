@@ -9,6 +9,9 @@ local dirs = ntop.getDirs()
 local classes = require "classes"
 require "lua_utils"
 local json = require "dkjson"
+local format_utils = require "format_utils"
+local alert_consts = require "alert_consts"
+local alert_utils = require "alert_utils"
 
 -- ##############################################
 
@@ -296,40 +299,6 @@ end
 
 -- ##############################################
 
---@brief Handle alerts select request (GET) from memory (engaged) or database (historical)
---@param filter A filter on the entity value (no filter by default)
---@param select_fields The fields to be returned (all by default or in any case for engaged)
---@return Selected alerts, and the total number of alerts
-function alert_store:select_request(filter, select_fields)
-
-   -- Add filters
-   self:add_request_filters()
-
-   if self._engaged then -- Engaged
-
-      local total_row = self:count()
-      tprint(total_row)
-
-      -- Add limits and sort criteria
-      self:add_request_ranges()
-
-      return self:select_engaged(filter), total_row
-
-   else -- Historical
-      
-      -- Count
-      local total_row = self:count()
-
-      -- Add limits and sort criteria only after the count has been done
-      self:add_request_ranges()
-
-      local res = self:select_historical(filter, select_fields)
-      return res, total_row
-   end
-end
-
--- ##############################################
-
 --@brief Performs a query and counts the number of records
 function alert_store:count()
    local count_query = self:select_historical(nil, "count(*) as count")
@@ -388,6 +357,42 @@ function alert_store:count_by_time()
 end
 
 -- ##############################################
+-- REST API Utility Functions
+-- ##############################################
+
+--@brief Handle alerts select request (GET) from memory (engaged) or database (historical)
+--@param filter A filter on the entity value (no filter by default)
+--@param select_fields The fields to be returned (all by default or in any case for engaged)
+--@return Selected alerts, and the total number of alerts
+function alert_store:select_request(filter, select_fields)
+
+   -- Add filters
+   self:add_request_filters()
+
+   if self._engaged then -- Engaged
+
+      local total_row = self:count()
+      tprint(total_row)
+
+      -- Add limits and sort criteria
+      self:add_request_ranges()
+
+      return self:select_engaged(filter), total_row
+
+   else -- Historical
+      
+      -- Count
+      local total_row = self:count()
+
+      -- Add limits and sort criteria only after the count has been done
+      self:add_request_ranges()
+
+      local res = self:select_historical(filter, select_fields)
+      return res, total_row
+   end
+end
+
+-- ##############################################
 
 --@brief Possibly overridden in subclasses to add additional filters from the request
 function alert_store:_add_additional_request_filters()
@@ -423,6 +428,32 @@ function alert_store:add_request_ranges()
 
    self:add_limit(length, start)
    self:add_order_by(sort_column, sort_order)
+end
+
+-- ##############################################
+
+--@brief Convert an alert coming from the DB (value) to a record returned by the REST API
+function alert_store:format_record_common(value, entity_id)
+   local record = {}
+
+   record["row_id"] = value["rowid"]
+
+   record["tstamp"] = format_utils.formatPastEpochShort(tonumber(value["alert_tstamp"] or value["tstamp"]))
+
+   record["alert_id"] = {
+      value = value["alert_id"],
+      label = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, entity_id),
+   }
+
+   record["severity"] = {
+      value = value["severity"],
+      label = alert_consts.alertSeverityLabel(tonumber(value["severity"])),
+   }
+
+   local count = 1 -- TODO (not yet supported)
+   record["count"] = count -- historical only
+
+   return record
 end
 
 -- ##############################################
