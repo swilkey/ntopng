@@ -40,8 +40,8 @@ function interface_alert_store:insert(alert)
       alert.alert_tstamp_end,
       alert.alert_severity,
       alert.ifid,
-      name, 
-      alias, 
+      self:_escape(name),
+      self:_escape(alias),
       self:_escape(alert.alert_entity_val),
       alert.alert_granularity,
       self:_escape(alert.alert_json))
