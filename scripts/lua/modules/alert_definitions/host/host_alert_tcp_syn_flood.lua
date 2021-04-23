@@ -62,7 +62,7 @@ function alert_tcp_syn_flood.format(ifid, alert, alert_type_params)
 
   return i18n(i18n_key, {
     entity = entity,
-    host_category = format_utils.formatAddressCategory((json.decode(alert.alert_json)).alert_generation.host_info),
+    host_category = format_utils.formatAddressCategory((json.decode(alert.json)).alert_generation.host_info),
     value = string.format("%u", math.ceil(alert_type_params.value or 0)),
     threshold = alert_type_params.threshold or 0,
   })

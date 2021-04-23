@@ -239,8 +239,9 @@ function alert_store:select_historical(filter, fields)
    end
 
    -- Prepare the final query
-   local q = string.format(" SELECT %s FROM `%s` WHERE %s %s %s %s %s",
-			   fields, self._table_name, where_clause, group_by_clause, order_by_clause, limit_clause, offset_clause)
+   -- NOTE: entity_id is necessary as alert_utils.formatAlertMessage assumes it to always be present inside the alert
+   local q = string.format(" SELECT %u entity_id, %s FROM `%s` WHERE %s %s %s %s %s",
+			   self._alert_entity.entity_id, fields, self._table_name, where_clause, group_by_clause, order_by_clause, limit_clause, offset_clause)
 
    res = interface.alert_store_query(q)
 
