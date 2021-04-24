@@ -26,6 +26,7 @@ function system_alert_store:init(args)
    self.super:init()
 
    self._table_name = "system_alerts"
+   self._alert_entity = alert_entities.other -- TODO check this
 end
 
 -- ##############################################

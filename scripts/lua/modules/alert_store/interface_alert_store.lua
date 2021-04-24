@@ -26,6 +26,7 @@ function interface_alert_store:init(args)
    self.super:init()
 
    self._table_name = "interface_alerts"
+   self._alert_entity = alert_entities.interface
 end
 
 -- ##############################################
