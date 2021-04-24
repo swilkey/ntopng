@@ -84,6 +84,27 @@ local pages = {
         endpoint_list = "/lua/rest/v1/get/active_monitoring/alert/list.lua",
         endpoint_ts = "/lua/rest/v1/get/active_monitoring/alert/ts.lua"
     },
+    {
+        active = page == "interface",
+        page_name = "interface",
+        label = i18n("interface"),
+        endpoint_list = "/lua/rest/v1/get/interface/alert/list.lua",
+        endpoint_ts = "/lua/rest/v1/get/interface/alert/ts.lua",
+    },
+    {
+        active = page == "network",
+        page_name = "network",
+        label = i18n("network_details.network"),
+        endpoint_list = "/lua/rest/v1/get/network/alert/list.lua",
+        endpoint_ts = "/lua/rest/v1/get/network/alert/ts.lua",
+    },
+    {
+        active = page == "user",
+        page_name = "user",
+        label = i18n("nedge.user"),
+        endpoint_list = "/lua/rest/v1/get/user/alert/list.lua",
+        endpoint_ts = "/lua/rest/v1/get/user/alert/ts.lua",
+    }
 }
 
 for k, t in ipairs(pages) do
@@ -168,12 +189,21 @@ local defined_tags = {
     },
     ["active_monitoring"] = {
 
+    },
+    ["interface"] = {
+
+    },
+    ["user"] = {
+
+    },
+    ["network"] = {
+        
     }
 }
 
 local initial_tags = {}
 
-for tag_key, tag in pairs(defined_tags[page]) do
+for tag_key, tag in pairs(defined_tags[page] or {}) do
     tag_utils.add_tag_if_valid(initial_tags, tag_key, tag, {})
 end
 
@@ -209,7 +239,6 @@ local context = {
         initialLength = getDefaultTableSize(),
         table = template_utils.gen(string.format("pages/alerts/families/%s/table.template", page), {}),
         js_columns = template_utils.gen(string.format("pages/alerts/families/%s/table.js.template", page), {}),
-        -- TODO: refactor the datasource
         datasource = Datasource(endpoint_list, {
             ifid = IFID,
             epoch_begin = epoch_begin,
