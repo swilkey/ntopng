@@ -573,15 +573,6 @@ end
 
 -- ##############################################
 
-function alerts_api.processEntity(process)
-  return {
-    alert_entity = alert_consts.alert_entities.process,
-    entity_val = process
-  }
-end
-
--- ##############################################
-
 function alerts_api.hostPoolEntity(pool_id)
   return {
     alert_entity = alert_consts.alert_entities.host_pool,
@@ -618,10 +609,10 @@ end
 
 -- ##############################################
 
-function alerts_api.systemEntity()
+function alerts_api.systemEntity(system_entity_name)
   return {
     alert_entity = alert_consts.alert_entities.system,
-    entity_val = "system"
+    entity_val = system_entity_name or "system"
   }
 end
 

@@ -2369,10 +2369,10 @@ local function notify_ntopng_status(started)
       event = "stop"
    end
 
-   local entity_value = "ntopng"
+   local entity_value = ntop.getInfo().product
 
    obj = {
-      entity_type = alert_consts.alertEntity("process"), entity_value=entity_value,
+      entity_id = alerts_api.systemEntity(entity_value), entity_val = entity_value,
       type = alert_consts.alertType("alert_process_notification"),
       severity = severity,
       message = msg,
@@ -2382,7 +2382,7 @@ local function notify_ntopng_status(started)
       telemetry_utils.notify(obj)
    end
 
-   local entity_info = alerts_api.processEntity(entity_value)
+   local entity_info = alerts_api.systemEntity(entity_value)
    local type_info = alert_consts.alert_types.alert_process_notification.new(
       event,
       msg_details
@@ -2390,7 +2390,6 @@ local function notify_ntopng_status(started)
 
    type_info:set_severity(alert_severities[alert_consts.alertSeverityRaw(severity)])
 
-   interface.select(getSystemInterfaceId())
    return(type_info:store(entity_info))
 end
 
