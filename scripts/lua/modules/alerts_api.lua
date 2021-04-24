@@ -139,22 +139,6 @@ end
 
 -- ##############################################
 
---! @brief Adds host information to the alert (only works for host alerts)
---! @param alert_json Host info will be placed in key `host_info` of table `alert_json`
-local function addAlertHostInfo(triggered)
-   if triggered then
-      alert = json.decode(triggered.json)
-      -- Add only minimal information to keep the final result as small as possible
-      -- only if the alert_generation is not nil
-      if alert.alert_generation then 
-        alert.alert_generation.host_info = host.getMinInfo()
-        triggered.json = json.encode(alert)
-      end
-   end
-end
-
--- ##############################################
-
 --@brief Check if the `alert` belongs to an exclusion list
 --! @param entity_info data returned by one of the entity_info building functions
 --! @param type_info data returned by one of the type_info building functions
@@ -234,18 +218,6 @@ function alerts_api.store(entity_info, type_info, when)
   if matchExcludeFilter(entity_info, type_info) then
      -- This alert is matching an exclusion filter. return, and do anything
      return false
-  end
-
-  if(entity_info.alert_entity.entity_id == alert_consts.alertEntity("host")) then
-    -- NOTE: for engaged alerts this operation is performed during trigger in C
-    
-    -- Note: this is not required as there is no state (required for engage/release only)
-    -- and this has been removed as it creates issues with external alerts (e.g. syslog)
-    -- as there is no active host matching the alert.
-    -- host.checkContext(entity_info.alert_entity_val)
-
-    addAlertHostInfo(alert_to_store)
-    interface.incTotalHostAlerts(entity_info.entity_val, type_info.alert_type.alert_key)
   end
 
   recipients.dispatch_notification(alert_to_store, current_script)
@@ -392,11 +364,7 @@ function alerts_api.trigger(entity_info, type_info, when, cur_alerts)
     subtype, alert_json,
   }
 
-  if(entity_info.alert_entity.entity_id == alert_consts.alertEntity("host")) then
-    host.checkContext(entity_info.entity_val)
-    triggered = host.storeTriggeredAlert(table.unpack(params))
-    addAlertHostInfo(triggered)
-  elseif(entity_info.alert_entity.entity_id == alert_consts.alertEntity("interface")) then
+  if(entity_info.alert_entity.entity_id == alert_consts.alertEntity("interface")) then
     interface.checkContext(entity_info.entity_val)
     triggered = interface.storeTriggeredAlert(table.unpack(params))
   elseif(entity_info.alert_entity.entity_id == alert_consts.alertEntity("network")) then
@@ -468,11 +436,7 @@ function alerts_api.release(entity_info, type_info, when, cur_alerts)
     return(false)
   end
 
-  if(entity_info.alert_entity.entity_id == alert_consts.alertEntity("host")) then
-    host.checkContext(entity_info.entity_val)
-    released = host.releaseTriggeredAlert(table.unpack(params))
-    addAlertHostInfo(released)
-  elseif(entity_info.alert_entity.entity_id == alert_consts.alertEntity("interface")) then
+  if(entity_info.alert_entity.entity_id == alert_consts.alertEntity("interface")) then
     interface.checkContext(entity_info.entity_val)
     released = interface.releaseTriggeredAlert(table.unpack(params))
   elseif(entity_info.alert_entity.entity_id == alert_consts.alertEntity("network")) then
@@ -654,10 +618,10 @@ end
 
 -- ##############################################
 
-function alerts_api.influxdbEntity(dburl)
+function alerts_api.systemEntity()
   return {
-    alert_entity = alert_consts.alert_entities.influx_db,
-    entity_val = dburl
+    alert_entity = alert_consts.alert_entities.system,
+    entity_val = "system"
   }
 end
 
