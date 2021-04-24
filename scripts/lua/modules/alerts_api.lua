@@ -591,15 +591,6 @@ end
 
 -- ##############################################
 
-function alerts_api.categoryListsEntity(list_name)
-  return {
-    alert_entity = alert_consts.alert_entities.category_lists,
-    entity_val = list_name
-  }
-end
-
--- ##############################################
-
 function alerts_api.systemEntity(system_entity_name)
   return {
     alert_entity = alert_consts.alert_entities.system,
