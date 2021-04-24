@@ -579,16 +579,7 @@ function alerts_api.hostPoolEntity(pool_id)
     entity_val = tostring(pool_id)
   }
 end
-
--- ##############################################
-
-function alerts_api.periodicActivityEntity(activity_path)
-  return {
-    alert_entity = alert_consts.alert_entities.periodic_activity,
-    entity_val = activity_path
-  }
-end
-
+ 
 -- ##############################################
 
 function alerts_api.amThresholdCrossEntity(host)
