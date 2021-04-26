@@ -31,10 +31,10 @@
 
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item">
-                      <a class="nav-link {{ (alert_stats.status == 'historical' and 'active' or '') }}" href="?status=historical">{{ i18n("show_alerts.past_alerts") }}</a>
+                      <a class="nav-link {{ (alert_stats.status == 'historical' and 'active' or '') }}" href="?status=historical&page={{ alert_stats.entity }}">{{ i18n("show_alerts.past_alerts") }}</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link {{ (alert_stats.status == 'engaged' and 'active' or '') }} {{ engaged_disabled }}" href="?status=engaged">{{ i18n("show_alerts.engaged_alerts") }}</a>
+                      <a class="nav-link {{ (alert_stats.status == 'engaged' and 'active' or '') }} {{ engaged_disabled }}" href="?status=engaged&page={{ alert_stats.entity }}">{{ i18n("show_alerts.engaged_alerts") }}</a>
                     </li>
                 </ul>
             </div>
