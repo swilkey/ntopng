@@ -39,7 +39,7 @@ end
 -- #######################################################
 
 function alert_unexpected_new_device.format(ifid, alert, alert_type_params)
-     -- Pro description
+  -- Pro description
   if(ntop.isPro()) then
     package.path = dirs.installdir .. "/pro/scripts/lua/modules/?.lua;" .. package.path
     local snmp_location = require "snmp_location"

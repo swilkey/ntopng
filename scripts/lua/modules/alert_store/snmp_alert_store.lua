@@ -83,6 +83,11 @@ function snmp_alert_store:format_record(value)
    local alert_info = alert_utils.getAlertInfo(value)
    local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
 
+   record["ip"] = value["ip"]
+   record["port"] = {
+      value = value["port"],
+      label = value["port_name"]
+   }
    record["duration"] = duration
    record["name"] = name
    record["msg"] = msg
