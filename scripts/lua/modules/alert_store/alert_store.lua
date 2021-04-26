@@ -276,7 +276,7 @@ function alert_store:select_engaged(filter)
    -- Sort
    for idx, alert in pairs(alerts) do
       if sortColumn == "alert_id" then
-	 sort_2_col[idx] = alert.alert_id or alert.alert_type --[[ compatibility ]]--
+	 sort_2_col[idx] = alert.alert_id
       elseif sortColumn == "severity" then
 	 sort_2_col[idx] = alert.severity
       elseif sortColumn == "column_duration" then
