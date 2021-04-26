@@ -86,6 +86,7 @@ void OtherAlertableEntity::luaAlert(lua_State* vm, const Alert *alert, ScriptPer
   lua_push_int32_table_entry(vm,  "severity", alert->severity);
   lua_push_int32_table_entry(vm,  "entity_id", getEntityType());
   lua_push_str_table_entry(vm,    "entity_val", getEntityValue().c_str());
+  lua_push_str_table_entry(vm,    "name", getEntityValue().c_str());
   lua_push_uint64_table_entry(vm, "tstamp", alert->tstamp);
   lua_push_uint64_table_entry(vm, "tstamp_end", alert->last_update);
   lua_push_int32_table_entry(vm,  "granularity", Utils::periodicityToSeconds((ScriptPeriodicity)p));
