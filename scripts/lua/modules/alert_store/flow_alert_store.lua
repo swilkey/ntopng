@@ -110,6 +110,21 @@ end
 
 -- ##############################################
 
+--@brief Add filters on host address, either as client or as server
+--@param ip The host IP
+--@return True if set is successful, false otherwise
+function flow_alert_store:add_ip_filter(ip)
+   if not self._ip then
+      self._ip = ip
+      self._where[#self._where + 1] = string.format("(srv_ip = '%s' OR cli_ip = '%s')", self._ip, self._ip)
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
 --@brief Add filters on VLAN ID
 --@param vlan_id The VLAN ID
 --@return True if set is successful, false otherwise

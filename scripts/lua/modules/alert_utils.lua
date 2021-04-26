@@ -4,6 +4,7 @@
 
 local dirs = ntop.getDirs()
 package.path = dirs.installdir .. "/scripts/lua/modules/pools/?.lua;" .. package.path
+package.path = dirs.installdir .. "/scripts/lua/modules/alert_store/?.lua;" .. package.path
 
 -- This file contains the description of all functions
 -- used to trigger host alerts
@@ -447,18 +448,12 @@ end
 --@brief Deletes all stored alerts matching an host and an IP
 -- @return nil
 function alert_utils.deleteFlowAlertsMatching(host_ip, alert_id)
-   local res = {}
-   local statement = "DELETE "
+   local flow_alert_store = require("flow_alert_store").new()
+   flow_alert_store:add_ip_filter(host_ip)
+   flow_alert_store:add_alert_id_filter(alert_id)
 
-   -- This is to match elements inside the alert_json
-   local where = {
-      string.format("(cli_addr = '%s' OR srv_addr = '%s')", host_ip, host_ip),
-      string.format("alert_id = %u", alert_id),
-   }
-
-   where = table.concat(where, " AND ")
-
-   res = interface.queryFlowAlertsRaw(statement, where, nil, true)
+   -- Perform the actual deletion
+   flow_alert_store:delete()
 end
 
 -- #################################
