@@ -83,12 +83,16 @@ function snmp_alert_store:format_record(value)
    local alert_name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.snmp_device.entity_id)
    local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
 
-   record["alert_name"] = alert_name
+   record["alert_name"] = {
+      label = alert_name,
+      value = value["alert_id"]
+   }
    record["ip"] = value["ip"]
    record["port"] = {
       value = value["port"],
       label = value["port_name"]
    }
+   record["duration"] = duration
    record["msg"] = msg
 
    return record

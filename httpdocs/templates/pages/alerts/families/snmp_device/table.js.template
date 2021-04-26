@@ -1,18 +1,20 @@
 [
     /* Date */
-    {name: 'date'},
-    /* Severity */
-    {name: 'severity'},
+    {name: 'tstamp', className: 'text-center', data: 'tstamp'},
+    /* Duration */
+    {name: 'duration', data: 'duration', className: 'text-center', orderable: false, render: DataTableRenders.secondsToTime},
     /* Counts */
-    {name: 'counter', className: 'text-center'},
+    {name: 'count', className: 'text-center', data: 'count', visible: false},
+    /* Severity */
+    {name: 'severity', className: 'text-center', data: 'severity', render: DataTableRenders.formatValueLabel},
+    /* Alert Type */
+    {name: 'alert_id', data: 'alert_id', orderable: false, className: 'text-center nowrap', render: DataTableRenders.formatValueLabel},
     /* IP Address */
-    {name: 'ip'},
+    {name: 'ip', data: 'ip', className: 'text-center'},
+    /* Port */
+    {name: 'port', className: 'text-center', data: 'port', render: DataTableRenders.formatValueLabel},
     /* Device Name */
     {name: 'name', className: 'text-center', data: 'name'},
     /* Description */
-    {name: 'description'},
-    /* Actions */
-    {targets: -1, className: 'text-center', data: null, render: (type) => {
-        return '';
-    }}
+    {name: 'description', data: 'msg'},
 ]
