@@ -46,7 +46,6 @@ function interface_alert_store:insert(alert)
       alert.ifid,
       self:_escape(name),
       self:_escape(alias),
-      self:_escape(alert.entity_val),
       alert.granularity,
       self:_escape(alert.json))
 
@@ -68,9 +67,9 @@ end
 function interface_alert_store:format_record(value)
    local record = self:format_record_common(value, alert_entities.interface.entity_id)
 
-   local alert_id_label = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false)
+   local alert_id_label = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.interface.entity_id)
    local alert_info = alert_utils.getAlertInfo(value)
-   local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
+   local msg = alert_utils.formatAlertMessage(interface.getId(), value, alert_info)
 
    record["duration"] = duration
    record["alert_id"] = {
