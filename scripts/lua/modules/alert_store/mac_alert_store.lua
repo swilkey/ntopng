@@ -67,17 +67,16 @@ end
 function mac_alert_store:format_record(value)
    local record = self:format_record_common(value, alert_entities.mac.entity_id)
 
-   local name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false)
    local alert_info = alert_utils.getAlertInfo(value)
+   local alert_name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.mac.entity_id)
    local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
 
+   record["alert_name"] = alert_name
    record["address"] = value["address"]
    record["device_type"] = { 
      value = value["device_type"],
      label = discover.devtype2string(value["device_type"]),
    }
-   record["duration"] = duration
-   record["name"] = name
    record["msg"] = msg
 
    return record

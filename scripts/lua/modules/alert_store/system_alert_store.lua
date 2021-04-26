@@ -62,12 +62,11 @@ end
 function system_alert_store:format_record(value)
    local record = self:format_record_common(value)
 
-   local name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false)
    local alert_info = alert_utils.getAlertInfo(value)
+   local alert_name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.system.entity_id)
    local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
 
-   record["duration"] = duration
-   record["name"] = name
+   record["alert_name"] = alert_name
    record["msg"] = msg
 
    return record

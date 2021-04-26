@@ -68,10 +68,11 @@ function interface_alert_store:format_record(value)
    local record = self:format_record_common(value, alert_entities.interface.entity_id)
 
    local alert_id_label = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.interface.entity_id)
+   local alert_name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.interface.entity_id)
    local alert_info = alert_utils.getAlertInfo(value)
    local msg = alert_utils.formatAlertMessage(interface.getId(), value, alert_info)
 
-   record["duration"] = duration
+   record["alert_name"] = alert_name
    record["alert_id"] = {
       label = alert_id_label,
       value = value["alert_id"]

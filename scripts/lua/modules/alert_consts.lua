@@ -186,6 +186,11 @@ end
 -- ##############################################
 
 function getMacUrl(mac)
+   if not mac then
+      tprint("getMacUrl(nil)")
+      tprint(debug.traceback()) 
+      return "" 
+   end
    return ntop.getHttpPrefix() .. "/lua/mac_details.lua?host=" .. mac
 end
 

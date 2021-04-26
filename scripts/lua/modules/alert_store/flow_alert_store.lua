@@ -209,9 +209,11 @@ function flow_alert_store:format_record(value)
 
    local score = tonumber(value["score"])
    local alert_info = alert_utils.getAlertInfo(value)
+   local alert_name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.flow.entity_id)
    local msg = alert_utils.formatFlowAlertMessage(ifid, value, alert_info)
    local application =  interface.getnDPIProtoName(tonumber(value["l7_proto"]))
 
+   record["alert_name"] = alert_name
    record["score"] = score
    record["msg"] = msg
    record["cli_name"] = value["cli_name"]

@@ -459,6 +459,8 @@ function alert_store:format_record_common(value, entity_id)
       label = alert_consts.alertSeverityLabel(tonumber(value["severity"])),
    }
 
+   record["duration"] = tonumber(value["tstamp_end"]) - tonumber(value["tstamp"]) 
+
    local count = 1 -- TODO (not yet supported)
    record["count"] = count -- historical only
 

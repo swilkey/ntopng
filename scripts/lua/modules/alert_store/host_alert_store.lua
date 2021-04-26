@@ -139,15 +139,16 @@ end
 function host_alert_store:format_record(value)
    local record = self:format_record_common(value, alert_entities.host.entity_id)
 
-   record["duration"] = tonumber(value["tstamp_end"]) - tonumber(value["tstamp"]) 
+   local alert_info = alert_utils.getAlertInfo(value)
+   local alert_name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.host.entity_id)
+   local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
+
+   record["alert_name"] = alert_name
    record["ip"] = value["ip"] .. (ternary(tonumber(value["vlan_id"]) > 0, "@"..value["vlan_id"], ""))
    record["hostname"] = value["name"]
    record["is_attacker"] = value["is_attacker"] == "1"
    record["is_victim"] = value["is_victim"] == "1"
    record["vlan_id"] = value["vlan_id"] or 0
-
-   local alert_info = alert_utils.getAlertInfo(value)
-   local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
    record["msg"] = msg
 
    return record
