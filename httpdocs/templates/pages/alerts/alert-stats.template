@@ -480,7 +480,7 @@
                     data["alert_addr"] = alert.ip;
                 }
                 else if (FAMILY === "flow") {
-                    data["alert_addr"] = $(`[name='alert_addr']`).val();
+                    data["alert_addr"] = $(`[name='alert_addr']:checked`).val();
                 }
                 
                 return data;
@@ -491,12 +491,17 @@
                 $(`#alerts_filter_dialog .alert_label`).text($type.text().trim());
 
                 if (FAMILY === "host") {
-                    $(`.alert_addr`).text(alert.hostname || alert.ip);
+                    const label = (alert.hostname) ? `${alert.hostname} (${alert.ip})` : alert.ip; 
+                    $(`.alert_addr`).text(label);
                 }
                 else if (FAMILY === "flow") {
-                    $(`#cli_addr`).text(alert.cli_name || alert.cli_ip);
+
+                    const cliLabel = (alert.cli_name) ? `${alert.cli_name} (${alert.cli_ip})` : alert.cli_ip;
+                    const srvLabel = (alert.srv_name) ? `${alert.srv_name} (${alert.srv_ip})` : alert.srv_ip;
+
+                    $(`#cli_addr`).text(cliLabel);
                     $(`#cli_radio`).val(alert.cli_ip);
-                    $(`#srv_addr`).text(alert.srv_name || alert.srv_ip);
+                    $(`#srv_addr`).text(srvLabel);
                     $(`#srv_radio`).val(alert.srv_ip);
                 }
 
