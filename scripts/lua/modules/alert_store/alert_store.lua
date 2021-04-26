@@ -269,6 +269,7 @@ function alert_store:select_engaged(filter)
 
    -- tprint(string.format("id=%s sev=%s entity=%s val=%s", alert_id_filter, severity_filter, entity_id_filter, entity_value_filter))
    local alerts = interface.getEngagedAlerts(entity_id_filter, entity_value_filter, alert_id_filter, severity_filter)
+
    local total_rows = #alerts
    local sort_2_col = {}
 
@@ -277,11 +278,11 @@ function alert_store:select_engaged(filter)
       if sortColumn == "alert_id" then
 	 sort_2_col[idx] = alert.alert_id or alert.alert_type --[[ compatibility ]]--
       elseif sortColumn == "severity" then
-	 sort_2_col[idx] = alert.alert_severity
+	 sort_2_col[idx] = alert.severity
       elseif sortColumn == "column_duration" then
-	 sort_2_col[idx] = os.time() - alert.alert_tstamp
+	 sort_2_col[idx] = os.time() - alert.tstamp
       else -- column_date
-	 sort_2_col[idx] = alert.alert_tstamp
+	 sort_2_col[idx] = alert.tstamp
       end
    end
 
