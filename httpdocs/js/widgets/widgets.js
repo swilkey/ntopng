@@ -69,7 +69,7 @@ class Widget {
     async update(datasourceParams = {}) {
 
         // build the new endpoint
-        const u = new URL(`${location.origin}${this._datasource.endpoint}`);
+        const u = new URL(`${location.origin}${this._datasource.name}`);
         for (const [key, value] of Object.entries(datasourceParams)) {
             u.searchParams.set(key, value);
         }
