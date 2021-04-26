@@ -203,6 +203,11 @@ end
 -- ##############################################
 
 function getHostPoolUrl(pool_id)
+   if not pool_id then
+      tprint("getHostPoolUrl(nil)")
+      tprint(debug.traceback())
+      return ""
+   end
    return ntop.getHttpPrefix() .. "/lua/hosts_stats.lua?pool=" .. pool_id
 end
 
