@@ -14,6 +14,7 @@ local format_utils = require "format_utils"
 local alert_consts = require "alert_consts"
 local alert_utils = require "alert_utils"
 local alert_entities = require "alert_entities"
+local discover = require "discover_utils"
 local json = require "dkjson"
 
 -- ##############################################
@@ -70,6 +71,11 @@ function mac_alert_store:format_record(value)
    local alert_info = alert_utils.getAlertInfo(value)
    local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
 
+   record["address"] = value["address"]
+   record["device_type"] = { 
+     value = value["device_type"],
+     label = discover.devtype2string(value["device_type"]),
+   }
    record["duration"] = duration
    record["name"] = name
    record["msg"] = msg
