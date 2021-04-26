@@ -39,8 +39,8 @@ void AlertsQueue::pushAlertJson(ndpi_serializer *alert, const char *atype, const
   ndpi_serialize_string_uint32(alert, "ifid", iface->get_id());
   ndpi_serialize_string_string(alert, "alert_id", atype);
   if(a_subtype && a_subtype[0] != '\0')
-    ndpi_serialize_string_string(alert, "alert_subtype", a_subtype);
-  ndpi_serialize_string_uint64(alert, "alert_tstamp", time(NULL));
+    ndpi_serialize_string_string(alert, "subtype", a_subtype);
+  ndpi_serialize_string_uint64(alert, "tstamp", time(NULL));
 
   if(!ntop->getInternalAlertsQueue()->enqueue(alert)) {
     iface->incNumDroppedAlerts(1);
