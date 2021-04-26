@@ -208,11 +208,9 @@
             /* Actions Column */
             columns.push({width: '5%', targets: -1, className: 'text-center', orderable: false, data: null, render: (type) => {
 
-                const disableButtonClass = "btn-warning {{ (datatable.actions.disable and 'disabled' or '') }}";
-
                 return DataTableUtils.createActionButtons([
                     /* Disable */
-                    {icon: 'fa-bell-slash', label: "{{ i18n('disable') }}", modal: '#alerts_filter_dialog', class: disableButtonClass},
+                    {icon: 'fa-bell-slash', label: "{{ i18n('disable') }}", modal: '#alerts_filter_dialog', class: "btn-warning {{ ((alert_stats.entity == 'host' or alert_stats.entity == 'flow') and '' or 'disabled') }}"},
                     /* Release */
                     // {icon: 'fas fa-unlock', label: "{{ i18n('show_alerts.release_alert_action') }}", modal: '#release_single_alert', class: 'btn-info'},
                     /* Delete */
@@ -514,6 +512,10 @@
                     $(`#cli_radio`).val(alert.cli_ip);
                     $(`#srv_addr`).text(srvLabel);
                     $(`#srv_radio`).val(alert.srv_ip);
+                }
+                else {
+                    console.log(alert)
+                    $(`.alert_entity_val`).text("Ah boh")
                 }
 
             },

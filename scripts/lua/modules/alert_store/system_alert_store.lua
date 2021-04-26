@@ -66,7 +66,10 @@ function system_alert_store:format_record(value)
    local alert_name = alert_consts.alertTypeLabel(tonumber(value["alert_id"]), false, alert_entities.system.entity_id)
    local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
 
-   record["alert_name"] = alert_name
+   record["alert_type"] = {
+      label = alert_name,
+      value = value["alert_id"]
+   }
    record["msg"] = msg
 
    return record
