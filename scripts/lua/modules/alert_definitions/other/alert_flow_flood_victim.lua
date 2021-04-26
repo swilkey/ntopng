@@ -50,7 +50,7 @@ end
 -- @return A human-readable string
 function alert_flow_flood_victim.format(ifid, alert, alert_type_params)
   local alert_consts = require("alert_consts")
-  local entity = alert_consts.formatAlertEntity(ifid, alert_consts.alertEntityRaw(alert["entity_id"]), alert["entity_val"])
+  local entity = alert_consts.formatAlertEntity(ifid, alert_consts.alertEntityRaw(alert["entity_id"]), alert["name"])
   local value = alert_type_params.value
 
   if(value == nil) then value = 0 end
