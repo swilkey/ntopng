@@ -63,6 +63,15 @@ end
 
 -- ##############################################
 
+--@brief Handle filter operator (eq, lt, gt, gte, lte)
+function alert_store:strip_filter_operator(value)
+   if isEmptyString(value) then return nil, nil end
+   local filter = split(value, ",")
+   return filter[1], filter[2]
+end
+
+-- ##############################################
+
 --@brief Add filters on time
 --@param epoch_begin The start timestamp
 --@param epoch_end The end timestamp
