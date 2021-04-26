@@ -27,14 +27,15 @@
 
                 {%
                     local engaged_disabled = ternary((alert_stats.entity == "flow"), "disabled", "")
+                    local base_url = build_query_url({'status', 'page', 'epoch_begin', 'epoch_end'}) 
                 %}
 
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item">
-                      <a class="nav-link {{ (alert_stats.status == 'historical' and 'active' or '') }}" href="?status=historical&page={{ alert_stats.entity }}">{{ i18n("show_alerts.past_alerts") }}</a>
+                      <a class="nav-link {{ (alert_stats.status == 'historical' and 'active' or '') }}" href="{{ base_url }}&status=historical&page={{ alert_stats.entity }}">{{ i18n("show_alerts.past_alerts") }}</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link {{ (alert_stats.status == 'engaged' and 'active' or '') }} {{ engaged_disabled }}" href="?status=engaged&page={{ alert_stats.entity }}">{{ i18n("show_alerts.engaged_alerts") }}</a>
+                      <a class="nav-link {{ (alert_stats.status == 'engaged' and 'active' or '') }} {{ engaged_disabled }}" href="{{ base_url }}&status=engaged&page={{ alert_stats.entity }}">{{ i18n("show_alerts.engaged_alerts") }}</a>
                     </li>
                 </ul>
             </div>
@@ -153,8 +154,8 @@
             const url = new URL(location);
             const searchParams = new URLSearchParams();
 
-            searchParams.set('epoch_begin', begin.unix());
-            searchParams.set('epoch_end', end.unix());
+            searchParams.set('begin_epoch', begin.unix());
+            searchParams.set('end_epoch', end.unix());
 
             // get all filters tags
             const tags = tagify.getTagElms();
@@ -162,15 +163,13 @@
             // add the tag filters inside the search params object
             for (const tag of tags) {
 
-                const key = tag.getAttribute('key');
-                const selectedOperator = tag.getAttribute('selectedoperator');
-                const value = tag.getAttribute('value');
-
-                searchParams.set(key, `${value},${selectedOperator}`);
+                const tagData = tagify.tagData(tag);
+                const {key, selectedOperator, realValue, value} = tagData;
+                searchParams.set(key, `${realValue || value},${selectedOperator}`);
             }
 
-            url.search = searchParams.toString() + "&page=" + url.searchParams.get('page');
-            window.history.pushState({epoch_begin: begin.unix(), epoch_end: end.unix()}, '', url);
+            url.search = searchParams.toString();
+            window.history.pushState({begin_epoch: begin.unix(), end_epoch: end.unix()}, '', url);
         }
 
         async function onRangePickerChange(pushHistroy = false) {
@@ -506,7 +505,6 @@
                     $(`#srv_radio`).val(alert.srv_ip);
                 }
                 else {
-                    console.log(alert)
                     $(`.alert_entity_val`).text("Ah boh")
                 }
 

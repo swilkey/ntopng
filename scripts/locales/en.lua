@@ -4912,6 +4912,7 @@ local lang = {
     ["l4proto"] = "L4 Proto",
     ["l7cat"] = "L7 Cat",
     ["l7proto"] = "L7 Proto",
+    ["network_name"] = "Network",
     ["srv_ip"] = "Server",
     ["srv_port"] = "Server Port",
   },

@@ -73,9 +73,9 @@ function network_alert_store:format_record(alert)
    local msg = alert_utils.formatAlertMessage(ifid, alert, alert_info)
 
    record["alert_name"] = alert_name
-   record["name"] = alert.name
    record["alias"] = alert.alias
    record["local_network_id"] = alert.local_network_id
+   record["network"] = alert.name
    record["msg"] = msg
 
    return record

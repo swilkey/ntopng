@@ -7,6 +7,11 @@
     {name: 'severity', className: 'text-center', data: 'severity', render: DataTableRenders.formatValueLabel},
     /* Alert Type */
     {name: 'alert_id', data: 'alert_id', orderable: false, className: 'text-center nowrap', render: DataTableRenders.formatValueLabel},
+    /* Network */
+    {name: 'network_name', data: 'network', orderable: false, render: (network, type) => {
+        if (type === "display") return DataTableRenders.filterize(network, network);
+        return network;
+    }},
     /* Description */
     {name: 'description', data: 'msg', orderable: false,},
 ]

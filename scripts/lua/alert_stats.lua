@@ -28,6 +28,7 @@ local epoch_end = _GET["epoch_end"] or time
 
 --------------------------------------------------------------
 
+local network_name = _GET["network_name"]
 local l7_proto = _GET["l7_proto"]
 local cli_ip = _GET["cli_ip"]
 local srv_ip = _GET["srv_ip"]
@@ -137,7 +138,12 @@ widget_gui_utils.register_timeseries_bar_chart(CHART_NAME, 0, {
         ifid = IFID,
         epoch_begin = epoch_begin,
         epoch_end = epoch_end,
-        status = status
+        status = status,
+        cli_ip = cli_ip,
+        srv_ip = srv_ip,
+        l7_proto = l7_proto,
+        ip = host_ip,
+        network_name = network_name
     })
 })
 
@@ -207,7 +213,7 @@ local defined_tags = {
 
     },
     ["network"] = {
-        
+        network_name = {'eq'}
     }
 }
 
@@ -232,7 +238,8 @@ local context = {
                 l7_proto = i18n("tags.l7proto"),
                 cli_ip = i18n("tags.cli_ip"),
                 srv_ip = i18n("tags.srv_ip"),
-                ip = i18n("tags.ip")
+                ip = i18n("tags.ip"),
+                network_name = i18n("tags.network")
             }
         },
         presets = {
@@ -257,7 +264,8 @@ local context = {
             cli_ip = cli_ip,
             srv_ip = srv_ip,
             l7_proto = l7_proto,
-            ip = host_ip
+            ip = host_ip,
+            network_name = network_name
         }),
         actions = {
             disable = (page ~= "host" and page ~= "flow")
