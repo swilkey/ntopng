@@ -80,9 +80,110 @@ end
 
 -- ##############################################
 
+--@brief Add filters on client host address
+--@param ip The host IP
+--@return True if set is successful, false otherwise
+function flow_alert_store:add_cli_ip_filter(ip)
+   if not self._cli_ip then
+      self._cli_ip = ip
+      self._where[#self._where + 1] = string.format("cli_ip = '%s'", self._cli_ip)
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
+--@brief Add filters on server host address
+--@param ip The host IP
+--@return True if set is successful, false otherwise
+function flow_alert_store:add_srv_ip_filter(ip)
+   if not self._srv_ip then
+      self._srv_ip = ip
+      self._where[#self._where + 1] = string.format("srv_ip = '%s'", self._srv_ip)
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
+--@brief Add filters on VLAN ID
+--@param vlan_id The VLAN ID
+--@return True if set is successful, false otherwise
+function flow_alert_store:add_vlan_id_filter(vlan_id)
+   if not self._vlan_id and tonumber(vlan_id) then
+      self._vlan_id = tonumber(vlan_id)
+      self._where[#self._where + 1] = string.format("vlan_id = %u", self._vlan_id)
+      return true
+   end
+
+   return false
+end
+
+-- ##############################################
+
+--@brief Add filters on L7 Proto
+--@param l7_proto The l7 proto
+--@return True if set is successful, false otherwise
+function flow_alert_store:add_l7_proto_filter(l7_proto)
+   if not self._l7_proto then
+      if not tonumber(l7_proto) then
+         -- Try converting l7 proto name to number
+         l7_proto = interface.getnDPIProtoId(l7_proto)
+      end
+      if tonumber(l7_proto) then
+         self._l7_proto = tonumber(l7_proto)
+         self._where[#self._where + 1] = string.format("l7_proto = %u", self._l7_proto)
+         return true
+      end
+   end
+
+   return false
+end
+
+-- ##############################################
+
 --@brief Add filters according to what is specified inside the REST API
 function flow_alert_store:_add_additional_request_filters()
-   -- Add filters specific to the flow family
+   local cli_ip = _GET["cli_ip"]
+   local srv_ip = _GET["srv_ip"]
+   local vlan_id = _GET["vlan_id"]
+   local l7_proto = _GET["l7_proto"]
+
+   if not isEmptyString(vlan_id) then
+      local vlan_id, op = self:strip_filter_operator(vlan_id)
+      self:add_vlan_id_filter(vlan_id)
+   end
+
+   if not isEmptyString(cli_ip) then
+      local ip, op = self:strip_filter_operator(cli_ip)
+      local host = hostkey2hostinfo(ip)
+      if not isEmptyString(host["host"]) then
+         self:add_cli_ip_filter(host["host"])
+      end
+      if not isEmptyString(host["vlan"]) then
+         self:add_vlan_id_filter(host["vlan"])
+      end
+   end
+
+   if not isEmptyString(srv_ip) then
+      local ip, op = self:strip_filter_operator(srv_ip)
+      local host = hostkey2hostinfo(ip)
+      if not isEmptyString(host["host"]) then
+         self:add_srv_ip_filter(host["host"])
+      end
+      if not isEmptyString(host["vlan"]) then
+         self:add_vlan_id_filter(host["vlan"])
+      end
+   end
+
+   if not isEmptyString(l7_proto) then
+      local l7_proto, op = self:strip_filter_operator(l7_proto)
+      self:add_l7_proto_filter(l7_proto)
+   end
 end
 
 -- ##############################################

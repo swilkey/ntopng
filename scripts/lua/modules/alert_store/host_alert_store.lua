@@ -60,7 +60,7 @@ end
 -- ##############################################
 
 --@brief Add filters on host address
---@param alert_id The host IP
+--@param ip The host IP
 --@return True if set is successful, false otherwise
 function host_alert_store:add_ip_filter(ip)
    if not self._ip then
@@ -75,7 +75,7 @@ end
 -- ##############################################
 
 --@brief Add filters on VLAN ID
---@param alert_id The VLAN ID
+--@param ip The VLAN ID
 --@return True if set is successful, false otherwise
 function host_alert_store:add_vlan_id_filter(vlan_id)
    if not self._vlan_id and tonumber(vlan_id) then
@@ -94,10 +94,13 @@ function host_alert_store:_add_additional_request_filters()
    local ip = _GET["ip"]
    local vlan_id = _GET["vlan_id"]
 
+   if not isEmptyString(vlan_id) then
+      local vlan_id, op = self:strip_filter_operator(vlan_id)
+      self:add_vlan_id_filter(vlan_id)
+   end
+
    if not isEmptyString(ip) then
       local ip, op = self:strip_filter_operator(ip)
-tprint(ip)
-tprint(op)
       local host = hostkey2hostinfo(ip)
       if not isEmptyString(host["host"]) then
          self:add_ip_filter(host["host"])
@@ -105,11 +108,6 @@ tprint(op)
       if not isEmptyString(host["vlan"]) then
          self:add_vlan_id_filter(host["vlan"])
       end
-   end
-
-   if not isEmptyString(vlan_id) then
-      local vlan_id, op = self:strip_filter_operator(vlan_id)
-      self:add_vlan_id_filter(vlan_id)
    end
 end
 
