@@ -14,6 +14,7 @@ local format_utils = require "format_utils"
 local alert_consts = require "alert_consts"
 local alert_utils = require "alert_utils"
 local alert_entities = require "alert_entities"
+local snmp_utils = require "snmp_utils"
 local json = require "dkjson"
 
 -- ##############################################
@@ -88,6 +89,7 @@ function snmp_alert_store:format_record(value)
       value = value["alert_id"]
    }
    record["ip"] = value["ip"]
+   record["name"] = snmp_utils.get_snmp_device_sysname(value["ip"]) or ""
    record["port"] = {
       value = value["port"],
       label = value["port_name"]
