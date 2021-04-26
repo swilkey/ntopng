@@ -445,6 +445,7 @@ else
 				 hidden = not areAlertsEnabled(),
 				 active = page == "alerts",
 				 page_name = "alerts",
+             url = ntop.getHttpPrefix() .. "/lua/alert_stats.lua?&page=host&ip=" .. ternary(host_vlan == 0, host_ip, host_ip .. "@" .. host_vlan) .. ",eq",
 				 label = "<i class=\"fas fa-lg fa-exclamation-triangle\"></i>",
 			      },
 			      {
