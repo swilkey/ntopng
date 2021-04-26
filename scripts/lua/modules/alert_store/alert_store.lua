@@ -446,6 +446,9 @@ end
 function alert_store:format_record_common(value, entity_id)
    local record = {}
 
+   -- Note: this record is rendered by 
+   -- httpdocs/templates/pages/alerts/families/{host,..}/table[.js].template 
+
    record["row_id"] = value["rowid"]
 
    record["tstamp"] = format_utils.formatPastEpochShort(tonumber(value["alert_tstamp"] or value["tstamp"]))
@@ -460,7 +463,11 @@ function alert_store:format_record_common(value, entity_id)
       label = alert_consts.alertSeverityLabel(tonumber(value["severity"])),
    }
 
-   record["duration"] = tonumber(value["tstamp_end"]) - tonumber(value["tstamp"]) 
+   if tonumber(value["tstamp_end"]) and tonumber(value["tstamp"]) then
+      record["duration"] = tonumber(value["tstamp_end"]) - tonumber(value["tstamp"]) 
+   else
+      record["duration"] = 0
+   end
 
    local count = 1 -- TODO (not yet supported)
    record["count"] = count -- historical only
