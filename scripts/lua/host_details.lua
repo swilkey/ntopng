@@ -199,7 +199,7 @@ if(host == nil) and (not only_historical) then
       if page == "alerts" then
 	 print('<script>window.location.href = "')
 	 print(ntop.getHttpPrefix())
-	 print('/lua/show_alerts.lua?entity='..alert_consts.alertEntity("host")..'&entity_val=')
+	 print('/lua/alert_stats.lua?entity='..alert_consts.alertEntity("host")..'&entity_val=')
 	 print(hostkey)
 	 print('";</script>')
       elseif restoreInProgress then

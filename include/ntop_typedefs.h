@@ -205,11 +205,11 @@ typedef enum {
   alert_entity_user                =  7,
   alert_entity_am_host             =  8,
   alert_entity_system              =  9,
-  alert_entity_test                =  10,
+  alert_entity_test                = 10,
 
   /* Add new entities above ^ and do not exceed alert_entity_other */
-  alert_entity_other               = 64,
-  ALERT_ENTITY_MAX_NUM_ENTITIES
+  alert_entity_other               = 15,
+  ALERT_ENTITY_MAX_NUM_ENTITIES    = 16
 } AlertEntity;
 
 typedef enum {
