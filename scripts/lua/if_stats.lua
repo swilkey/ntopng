@@ -359,6 +359,7 @@ page_utils.print_navbar(title, url,
 				 hidden = not isAdministrator() or not areAlertsEnabled(),
 				 active = page == "alerts",
 				 page_name = "alerts",
+             url = ntop.getHttpPrefix() .. "/lua/alert_stats.lua?&page=interface",
 				 label = "<i class=\"fas fa-lg fa-exclamation-triangle\"></i>",
 			      },
 			      {
