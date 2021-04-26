@@ -1,16 +1,16 @@
 [
     /* Date */
-    {name: 'tstamp', data: 'tstamp'},
-    /* Severity */
-    {name: 'severity'},
+    {name: 'tstamp', data: 'tstamp', className: 'text-center'},
     /* Counts */
-    {name: 'counters'},
+    {name: 'count', className: 'text-center', data: 'count', visible: false},
+    /* Severity */
+    {name: 'severity', className: 'text-center', data: 'severity', render: DataTableRenders.formatValueLabel},
     /* IP Address */
     {name: 'address'},
     /* Device Type */
     {name: 'device_type'},
     /* Name */
-    {name: 'name'},
+    {name: 'name', className: 'text-center', data: 'name'},
     /* Description */
     {data: 'msg'},
 ]

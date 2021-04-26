@@ -8,7 +8,7 @@
     /* IP Address */
     {name: 'ip'},
     /* Device Name */
-    {name: 'name'},
+    {name: 'name', className: 'text-center', data: 'name'},
     /* Description */
     {name: 'description'},
     /* Actions */

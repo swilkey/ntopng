@@ -37,6 +37,9 @@ local host_ip = _GET["ip"]
 
 sendHTTPContentTypeHeader('text/html')
 
+
+local disable_modal = ternary(page == "flow", "modal_flow_alerts_filter_dialog.html", "modal_host_alerts_filter_dialog.html")
+
 -- default endpoints (host)
 local endpoint_list = "/lua/rest/v1/get/host/alert/list.lua"
 local endpoint_ts = "/lua/rest/v1/get/host/alert/ts.lua"
@@ -144,7 +147,7 @@ local modals = {
             no_confirm_id = true
         }
     }),
-    ["alerts_filter_dialog"] = template_utils.gen("modal_alerts_filter_dialog.html", {
+    ["alerts_filter_dialog"] = template_utils.gen(disable_modal, {
         dialog = {
             id = "alerts_filter_dialog",
             title = i18n("show_alerts.filter_alert"),
@@ -154,7 +157,8 @@ local modals = {
             alert_filter = "default_filter",
             confirm = i18n("filter"),
             confirm_button = "btn-warning",
-            custom_alert_class = "alert alert-warning"
+            custom_alert_class = "alert alert-warning",
+            entity = page
         }
     }),
     ["release_single_alert"] = template_utils.gen("modal_confirm_dialog.html", {
