@@ -465,8 +465,6 @@ function alert_store:format_record_common(value, entity_id)
 
    if tonumber(value["tstamp_end"]) and tonumber(value["tstamp"]) then
       record["duration"] = tonumber(value["tstamp_end"]) - tonumber(value["tstamp"]) 
-   else
-      record["duration"] = 0
    end
 
    local count = 1 -- TODO (not yet supported)

@@ -94,7 +94,6 @@ function snmp_alert_store:format_record(value)
       value = value["port"],
       label = value["port_name"]
    }
-   record["duration"] = duration
    record["msg"] = msg
 
    return record
