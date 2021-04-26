@@ -14,7 +14,7 @@ local am_alert_store = require "am_alert_store".new()
 
 --
 -- Read alerts count by time
--- Example: curl -u admin:admin -H "Content-Type: application/json" -d '{"ifid": "1"}' http://localhost:3000/lua/rest/v1/get/active_monitoring/alert/ts.lua
+-- Example: curl -u admin:admin -H "Content-Type: application/json" -d '{ }' http://localhost:3000/lua/rest/v1/get/active_monitoring/alert/ts.lua
 --
 -- NOTE: in case of invalid login, no error is returned but redirected to login
 --
@@ -22,15 +22,7 @@ local am_alert_store = require "am_alert_store".new()
 local rc = rest_utils.consts.success.ok
 local res = {}
 
-local ifid = _GET["ifid"]
-
-if isEmptyString(ifid) then
-   rc = rest_utils.consts.err.invalid_interface
-   rest_utils.answer(rc)
-   return
-end
-
-interface.select(ifid)
+interface.select(getSystemInterfaceId())
 
 -- Add filters
 am_alert_store:add_request_filters()

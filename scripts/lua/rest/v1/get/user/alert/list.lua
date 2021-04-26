@@ -19,15 +19,7 @@ local user_alert_store = require "user_alert_store".new()
 local rc = rest_utils.consts.success.ok
 local res = {}
 
-local ifid = _GET["ifid"]
-
-if isEmptyString(ifid) then
-   rc = rest_utils.consts.err.invalid_interface
-   rest_utils.answer(rc)
-   return
-end
-
-interface.select(ifid)
+interface.select(getSystemInterfaceId())
 
 -- Fetch the results
 local alerts, recordsFiltered = user_alert_store:select_request()
