@@ -51,7 +51,7 @@ end
 -- @return A human-readable string
 function alert_tcp_syn_flood_victim.format(ifid, alert, alert_type_params)
   local alert_consts = require "alert_consts"
-  local entity = alert_consts.formatAlertEntity(ifid, alert_consts.alertEntityRaw(alert["alert_entity"]), alert["alert_entity_val"])
+  local entity = alert_consts.formatAlertEntity(ifid, alert_consts.alertEntityRaw(alert["alert_entity"]), alert["entity_val"])
   
   return i18n("alert_messages.syn_flood_victim", {
     entity = firstToUpper(entity),

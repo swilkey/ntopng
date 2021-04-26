@@ -50,7 +50,7 @@ end
 
 function alert_user_activity.format(ifid, alert, alert_type_params)
 	local decoded = alert_type_params
-	local user = alert.alert_entity_val
+	local user = alert.entity_val
  
 	if decoded.scope ~= nil then
  
