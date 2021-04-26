@@ -66,6 +66,7 @@ function host_alert_store:add_ip_filter(ip)
    if not self._ip then
       self._ip = ip
       self._where[#self._where + 1] = string.format("ip = '%s'", self._ip)
+      self._entity_value = ip
       return true
    end
 
@@ -113,28 +114,6 @@ end
 
 -- ##############################################
 
-function host_alert_store:add_host_filter(host)
-   if isIPv4(host) or isIPv6(host) then
-      self._where[#self._where + 1] = string.format("ip = '%s'", host)
-      return true
-   end
-
-   return false
-end
-
--- ##############################################
-
-function host_alert_store:add_vlan_filter(vlan_id)
-   if tonumber(vlan_id) then
-      self._where[#self._where + 1] = string.format("vlan_id = %u", vlan_id) 
-      return true
-   end
-
-   return false
-end
-
--- ##############################################
-
 --@brief Convert an alert coming from the DB (value) to a record returned by the REST API
 function host_alert_store:format_record(value)
    local record = self:format_record_common(value, alert_entities.host.entity_id)
@@ -144,7 +123,10 @@ function host_alert_store:format_record(value)
    local msg = alert_utils.formatAlertMessage(ifid, value, alert_info)
 
    record["alert_name"] = alert_name
-   record["ip"] = value["ip"] .. (ternary(tonumber(value["vlan_id"]) > 0, "@"..value["vlan_id"], ""))
+   record["ip"] = value["ip"] 
+   if value["vlan_id"] and tonumber(value["vlan_id"]) > 0 then
+      record["ip"] = record["ip"] .. "@" .. value["vlan_id"]
+   end
    record["hostname"] = value["name"]
    record["is_attacker"] = value["is_attacker"] == "1"
    record["is_victim"] = value["is_victim"] == "1"

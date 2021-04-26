@@ -265,7 +265,7 @@ function alert_store:select_engaged(filter)
    local alert_id_filter = tonumber(self._alert_id)
    local severity_filter = tonumber(self._alert_severity)
    local entity_id_filter = tonumber(self._alert_entity and self._alert_entity.entity_id) -- Possibly set in subclasses constructor
-   local entity_value_filter = filter
+   local entity_value_filter = filter or self._entity_value
 
    -- tprint(string.format("id=%s sev=%s entity=%s val=%s", alert_id_filter, severity_filter, entity_id_filter, entity_value_filter))
    local alerts = interface.getEngagedAlerts(entity_id_filter, entity_value_filter, alert_id_filter, severity_filter)

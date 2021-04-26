@@ -132,6 +132,7 @@ void HostAlertableEntity::luaAlert(lua_State* vm, HostAlert *alert) {
   lua_push_str_table_entry(vm,    "entity_val", alert->getHost()->getEntityValue().c_str());
   lua_push_uint64_table_entry(vm, "tstamp", alert->getEngageTime());
   lua_push_uint64_table_entry(vm, "tstamp_end", alert->getReleaseTime());
+  lua_push_str_table_entry(vm,    "ip", alert->getHost()->getEntityValue().c_str());
 
   HostCallback *cb = getAlertInterface()->getCallback(alert->getCallbackType());
   lua_push_int32_table_entry(vm,  "granularity", cb ? cb->getPeriod() : 0);
